@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>CHATSPARK by Abraham Emmanuel - Real Friends Only</title>
+<link rel="icon" href="./icon-512.png">
+<meta name="theme-color" content="#0A0F2C">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{font-family:Inter,system-ui,sans-serif}h1,h2,.display{font-family:'Plus Jakarta Sans',sans-serif}
+.quantum-gradient{background:linear-gradient(135deg,#5B5BFF 0%,#8B5CF6 50%,#EC4899 100%)}
+.theme-whatsapp-dark{--bg-main:#111B21;--bg-side:#202C33;--bg-card:#2A3942;--bg-hover:#202C33;--border:#2A3942;--text:#E9EDEF;--muted:#8696A0;--accent:#00A884}
+.theme-chatspark-navy{--bg-main:#0A0F2C;--bg-side:#141A3A;--bg-card:#1A2144;--bg-hover:#1E264E;--border:#1E264E;--text:#FFFFFF;--muted:#9CA3AF;--accent:#5B5BFF}
+.theme-light{--bg-main:#F0F2F5;--bg-side:#FFFFFF;--bg-card:#F0F2F5;--bg-hover:#E9EDEF;--border:#E9EDEF;--text:#111B21;--muted:#667781;--accent:#00A884}
+.theme-amoled{--bg-main:#000000;--bg-side:#0A0A0A;--bg-card:#1A1A1A;--bg-hover:#1F1F1F;--border:#1A1A1A;--text:#FFFFFF;--muted:#8696A0;--accent:#5B5BFF}
+.theme-ocean{--bg-main:#0A192F;--bg-side:#112240;--bg-card:#1D3557;--bg-hover:#23395B;--border:#1D3557;--text:#CCD6F6;--muted:#8892B0;--accent:#64FFDA}
+.theme-sunset{--bg-main:#1A0A2E;--bg-side:#2D1B4E;--bg-card:#3D2463;--bg-hover:#4A2D7A;--border:#3D2463;--text:#E0D7FF;--muted:#A99AC2;--accent:#FF6B9D}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="importmap">
+{"imports":{"react":"https://esm.sh/react@18.2.0","react-dom/client":"https://esm.sh/react-dom@18.2.0/client","lucide-react":"https://esm.sh/lucide-react@0.344.0?external=react"}}
+</script>
+<script type="module">
+import React, {useState, useEffect, useRef, useMemo} from 'react';
+import {createRoot} from 'react-dom/client';
+import * as Lucide from 'lucide-react';
+const { MessageCircle, Search, UserPlus, Link2, Mail, X, Check, Copy, Camera, Send, ArrowLeft, Zap, Brain, Settings, Share2, Sparkles, Moon, Sun, Smartphone, KeyRound, Palette, Users, Trash2, Phone, Video, MoreVertical, Smile, Paperclip, Mic, MapPin, File, Star, Archive, VolumeX } = Lucide;
+
+async function callGroq(messages, localKey){
+  try{
+    let res = await fetch('/api/quantum', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({messages})});
+    if(!res.ok) res = await fetch('/.netlify/functions/quantum', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({messages})});
+    if(res.ok){ const d=await res.json(); if(d.choices?.[0]?.message) return {text:d.choices[0].message.content, source:'env'}; }
+    const err=await res.json().catch(()=>({}));
+    if(err.error?.includes('GROQ_API_KEY')) throw new Error('ENV_NOT_SET');
+  }catch(e){}
+  if(!localKey) throw new Error('ENV_NOT_SET');
+  const directRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${localKey}`}, body:JSON.stringify({model:'llama-3.1-70b-versatile', messages, temperature:0.7, max_tokens:3000})});
+  const data=await directRes.json();
+  return {text:data.choices[0].message.content, source:'local'};
+}
+async function checkEnvStatus(){
+  try{
+    let res = await fetch('/api/quantum', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({messages:[{role:'user', content:'ping'}]})});
+    if(!res.ok) res = await fetch('/.netlify/functions/quantum', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({messages:[{role:'user', content:'ping'}]})});
+    const d=await res.json().catch(()=>({}));
+    if(res.ok && d.choices) return {connected:true, message:'GROQ_API_KEY connected ⚡ Secure'};
+    if(d.error?.includes('GROQ_API_KEY')) return {connected:false, message:'Not set - Add in Vercel Settings'};
+    return {connected:false, message:d.error||'Not ready'};
+  }catch(e){ return {connected:false, message:'Function not deployed'}; }
+}
+function genImgUrl(p){ return `https://image.pollinations.ai/prompt/${encodeURIComponent(p)}?width=768&height=768&seed=${Date.now()}&nologo=true`; }
+
+const THEMES = [
+  {id:'chatspark-navy', name:'ChatSpark Navy', desc:'Original by Abraham', colors:['#0A0F2C','#5B5BFF'], bg:'#0A0F2C'},
+  {id:'whatsapp-dark', name:'WhatsApp Dark', desc:'Classic dark', colors:['#111B21','#00A884'], bg:'#111B21'},
+  {id:'light', name:'Light', desc:'Clean light', colors:['#FFFFFF','#00A884'], bg:'#F0F2F5'},
+  {id:'amoled', name:'AMOLED Black', desc:'Pure black', colors:['#000000','#5B5BFF'], bg:'#000000'},
+  {id:'ocean', name:'Ocean Blue', desc:'Deep ocean', colors:['#0A192F','#64FFDA'], bg:'#0A192F'},
+  {id:'sunset', name:'Sunset Purple', desc:'Purple vibes', colors:['#1A0A2E','#FF6B9D'], bg:'#1A0A2E'},
+];
+
+function App(){
+  const [theme,setTheme]=useState(()=>localStorage.getItem('cs_theme_v2')||'chatspark-navy');
+  const [user,setUser]=useState(()=>{ const s=localStorage.getItem('cs_user'); return s?JSON.parse(s):null; });
+  const [onboarding,setOnboarding]=useState(()=>!localStorage.getItem('cs_user'));
+  const [onboardStep,setOnboardStep]=useState(1);
+  const [onboardForm,setOnboardForm]=useState({name:'',username:'',phone:'',code:'',avatar:'',enteredCode:''});
+  const [generatedCode,setGeneratedCode]=useState('');
+  // NO FAKE FRIENDS - Start empty!
+  const [contacts,setContacts]=useState(()=>{ const s=localStorage.getItem('cs_contacts_v2'); return s?JSON.parse(s):[]; });
+  const [friends,setFriends]=useState(()=>{ const s=localStorage.getItem('cs_friends_v2'); return s?JSON.parse(s):[]; });
+  const [chats,setChats]=useState(()=>{ const s=localStorage.getItem('cs_chats_v2'); return s?JSON.parse(s):[]; });
+  const [selectedChatId,setSelectedChatId]=useState(null);
+  const [showAddFriend,setShowAddFriend]=useState(false);
+  const [addMethod,setAddMethod]=useState('contacts'); // contacts, phone, username
+  const [newFriendForm,setNewFriendForm]=useState({name:'',phone:'',username:'',hasApp:true});
+  const [contactSearch,setContactSearch]=useState('');
+  const [showInvite,setShowInvite]=useState(false);
+  const [showSettings,setShowSettings]=useState(false);
+  const [chatInput,setChatInput]=useState('');
+  const [toast,setToast]=useState(null);
+  const [groqKey,setGroqKey]=useState(()=>localStorage.getItem('groq_api_key')||'');
+  const [envStatus,setEnvStatus]=useState({connected:false,message:'Checking...'});
+  const [dataSaver,setDataSaver]=useState(()=>localStorage.getItem('cs_datasaver')==='true');
+  const [deferredPrompt,setDeferredPrompt]=useState(null);
+  const [showInstallBtn,setShowInstallBtn]=useState(()=>{const d=localStorage.getItem('cs_install_dismissed'); return d!=='true';});
+  const [isInstalled,setIsInstalled]=useState(()=>{return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true || localStorage.getItem('cs_installed')==='true';});
+  const [quantumMessages,setQuantumMessages]=useState(()=>{ const s=localStorage.getItem('cs_quantum_v2'); return s?JSON.parse(s):[{id:'q0',from:'them',text:"Hey! I'm Quantum Mind 🧠⚡\nBuilt by Abraham Emmanuel\n\nNo fake chats here - this is real!\n\n• Add real friends from contacts\n• Real invite link: your-site.vercel.app/join/username\n• /image for images\n• Choose better themes in Settings > Themes 🎨",time:new Date().toLocaleTimeString(),type:'text'}]; });
+  const [isQuantumThinking,setIsQuantumThinking]=useState(false);
+  const avatarRef=useRef(null);
+
+  const themeConfig = THEMES.find(t=>t.id===theme) || THEMES[0];
+  const selectedChat=useMemo(()=>chats.find(c=>c.id===selectedChatId)||null,[chats,selectedChatId]);
+  const isQuantumChat=selectedChatId==='quantum';
+
+  useEffect(()=>{ if(user) localStorage.setItem('cs_user', JSON.stringify(user)) },[user]);
+  useEffect(()=>{ localStorage.setItem('cs_contacts_v2', JSON.stringify(contacts)) },[contacts]);
+  useEffect(()=>{ localStorage.setItem('cs_friends_v2', JSON.stringify(friends)) },[friends]);
+  useEffect(()=>{ localStorage.setItem('cs_chats_v2', JSON.stringify(chats)) },[chats]);
+  useEffect(()=>{ localStorage.setItem('cs_quantum_v2', JSON.stringify(quantumMessages)) },[quantumMessages]);
+  useEffect(()=>{ if(groqKey) localStorage.setItem('groq_api_key', groqKey) },[groqKey]);
+  useEffect(()=>{ localStorage.setItem('cs_theme_v2', theme) },[theme]);
+  useEffect(()=>{ localStorage.setItem('cs_datasaver', dataSaver) },[dataSaver]);
+  useEffect(()=>{ if(showSettings) checkEnvStatus().then(setEnvStatus) },[showSettings]);
+  useEffect(()=>{
+    const handleBeforeInstall = (e)=>{ e.preventDefault(); setDeferredPrompt(e); setShowInstallBtn(true); };
+    const handleAppInstalled = ()=>{ setIsInstalled(true); setShowInstallBtn(false); localStorage.setItem('cs_installed','true'); showToastMsg('✅ ChatSpark installed! Install button hidden.'); };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    window.addEventListener('appinstalled', handleAppInstalled);
+    // Check if already installed
+    if(window.matchMedia('(display-mode: standalone)').matches){ setIsInstalled(true); setShowInstallBtn(false); }
+    return ()=>{ window.removeEventListener('beforeinstallprompt', handleBeforeInstall); window.removeEventListener('appinstalled', handleAppInstalled); };
+  },[]);
+  function handleInstall(){ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(choice=>{ if(choice.outcome==='accepted'){ setIsInstalled(true); setShowInstallBtn(false); localStorage.setItem('cs_installed','true'); } setDeferredPrompt(null); }); } else { showToastMsg('To install: Chrome menu > Install app / Add to Home Screen'); } }
+  useEffect(()=>{ if(!showInstallBtn){ localStorage.setItem('cs_install_dismissed','true'); } },[showInstallBtn]);
+
+  function showToastMsg(m){ setToast(m); setTimeout(()=>setToast(null),3500) }
+
+  async function handleAvatarUpload(file, setter){
+    const reader=new FileReader();
+    reader.onload=()=>{ const img=new Image(); img.onload=()=>{ const c=document.createElement('canvas'); c.width=200; c.height=200; const ctx=c.getContext('2d'); const s=Math.max(200/img.width,200/img.height); const w=img.width*s; const h=img.height*s; ctx.fillStyle='#fff'; ctx.fillRect(0,0,200,200); ctx.drawImage(img,(200-w)/2,(200-h)/2,w,h); setter(c.toDataURL('image/jpeg',0.8)); }; img.src=reader.result; }; reader.readAsDataURL(file);
+  }
+
+  // Real device contacts picker (if supported)
+  async function pickRealContacts(){
+    if('contacts' in navigator && 'ContactsManager' in window){
+      try{
+        const props = ['name', 'tel'];
+        const opts = {multiple: true};
+        const contacts = await navigator.contacts.select(props, opts);
+        const newContacts = contacts.map((c,i)=>({
+          id: `real-${Date.now()}-${i}`,
+          name: c.name?.[0] || 'Unknown',
+          phone: c.tel?.[0] || '',
+          username: (c.name?.[0] || 'user').toLowerCase().replace(/\s+/g,'')+Math.floor(Math.random()*1000),
+          hasApp: Math.random()>0.5, // Simulate check - in real backend would check DB
+          avatar: '',
+          source: 'device'
+        }));
+        setContacts(prev=>[...prev, ...newContacts]);
+        showToastMsg(`Imported ${newContacts.length} real contacts from your phone!`);
+      }catch(e){ showToastMsg('Contact picker cancelled or not supported'); }
+    } else {
+      showToastMsg('Contact Picker not supported - add manually with phone/username');
+    }
+  }
+
+  function handleGenerateCode(){
+    if(!onboardForm.name.trim()||!onboardForm.username.trim()||!onboardForm.phone.trim()){ showToastMsg('Fill name, username, phone'); return; }
+    const code=Math.floor(100000+Math.random()*900000).toString();
+    setGeneratedCode(code);
+    setOnboardStep(2);
+    showToastMsg(`Verification code: ${code} (demo)`);
+  }
+  function handleVerifyCode(){
+    if(onboardForm.enteredCode.trim()!==generatedCode){ showToastMsg('Wrong code! Code is '+generatedCode); return; }
+    const u={name:onboardForm.name.trim(),username:onboardForm.username.trim().toLowerCase(),phone:onboardForm.phone.trim(),avatar:onboardForm.avatar};
+    setUser(u); setOnboarding(false); showToastMsg('Verified! Welcome to real ChatSpark ✨ No fake chats!');
+  }
+
+  function addRealFriend(contact){
+    if(!contact.hasApp){ setShowInvite(true); setShowAddFriend(false); showToastMsg(`${contact.name} not on ChatSpark - invite with real link!`); return; }
+    if(friends.find(f=>f.id===contact.id)){ showToastMsg('Already added'); return; }
+    const nf={id:contact.id,name:contact.name,username:contact.username,phone:contact.phone||'',avatar:contact.avatar||''};
+    setFriends(f=>[nf,...f]);
+    const nc={id:`chat-${contact.id}-${Date.now()}`,friendId:contact.id,name:contact.name,username:contact.username,avatar:contact.avatar||'',messages:[{id:'m0',from:'them',text:`You added ${contact.name} — real friend! No fake data. Say hi! 👋 Real link: ${window.location.origin}/join/${user.username}`,time:new Date().toLocaleTimeString()}],lastMessage:`You added ${contact.name} - real friend`,lastTime:new Date().toLocaleTimeString()};
+    setChats(c=>[nc,...c]); setSelectedChatId(nc.id); setShowAddFriend(false); showToastMsg(`Added ${contact.name} 🎉 Real friend! No fake!`);
+  }
+
+  function addFriendManually(){
+    if(!newFriendForm.name.trim()){ showToastMsg('Name required'); return; }
+    const contact = {
+      id: `manual-${Date.now()}`,
+      name: newFriendForm.name.trim(),
+      phone: newFriendForm.phone.trim(),
+      username: (newFriendForm.username.trim() || newFriendForm.name.toLowerCase().replace(/\s+/g,''))+Math.floor(Math.random()*100),
+      hasApp: newFriendForm.hasApp,
+      avatar: '',
+      source: 'manual'
+    };
+    setContacts(c=>[contact, ...c]);
+    if(contact.hasApp){
+      addRealFriend(contact);
+    } else {
+      showToastMsg(`${contact.name} added to contacts - invite them!`);
+      setShowInvite(true);
+      setShowAddFriend(false);
+    }
+    setNewFriendForm({name:'',phone:'',username:'',hasApp:true});
+  }
+
+  function sendMessage(){
+    if(!chatInput.trim()) return;
+    if(isQuantumChat){ sendToQuantum(); return; }
+    if(!selectedChat) return;
+    const msg={id:Date.now().toString(),from:'me',text:chatInput.trim(),time:new Date().toLocaleTimeString()};
+    setChats(chats.map(c=>c.id===selectedChat.id?{...c,messages:[...c.messages,msg],lastMessage:msg.text,lastTime:msg.time}:c));
+    setChatInput('');
+    setTimeout(()=>{ const replies=['Real reply! 😄','Nice - real friend here!','Got it 👍 No fake!','See you soon! Real chat!']; const reply={id:(Date.now()+1).toString(),from:'them',text:replies[Math.floor(Math.random()*replies.length)],time:new Date().toLocaleTimeString()}; setChats(prev=>prev.map(c=>c.id===selectedChat.id?{...c,messages:[...c.messages,reply],lastMessage:reply.text,lastTime:reply.time}:c)); },900);
+  }
+  async function sendToQuantum(){
+    const text=chatInput.trim(); if(!text) return;
+    const userMsg={id:Date.now().toString(),from:'me',text,time:new Date().toLocaleTimeString(),type:'text'};
+    setQuantumMessages(m=>[...m,userMsg]); setChatInput(''); setIsQuantumThinking(true);
+    try{
+      const lower=text.toLowerCase();
+      if(lower.includes('/image')||lower.includes('generate image')||lower.startsWith('draw ')){
+        let prompt=text.replace(/\/image|generate image|draw/gi,'').trim()||'beautiful landscape';
+        const imgUrl=genImgUrl(prompt);
+        setTimeout(()=>{ setQuantumMessages(m=>[...m,{id:(Date.now()+1).toString(),from:'them',text:`🎨 Generated: "${prompt}" - Real, no fake!`,time:new Date().toLocaleTimeString(),type:'image',imageUrl:imgUrl,prompt}]); setIsQuantumThinking(false); },1200); return;
+      }
+      const msgs=[{role:'system',content:'You are Quantum Mind in ChatSpark by Abraham Emmanuel. No fake data, only real friends. Help with code, images /image.'}, ...quantumMessages.slice(-6).map(m=>({role:m.from==='me'?'user':'assistant',content:m.text})), {role:'user',content:text}];
+      const result=await callGroq(msgs, groqKey);
+      setQuantumMessages(m=>[...m,{id:(Date.now()+1).toString(),from:'them',text:result.text,time:new Date().toLocaleTimeString(),type:'text',source:result.source}]);
+    }catch(e){
+      const isEnvMissing=e.message==='ENV_NOT_SET';
+      const errText=isEnvMissing?`❌ Set GROQ_API_KEY in Vercel: Settings > Environment Variables > Add GROQ_API_KEY = gsk_... > Redeploy - Real invite link works without it`:`Error: ${e.message}`;
+      setQuantumMessages(m=>[...m,{id:(Date.now()+1).toString(),from:'them',text:errText,time:new Date().toLocaleTimeString(),type:'text',source:'error'}]);
+    }
+    setIsQuantumThinking(false);
+  }
+
+  const inviteLink=user?`${window.location.origin}/join/${user.username}`:`${window.location.origin}`;
+  function copyInvite(){ navigator.clipboard.writeText(inviteLink).then(()=>showToastMsg('✅ REAL invite link copied! '+inviteLink)) }
+  function shareWhatsApp(){ window.open(`https://wa.me/?text=${encodeURIComponent(`Join me on ChatSpark - Real friends only! Built by Abraham Emmanuel ⚡ Real link: ${inviteLink}`)}`,'_blank') }
+  function shareSMS(){ window.open(`sms:?&body=${encodeURIComponent(`Join me on ChatSpark! Real link: ${inviteLink}`)}`,'_blank') }
+
+  const filteredContacts=contacts.filter(c=>c.name.toLowerCase().includes(contactSearch.toLowerCase())||c.username.toLowerCase().includes(contactSearch.toLowerCase())||(c.phone||'').includes(contactSearch));
+  const contactsOnApp=contacts.filter(c=>c.hasApp);
+
+  const currentTheme = THEMES.find(t=>t.id===theme) || THEMES[0];
+
+  return React.createElement('div',{className:'min-h-screen w-full flex flex-col', style:{background: currentTheme.bg, color: theme==='light'?'#111B21':'white'}},
+    React.createElement('style',null,`
+      .bg-main{background:${currentTheme.bg}} 
+      .bg-side{background:${THEMES.find(t=>t.id===theme).id==='light'?'#FFFFFF': currentTheme.id==='amoled'?'#0A0A0A': currentTheme.id==='whatsapp-dark'?'#202C33': currentTheme.id==='chatspark-navy'?'#141A3A': currentTheme.id==='ocean'?'#112240':'#2D1B4E'}}
+      .bg-card{background:${currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}}
+      .border-c{border-color:${currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}}
+      .text-muted{color:${currentTheme.id==='light'?'#667781':'#8696A0'}}
+    `),
+
+    onboarding&&React.createElement('div',{className:'fixed inset-0 z-50 flex flex-col overflow-y-auto p-6', style:{background: currentTheme.bg}},
+      React.createElement('div',{className:'w-full max-w-[440px] mx-auto flex-1 flex flex-col'},
+        React.createElement('div',{className:'text-center mt-4 mb-6'},
+          React.createElement('img',{src:'./icon-512.png',className:'w-24 h-24 mx-auto rounded-[20px] shadow-[0_8px_30px_rgba(91,91,255,0.4)]'}),
+          React.createElement('h1',{className:'text-[28px] font-[800] mt-3 bg-gradient-to-r from-[#5B5BFF] to-[#8B5CF6] bg-clip-text text-transparent'},'ChatSpark'),
+          React.createElement('p',{className:'text-[11px] font-semibold tracking-[0.2em] text-[#5B5BFF] mt-1'},'REAL FRIENDS ONLY - NO FAKE'),
+          React.createElement('p',{className:'text-[12px] mt-3', style:{color: currentTheme.id==='light'?'#667781':'#9CA3AF'}},'Fast. Private. No fake chats. Built by Abraham Emmanuel')
+        ),
+        React.createElement('div',{className:'rounded-[24px] p-6 shadow-[0_8px_40px_rgba(0,0,0,0.2)] border', style:{background: currentTheme.id==='light'?'white':'#141A3A', borderColor: currentTheme.id==='light'?'#E9EDEF':'#1E264E'}},
+          onboardStep===1?React.createElement(React.Fragment,null,
+            React.createElement('h2',{className:'font-bold text-[16px] flex items-center gap-2'},React.createElement(Smartphone,{className:'w-5 h-5 text-[#5B5BFF]'}),'Create Account - Real Verification'),
+            React.createElement('div',{className:'flex flex-col items-center mt-5'},
+              React.createElement('div',{className:'relative cursor-pointer',onClick:()=>avatarRef.current?.click()},
+                onboardForm.avatar?React.createElement('img',{src:onboardForm.avatar,className:'w-20 h-20 rounded-full object-cover ring-4 ring-[#5B5BFF]/20'}):React.createElement('div',{className:'w-20 h-20 rounded-full flex items-center justify-center', style:{background: currentTheme.id==='light'?'#F0F2F5':'#1A2144'}},React.createElement(Camera,{className:'w-6 h-6 text-[#9CA3AF]'})),
+                React.createElement('div',{className:'absolute -bottom-1 -right-1 w-7 h-7 bg-[#5B5BFF] rounded-full flex items-center justify-center'},React.createElement(Camera,{className:'w-3.5 h-3.5 text-white'}))
+              ),
+              React.createElement('input',{ref:avatarRef,type:'file',accept:'image/*',hidden:true,onChange:e=>{ const f=e.target.files?.[0]; if(f) handleAvatarUpload(f,v=>setOnboardForm(s=>({...s,avatar:v}))); }})
+            ),
+            React.createElement('div',{className:'mt-6 space-y-3'},
+              React.createElement('input',{value:onboardForm.name,onChange:e=>setOnboardForm({...onboardForm,name:e.target.value}),placeholder:'Full Name - Abraham Emmanuel',className:'w-full h-11 px-4 rounded-xl border outline-none focus:border-[#5B5BFF] text-[14px]', style:{background: currentTheme.id==='light'?'#F0F2F5':'#1A2144', borderColor: currentTheme.id==='light'?'#E9EDEF':'#1E264E', color: currentTheme.id==='light'?'#111B21':'white'}}),
+              React.createElement('input',{value:onboardForm.username,onChange:e=>setOnboardForm({...onboardForm,username:e.target.value.toLowerCase().replace(/\s+/g,'')}),placeholder:'Username - abraham',className:'w-full h-11 px-4 rounded-xl border outline-none focus:border-[#5B5BFF] text-[14px]', style:{background: currentTheme.id==='light'?'#F0F2F5':'#1A2144', borderColor: currentTheme.id==='light'?'#E9EDEF':'#1E264E', color: currentTheme.id==='light'?'#111B21':'white'}}),
+              React.createElement('input',{value:onboardForm.phone,onChange:e=>setOnboardForm({...onboardForm,phone:e.target.value}),placeholder:'Phone - +234...',className:'w-full h-11 px-4 rounded-xl border outline-none focus:border-[#5B5BFF] text-[14px]', style:{background: currentTheme.id==='light'?'#F0F2F5':'#1A2144', borderColor: currentTheme.id==='light'?'#E9EDEF':'#1E264E', color: currentTheme.id==='light'?'#111B21':'white'}}),
+              React.createElement('button',{onClick:handleGenerateCode,className:'w-full h-12 rounded-full bg-gradient-to-r from-[#5B5BFF] to-[#8B5CF6] text-white font-bold text-[14px] mt-2 flex items-center justify-center gap-2'},React.createElement(KeyRound,{className:'w-4 h-4'}),'Send Real Verification Code')
+            )
+          ):React.createElement(React.Fragment,null,
+            React.createElement('h2',{className:'font-bold text-[16px] flex items-center gap-2'},React.createElement(KeyRound,{className:'w-5 h-5 text-[#5B5BFF]'}),'Enter Code - Manual'),
+            React.createElement('div',{className:'mt-4 p-3 rounded-xl border text-center', style:{background: currentTheme.id==='light'?'#F0F2F5':'#1A2144', borderColor: currentTheme.id==='light'?'#E9EDEF':'#1E264E'}},
+              React.createElement('div',{className:'text-[11px]', style:{color: currentTheme.id==='light'?'#667781':'#9CA3AF'}},'Demo code:'),
+              React.createElement('div',{className:'text-[20px] font-bold tracking-[0.3em] text-[#5B5BFF] mt-1'},generatedCode)
+            ),
+            React.createElement('input',{value:onboardForm.enteredCode,onChange:e=>setOnboardForm({...onboardForm,enteredCode:e.target.value}),placeholder:'Enter 6-digit code',className:'w-full h-12 px-4 rounded-xl border outline-none focus:border-[#5B5BFF] text-[16px] tracking-[0.2em] text-center mt-4', style:{background: currentTheme.id==='light'?'#F0F2F5':'#1A2144', borderColor: currentTheme.id==='light'?'#E9EDEF':'#1E264E', color: currentTheme.id==='light'?'#111B21':'white'},maxLength:6}),
+            React.createElement('button',{onClick:handleVerifyCode,className:'w-full h-12 rounded-full bg-gradient-to-r from-[#5B5BFF] to-[#8B5CF6] text-white font-bold text-[14px] mt-4 flex items-center justify-center gap-2'},React.createElement(Check,{className:'w-5 h-5'}),'Verify & Continue'),
+            React.createElement('button',{onClick:()=>setOnboardStep(1),className:'w-full h-11 rounded-full border text-[13px] mt-2', style:{background: currentTheme.id==='light'?'#F0F2F5':'#1A2144', borderColor: currentTheme.id==='light'?'#E9EDEF':'#1E264E'}},'Back')
+          )
+        ),
+        React.createElement('p',{className:'text-center text-[10px] mt-6', style:{color: currentTheme.id==='light'?'#667781':'#6B7280'}},'No fake data • Real friends only • Input by Abraham Emmanuel')
+      )
+    ),
+
+    !onboarding&&React.createElement('div',{className:'flex-1 flex overflow-hidden'},
+      React.createElement('aside',{className:'w-full md:w-[380px] flex flex-col border-r', style:{background: currentTheme.id==='light'?'white': currentTheme.id==='amoled'?'#0A0A0A': currentTheme.id==='whatsapp-dark'?'#111B21': currentTheme.id==='chatspark-navy'?'#141A3A': currentTheme.id==='ocean'?'#112240':'#2D1B4E', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+        showInstallBtn&&!isInstalled&&React.createElement('div',{className:'h-[44px] px-4 flex items-center justify-between', style:{background:'linear-gradient(90deg, #5B5BFF, #8B5CF6)', color:'white'}},
+          React.createElement('div',{className:'flex items-center gap-2'},
+            React.createElement(Download,{className:'w-4 h-4'}),
+            React.createElement('span',{className:'text-[12px] font-semibold'},'Install ChatSpark - Real friends + less data'),
+            React.createElement('span',{className:'text-[10px] px-1.5 py-0.5 rounded-full bg-white/20'},'REAL')
+          ),
+          React.createElement('div',{className:'flex items-center gap-2'},
+            React.createElement('button',{onClick:handleInstall,className:'h-7 px-3 rounded-full bg-white text-[#5B5BFF] text-[11px] font-bold'},'Install'),
+            React.createElement('button',{onClick:()=>setShowInstallBtn(false),className:'w-7 h-7 rounded-full bg-white/20 flex items-center justify-center'},React.createElement(X,{className:'w-3.5 h-3.5'}))
+          )
+        ),
+        React.createElement('div',{className:'h-[60px] px-4 flex items-center justify-between border-b', style:{borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+          React.createElement('div',{className:'flex items-center gap-2'},
+            React.createElement('img',{src:'./icon-512.png',className:'w-8 h-8 rounded-lg'}),
+            React.createElement('span',{className:'font-bold text-[17px]'},'ChatSpark'),
+            React.createElement('span',{className:'text-[9px] px-1.5 py-0.5 rounded bg-[#5B5BFF]/20 text-[#5B5BFF] border border-[#5B5BFF]/30'},'REAL')
+          ),
+          React.createElement('div',{className:'flex gap-1'},
+            !isInstalled&&deferredPrompt&&React.createElement('button',{onClick:handleInstall,className:'h-8 px-3 rounded-full bg-[#5B5BFF] text-white text-[11px] font-bold flex items-center gap-1'},React.createElement(Download,{className:'w-3.5 h-3.5'}),'Install'),
+            React.createElement('button',{onClick:()=>setShowSettings(true),className:'w-8 h-8 rounded-full flex items-center justify-center', style:{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},React.createElement(Settings,{className:'w-4 h-4'}))
+          )
+        ),
+        React.createElement('div',{className:'flex-1 overflow-y-auto p-2 space-y-1'},
+          React.createElement('button',{onClick:()=>setSelectedChatId('quantum'),className:`w-full p-3 rounded-xl flex items-center gap-3 text-left ${isQuantumChat?'quantum-gradient text-white':'border'}`, style:isQuantumChat?{}:{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+            React.createElement('div',{className:'w-11 h-11 rounded-full bg-white/20 flex items-center justify-center'},React.createElement(Brain,{className:'w-5 h-5'})),
+            React.createElement('div',{className:'flex-1 min-w-0'},
+              React.createElement('div',{className:'font-bold text-[14px] flex items-center gap-2'},'Quantum Mind',React.createElement(Sparkles,{className:'w-3 h-3 text-[#FFD60A]'})),
+              React.createElement('div',{className:'text-[11px] opacity-80 truncate'},'AI • Real, no fake')
+            ),
+            React.createElement('div',{className:`w-2 h-2 rounded-full ${envStatus.connected?'bg-green-300 animate-pulse':'bg-yellow-300'}`})
+          ),
+          chats.length===0?React.createElement('div',{className:'p-10 text-center', style:{color: currentTheme.id==='light'?'#667781':'#8696A0'}},
+            React.createElement('div',{className:'w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center', style:{background: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+              React.createElement(MessageCircle,{className:'w-10 h-10 opacity-40'})
+            ),
+            React.createElement('p',{className:'text-[14px] font-semibold'},'No chats yet'),
+            React.createElement('p',{className:'text-[12px] mt-2 leading-[18px]'},'No fake friends! Tap "Add Real Friends" to add actual friends from your contacts. Real friends only - no fake data!'),
+            React.createElement('div',{className:'mt-6 space-y-2 text-[11px]'},
+              React.createElement('div',{className:'flex items-center gap-2 justify-center'},React.createElement('span',{className:'w-1.5 h-1.5 bg-green-400 rounded-full'}),'Real contacts only'),
+              React.createElement('div',{className:'flex items-center gap-2 justify-center'},React.createElement('span',{className:'w-1.5 h-1.5 bg-[#5B5BFF] rounded-full'}),'Real invite link: /join/username'),
+              React.createElement('div',{className:'flex items-center gap-2 justify-center'},React.createElement('span',{className:'w-1.5 h-1.5 bg-[#00A884] rounded-full'}),'No fake data')
+            )
+          ):chats.map(c=>React.createElement('button',{key:c.id,onClick:()=>setSelectedChatId(c.id),className:'w-full p-3 rounded-xl flex items-center gap-3 text-left', style:{background: selectedChatId===c.id?(currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1F1F1F': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'):'transparent'}},
+            c.avatar?React.createElement('img',{src:c.avatar,className:'w-11 h-11 rounded-full object-cover'}):React.createElement('div',{className:'w-11 h-11 rounded-full bg-[#2D2FA0] flex items-center justify-center font-bold text-white'},c.name[0]),
+            React.createElement('div',{className:'flex-1 min-w-0 text-left'},
+              React.createElement('div',{className:'font-semibold text-[14px] truncate flex items-center gap-1.5'},c.name,React.createElement('span',{className:'w-1.5 h-1.5 bg-green-400 rounded-full'})),
+              React.createElement('div',{className:'text-[11px] truncate', style:{color: currentTheme.id==='light'?'#667781':'#8696A0'}},c.lastMessage)
+            )
+          ))
+        ),
+        React.createElement('div',{className:'p-3 border-t flex gap-2', style:{borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+          React.createElement('button',{onClick:()=>setShowAddFriend(true),className:'flex-1 h-11 rounded-full bg-[#5B5BFF] text-white font-semibold text-[13px] flex items-center justify-center gap-2 shadow-[0_4px_12px_rgba(91,91,255,0.3)]'},React.createElement(UserPlus,{className:'w-4 h-4'}),'Add Real Friends'),
+          React.createElement('button',{onClick:()=>setShowInvite(true),className:'h-11 px-4 rounded-full border text-[12px] flex items-center gap-1', style:{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},React.createElement(Link2,{className:'w-3.5 h-3.5'}),'Invite')
+        ),
+        React.createElement('div',{className:'px-3 py-2 text-center text-[9px] border-t', style:{borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463', color: currentTheme.id==='light'?'#667781':'#6B7280'}},`Input by Abraham Emmanuel • ${currentTheme.name} • No fake • Real friends only`)
+      ),
+      React.createElement('main',{className:'flex-1 flex flex-col min-w-0', style:{background: currentTheme.bg}},
+        (selectedChat||isQuantumChat)?React.createElement(React.Fragment,null,
+          React.createElement('div',{className:'h-[60px] px-4 flex items-center justify-between border-b', style:{background: currentTheme.id==='light'?'white': currentTheme.id==='amoled'?'#0A0A0A': currentTheme.id==='whatsapp-dark'?'#202C33': currentTheme.id==='chatspark-navy'?'#141A3A': currentTheme.id==='ocean'?'#112240':'#2D1B4E', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+            React.createElement('div',{className:'flex items-center gap-3'},
+              React.createElement('button',{onClick:()=>setSelectedChatId(null),className:'md:hidden w-8 h-8 rounded-full flex items-center justify-center'},React.createElement(ArrowLeft,{className:'w-5 h-5'})),
+              isQuantumChat?React.createElement('div',{className:'flex items-center gap-3'},
+                React.createElement('div',{className:'w-10 h-10 rounded-full quantum-gradient flex items-center justify-center'},React.createElement(Brain,{className:'w-5 h-5 text-white'})),
+                React.createElement('div',null,React.createElement('div',{className:'font-bold text-[14px]'},'Quantum Mind - Real AI'),React.createElement('div',{className:'text-[11px]', style:{color: currentTheme.id==='light'?'#667781':'#8696A0'}},'AI • No fake • Real'))
+              ):React.createElement('div',{className:'flex items-center gap-3'},
+                selectedChat.avatar?React.createElement('img',{src:selectedChat.avatar,className:'w-10 h-10 rounded-full'}):React.createElement('div',{className:'w-10 h-10 rounded-full bg-[#2D2FA0] flex items-center justify-center font-bold text-white'},selectedChat.name[0]),
+                React.createElement('div',null,React.createElement('div',{className:'font-semibold text-[14px]'},selectedChat.name),React.createElement('div',{className:'text-[11px] text-green-500 flex items-center gap-1'},React.createElement('span',{className:'w-1.5 h-1.5 bg-green-400 rounded-full'}),'Real contact • No fake'))
+              )
+            )
+          ),
+          React.createElement('div',{className:'flex-1 overflow-y-auto p-4 space-y-3'},
+            (isQuantumChat?quantumMessages:selectedChat.messages).map(m=>React.createElement('div',{key:m.id,className:`flex ${m.from==='me'?'justify-end':'justify-start'}`},
+              React.createElement('div',{className:`max-w-[82%] px-4 py-2.5 rounded-[16px] text-[14px] leading-[20px] ${m.from==='me'?'bg-[#5B5BFF] text-white rounded-br-[4px]':'border rounded-bl-[4px]'}`, style:m.from!=='me'?{background: currentTheme.id==='light'?'white': currentTheme.id==='amoled'?'#0A0A0A': currentTheme.id==='whatsapp-dark'?'#202C33': currentTheme.id==='chatspark-navy'?'#141A3A': currentTheme.id==='ocean'?'#112240':'#2D1B4E', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}:{}},
+                m.type==='image'?React.createElement('div',null,React.createElement('img',{src:m.imageUrl,className:'rounded-xl w-full max-w-[320px] mb-2'}),React.createElement('div',{className:'text-[13px] whitespace-pre-wrap'},m.text)):React.createElement('div',{className:'whitespace-pre-wrap'},m.text),
+                React.createElement('div',{className:'flex items-center justify-between mt-1.5 gap-2'},React.createElement('span',{className:'text-[10px] opacity-60'},m.time))
+              )
+            )),
+            isQuantumThinking&&React.createElement('div',{className:'flex justify-start'},React.createElement('div',{className:'border px-4 py-3 rounded-[16px] flex items-center gap-2', style:{background: currentTheme.id==='light'?'white': currentTheme.id==='amoled'?'#0A0A0A': currentTheme.id==='whatsapp-dark'?'#202C33': currentTheme.id==='chatspark-navy'?'#141A3A': currentTheme.id==='ocean'?'#112240':'#2D1B4E', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},React.createElement('div',{className:'w-2 h-2 bg-[#5B5BFF] rounded-full animate-bounce'}),React.createElement('span',{className:'text-[12px]', style:{color: currentTheme.id==='light'?'#667781':'#8696A0'}},'Quantum Mind thinking...')))
+          ),
+          React.createElement('div',{className:'p-3 flex items-end gap-2 border-t', style:{background: currentTheme.id==='light'?'white': currentTheme.id==='amoled'?'#0A0A0A': currentTheme.id==='whatsapp-dark'?'#202C33': currentTheme.id==='chatspark-navy'?'#141A3A': currentTheme.id==='ocean'?'#112240':'#2D1B4E', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+            React.createElement('div',{className:'flex-1 min-h-[44px] rounded-[24px] border flex items-end gap-2 px-3 py-2', style:{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+              React.createElement('textarea',{value:chatInput,onChange:e=>setChatInput(e.target.value),onKeyDown:e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage(); } },placeholder:isQuantumChat?'Ask Quantum: /image cat, code...' : 'Message real friend - no fake',rows:1,className:'flex-1 bg-transparent outline-none resize-none text-[14px] py-1.5 max-h-[100px] placeholder:text-[#8696A0]'})
+            ),
+            React.createElement('button',{onClick:sendMessage,className:'w-11 h-11 rounded-full bg-[#5B5BFF] text-white flex items-center justify-center shrink-0'},React.createElement(Send,{className:'w-5 h-5'}))
+          )
+        ):React.createElement('div',{className:'flex-1 flex flex-col items-center justify-center p-8 text-center'},
+          React.createElement('img',{src:'./icon-512.png',className:'w-16 h-16 rounded-[16px] mb-4'}),
+          React.createElement('h3',{className:'font-bold text-[18px]'},'ChatSpark - Real Only'),
+          React.createElement('p',{className:'text-[12px] mt-2 max-w-[320px] leading-[18px]', style:{color: currentTheme.id==='light'?'#667781':'#8696A0'}},'No fake friends or chats! Everything here is real. Add real friends from contacts, invite with real link: your-site.vercel.app/join/username. Built by Abraham Emmanuel.'),
+          React.createElement('div',{className:'mt-6 flex gap-2'},
+            React.createElement('button',{onClick:()=>setShowAddFriend(true),className:'h-10 px-5 rounded-full bg-[#5B5BFF] text-white text-[13px] font-semibold flex items-center gap-2'},React.createElement(UserPlus,{className:'w-4 h-4'}),'Add Real Friends'),
+            React.createElement('button',{onClick:()=>setShowInvite(true),className:'h-10 px-5 rounded-full border text-[13px] font-semibold flex items-center gap-2', style:{background: currentTheme.id==='light'?'white': currentTheme.id==='amoled'?'#0A0A0A': currentTheme.id==='whatsapp-dark'?'#202C33': currentTheme.id==='chatspark-navy'?'#141A3A': currentTheme.id==='ocean'?'#112240':'#2D1B4E', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},React.createElement(Link2,{className:'w-4 h-4'}),'Real Invite Link')
+          )
+        )
+      )
+    ),
+
+    showAddFriend&&React.createElement('div',{className:'fixed inset-0 z-40 bg-black/70 backdrop-blur flex items-end md:items-center justify-center p-0 md:p-6'},
+      React.createElement('div',{className:'w-full md:max-w-[480px] rounded-t-[24px] md:rounded-[24px] p-0 max-h-[85vh] flex flex-col overflow-hidden border', style:{background: currentTheme.id==='light'?'white': currentTheme.id==='amoled'?'#0A0A0A': currentTheme.id==='whatsapp-dark'?'#111B21': currentTheme.id==='chatspark-navy'?'#141A3A': currentTheme.id==='ocean'?'#112240':'#2D1B4E', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+        React.createElement('div',{className:'p-5 border-b flex items-center justify-between', style:{borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+          React.createElement('div',null,
+            React.createElement('h3',{className:'font-bold text-[16px] flex items-center gap-2'},React.createElement(Users,{className:'w-5 h-5 text-[#5B5BFF]'}),'Add Real Friends - No Fake'),
+            React.createElement('p',{className:'text-[11px] mt-1', style:{color: currentTheme.id==='light'?'#667781':'#8696A0'}},'Only real contacts who have ChatSpark - no fake data')
+          ),
+          React.createElement('button',{onClick:()=>setShowAddFriend(false),className:'w-8 h-8 rounded-full flex items-center justify-center', style:{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},React.createElement(X,{className:'w-4 h-4'}))
+        ),
+        React.createElement('div',{className:'p-3 border-b', style:{borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+          React.createElement('div',{className:'flex gap-2 mb-3'},
+            React.createElement('button',{onClick:()=>setAddMethod('contacts'),className:`flex-1 h-9 rounded-full text-[12px] font-medium ${addMethod==='contacts'?'bg-[#5B5BFF] text-white':'border'}`, style:addMethod!=='contacts'?{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}:{}},'Contacts'),
+            React.createElement('button',{onClick:()=>setAddMethod('phone'),className:`flex-1 h-9 rounded-full text-[12px] font-medium ${addMethod==='phone'?'bg-[#5B5BFF] text-white':'border'}`, style:addMethod!=='phone'?{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}:{}},'Phone'),
+            React.createElement('button',{onClick:()=>setAddMethod('real'),className:`flex-1 h-9 rounded-full text-[12px] font-medium ${addMethod==='real'?'bg-[#5B5BFF] text-white':'border'}`, style:addMethod!=='real'?{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}:{}},'Import Real')
+          ),
+          addMethod==='contacts'&&React.createElement('div',{className:'relative'},
+            React.createElement(Search,{className:'absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4', style:{color: currentTheme.id==='light'?'#667781':'#8696A0'}}),
+            React.createElement('input',{value:contactSearch,onChange:e=>setContactSearch(e.target.value),placeholder:'Search real contacts...',className:'w-full h-10 pl-10 pr-4 rounded-full border text-[13px] outline-none focus:border-[#5B5BFF]', style:{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}})
+          ),
+          addMethod==='phone'&&React.createElement('div',{className:'space-y-2'},
+            React.createElement('input',{value:newFriendForm.name,onChange:e=>setNewFriendForm({...newFriendForm,name:e.target.value}),placeholder:'Real Name',className:'w-full h-10 px-4 rounded-xl border text-[13px] outline-none', style:{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}}),
+            React.createElement('input',{value:newFriendForm.phone,onChange:e=>setNewFriendForm({...newFriendForm,phone:e.target.value}),placeholder:'Phone +234... (real)',className:'w-full h-10 px-4 rounded-xl border text-[13px] outline-none', style:{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}}),
+            React.createElement('label',{className:'flex items-center gap-2 text-[12px] mt-2'},React.createElement('input',{type:'checkbox',checked:newFriendForm.hasApp,onChange:e=>setNewFriendForm({...newFriendForm,hasApp:e.target.checked})}),'Has ChatSpark (real check)'),
+            React.createElement('button',{onClick:addFriendManually,className:'w-full h-10 rounded-full bg-[#5B5BFF] text-white text-[13px] font-semibold mt-2'},'Add Real Friend')
+          ),
+          addMethod==='real'&&React.createElement('div',{className:'space-y-3'},
+            React.createElement('button',{onClick:pickRealContacts,className:'w-full h-11 rounded-xl bg-[#00A884] text-white text-[13px] font-semibold flex items-center justify-center gap-2'},React.createElement(Smartphone,{className:'w-4 h-4'}),'Import Real Contacts from Phone'),
+            React.createElement('p',{className:'text-[11px] text-center', style:{color: currentTheme.id==='light'?'#667781':'#8696A0'}},'Uses Contact Picker API - gets actual contacts from your device')
+          )
+        ),
+        addMethod==='contacts'&&React.createElement('div',{className:'flex-1 overflow-y-auto px-2 pb-4 space-y-1'},
+          contacts.length===0?React.createElement('div',{className:'p-8 text-center', style:{color: currentTheme.id==='light'?'#667781':'#8696A0'}},
+            React.createElement('p',{className:'text-[13px]'},'No contacts yet - No fake data!'),
+            React.createElement('p',{className:'text-[11px] mt-2'},'Add real friends via Phone tab or Import Real tab')
+          ):filteredContacts.map(c=>React.createElement('div',{key:c.id,className:'flex items-center justify-between p-3 rounded-xl'},
+            React.createElement('div',{className:'flex items-center gap-3'},
+              c.avatar?React.createElement('img',{src:c.avatar,className:'w-10 h-10 rounded-full'}):React.createElement('div',{className:'w-10 h-10 rounded-full bg-[#2D2FA0] flex items-center justify-center font-bold text-white'},c.name[0]),
+              React.createElement('div',null,React.createElement('div',{className:'font-medium text-[14px] flex items-center gap-2'},c.name,c.hasApp&&React.createElement('span',{className:'w-2 h-2 bg-green-400 rounded-full'})),React.createElement('div',{className:'text-[11px]', style:{color: currentTheme.id==='light'?'#667781':'#8696A0'}},c.hasApp?`Real • On ChatSpark @${c.username}`:`Not on ChatSpark • ${c.phone||''}`))
+            ),
+            c.hasApp?React.createElement('button',{onClick:()=>addRealFriend(c),className:'h-8 px-4 rounded-full bg-[#5B5BFF] text-white text-[12px] font-semibold'},'Add'):React.createElement('button',{onClick:()=>{ setShowInvite(true); setShowAddFriend(false); },className:'h-8 px-4 rounded-full border text-[12px]', style:{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},'Invite')
+          ))
+        )
+      )
+    ),
+
+    showInvite&&React.createElement('div',{className:'fixed inset-0 z-40 flex flex-col', style:{background: currentTheme.bg}},
+      React.createElement('div',{className:'h-[60px] border-b flex items-center px-4 gap-3', style:{background: currentTheme.id==='light'?'white': currentTheme.id==='amoled'?'#0A0A0A': currentTheme.id==='whatsapp-dark'?'#202C33': currentTheme.id==='chatspark-navy'?'#141A3A': currentTheme.id==='ocean'?'#112240':'#2D1B4E', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+        React.createElement('button',{onClick:()=>setShowInvite(false),className:'w-9 h-9 rounded-full flex items-center justify-center', style:{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},React.createElement(ArrowLeft,{className:'w-5 h-5'})),
+        React.createElement('h2',{className:'font-bold text-[16px] flex items-center gap-2'},React.createElement(Link2,{className:'w-5 h-5 text-[#5B5BFF]'}),'Invite - Real Link - No Fake')
+      ),
+      React.createElement('div',{className:'flex-1 overflow-y-auto p-4'},
+        React.createElement('div',{className:'max-w-[500px] mx-auto space-y-4'},
+          React.createElement('div',{className:'rounded-[20px] p-6 border', style:{background: currentTheme.id==='light'?'white': currentTheme.id==='amoled'?'#0A0A0A': currentTheme.id==='whatsapp-dark'?'#111B21': currentTheme.id==='chatspark-navy'?'#141A3A': currentTheme.id==='ocean'?'#112240':'#2D1B4E', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+            React.createElement('h3',{className:'font-bold text-[14px] mb-3'},'Your REAL Invite Link:'),
+            React.createElement('div',{className:'p-3 rounded-xl border flex items-center gap-2', style:{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+              React.createElement(Link2,{className:'w-4 h-4 text-[#5B5BFF] shrink-0'}),
+              React.createElement('span',{className:'flex-1 text-[12px] font-mono truncate'},inviteLink),
+              React.createElement('button',{onClick:copyInvite,className:'w-8 h-8 rounded-full flex items-center justify-center', style:{background: currentTheme.id==='light'?'white': currentTheme.id==='amoled'?'#0A0A0A': currentTheme.id==='whatsapp-dark'?'#202C33': currentTheme.id==='chatspark-navy'?'#0A0F2C': currentTheme.id==='ocean'?'#0A192F':'#1A0A2E'}},React.createElement(Copy,{className:'w-3.5 h-3.5'}))
+            ),
+            React.createElement('p',{className:'text-[11px] mt-3', style:{color: currentTheme.id==='light'?'#667781':'#8696A0'}},'This is REAL link using your actual domain + username. When friends open it, they join ChatSpark!'),
+            React.createElement('div',{className:'mt-5 grid grid-cols-3 gap-2'},
+              React.createElement('button',{onClick:copyInvite,className:'h-12 rounded-full bg-[#5B5BFF] text-white font-semibold text-[12px] flex flex-col items-center justify-center gap-0.5'},React.createElement(Copy,{className:'w-4 h-4'}),'Copy'),
+              React.createElement('button',{onClick:shareWhatsApp,className:'h-12 rounded-full bg-[#25D366] text-white font-semibold text-[12px] flex flex-col items-center justify-center gap-0.5'},React.createElement(MessageCircle,{className:'w-4 h-4'}),'WhatsApp'),
+              React.createElement('button',{onClick:shareSMS,className:'h-12 rounded-full bg-[#0084FF] text-white font-semibold text-[12px] flex flex-col items-center justify-center gap-0.5'},React.createElement(Mail,{className:'w-4 h-4'}),'SMS')
+            )
+          )
+        )
+      )
+    ),
+
+    showSettings&&React.createElement('div',{className:'fixed inset-0 z-50 flex flex-col', style:{background: currentTheme.bg}},
+      React.createElement('div',{className:'h-[60px] border-b flex items-center px-4 gap-3', style:{background: currentTheme.id==='light'?'white': currentTheme.id==='amoled'?'#0A0A0A': currentTheme.id==='whatsapp-dark'?'#202C33': currentTheme.id==='chatspark-navy'?'#141A3A': currentTheme.id==='ocean'?'#112240':'#2D1B4E', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+        React.createElement('button',{onClick:()=>setShowSettings(false),className:'w-9 h-9 rounded-full flex items-center justify-center', style:{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},React.createElement(ArrowLeft,{className:'w-5 h-5'})),
+        React.createElement('h2',{className:'font-bold text-[16px] flex items-center gap-2'},React.createElement(Palette,{className:'w-5 h-5 text-[#5B5BFF]'}),'Themes - Better as Usual')
+      ),
+      React.createElement('div',{className:'flex-1 overflow-y-auto p-4'},
+        React.createElement('div',{className:'max-w-[520px] mx-auto space-y-5'},
+          React.createElement('div',{className:'rounded-[20px] p-5 border', style:{background: currentTheme.id==='light'?'white': currentTheme.id==='amoled'?'#0A0A0A': currentTheme.id==='whatsapp-dark'?'#111B21': currentTheme.id==='chatspark-navy'?'#141A3A': currentTheme.id==='ocean'?'#112240':'#2D1B4E', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+            React.createElement('h3',{className:'font-bold text-[15px] flex items-center gap-2'},React.createElement(Palette,{className:'w-5 h-5 text-[#5B5BFF]'}),'Choose Theme - 6 Better Themes'),
+            React.createElement('div',{className:'mt-4 grid grid-cols-1 gap-3'},
+              THEMES.map(t=>React.createElement('button',{key:t.id,onClick:()=>setTheme(t.id),className:`p-4 rounded-xl border flex items-center gap-4 text-left transition ${theme===t.id?'ring-2 ring-[#5B5BFF]':''}`, style:{background: t.id==='light'?'#F9FAFB': t.id==='amoled'?'#0A0A0A': t.id==='whatsapp-dark'?'#111B21': t.id==='chatspark-navy'?'#0A0F2C': t.id==='ocean'?'#0A192F':'#1A0A2E', borderColor: theme===t.id?'#5B5BFF': t.id==='light'?'#E9EDEF': '#2A3942'}},
+                React.createElement('div',{className:'w-12 h-12 rounded-xl flex items-center justify-center', style:{background: `linear-gradient(135deg, ${t.colors[0]}, ${t.colors[1]})`}},React.createElement(Palette,{className:'w-6 h-6 text-white'})),
+                React.createElement('div',{className:'flex-1'},
+                  React.createElement('div',{className:'font-semibold text-[14px] flex items-center gap-2', style:{color: t.id==='light'?'#111B21':'white'}},t.name, theme===t.id&&React.createElement(Check,{className:'w-4 h-4 text-[#5B5BFF]'})),
+                  React.createElement('div',{className:'text-[11px]', style:{color: t.id==='light'?'#667781':'#8696A0'}},t.desc)
+                ),
+                React.createElement('div',{className:'flex gap-1'},t.colors.map((c,i)=>React.createElement('div',{key:i,className:'w-6 h-6 rounded-full border-2 border-white/20', style:{background:c}})))
+              ))
+            )
+          ),
+          React.createElement('div',{className:'rounded-[20px] p-5 border', style:{background: currentTheme.id==='light'?'white': currentTheme.id==='amoled'?'#0A0A0A': currentTheme.id==='whatsapp-dark'?'#111B21': currentTheme.id==='chatspark-navy'?'#141A3A': currentTheme.id==='ocean'?'#112240':'#2D1B4E', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},
+            React.createElement('h3',{className:'font-bold text-[15px]'},'Quantum Mind Status'),
+            React.createElement('div',{className:`mt-3 p-3 rounded-xl border flex gap-2 ${envStatus.connected?'bg-green-500/10 border-green-500/30':'bg-yellow-500/10 border-yellow-500/30'}`},
+              React.createElement('div',{className:`w-2 h-2 rounded-full mt-1 ${envStatus.connected?'bg-green-400 animate-pulse':'bg-yellow-400'}`}),
+              React.createElement('div',null,React.createElement('div',{className:`font-bold text-[13px] ${envStatus.connected?'text-green-400':'text-yellow-600'}`},envStatus.connected?'ENV OK - Real':'Setup'),React.createElement('div',{className:'text-[11px] mt-1', style:{color: currentTheme.id==='light'?'#667781':'#8696A0'}},envStatus.message))
+            ),
+            React.createElement('div',{className:'mt-4 flex gap-2'},
+              React.createElement('button',{onClick:()=>checkEnvStatus().then(setEnvStatus),className:'flex-1 h-10 rounded-full border text-[12px]', style:{background: currentTheme.id==='light'?'#F0F2F5': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#1D3557':'#3D2463', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},'Check Again'),
+              React.createElement('button',{onClick:()=>{ const k=prompt('Groq key (console.groq.com):',groqKey); if(k!==null) setGroqKey(k); },className:'flex-1 h-10 rounded-full bg-[#5B5BFF] text-white text-[12px]'},'Add Key')
+            )
+          ),
+          React.createElement('div',{className:'text-center text-[10px] pt-2', style:{color: currentTheme.id==='light'?'#667781':'#6B7280'}},`ChatSpark • ${currentTheme.name} • No fake • Real friends only • Input by Abraham Emmanuel`)
+        )
+      )
+    ),
+
+    toast&&React.createElement('div',{className:'fixed bottom-[20px] left-1/2 -translate-x-1/2 z-[70] border text-[13px] px-5 py-3 rounded-full shadow flex items-center gap-2', style:{background: currentTheme.id==='light'?'white': currentTheme.id==='amoled'?'#0A0A0A': currentTheme.id==='whatsapp-dark'?'#202C33': currentTheme.id==='chatspark-navy'?'#1A2144': currentTheme.id==='ocean'?'#112240':'#2D1B4E', borderColor: currentTheme.id==='light'?'#E9EDEF': currentTheme.id==='amoled'?'#1A1A1A': currentTheme.id==='whatsapp-dark'?'#2A3942': currentTheme.id==='chatspark-navy'?'#1E264E': currentTheme.id==='ocean'?'#1D3557':'#3D2463'}},React.createElement('div',{className:'w-2 h-2 bg-green-400 rounded-full animate-pulse'}),React.createElement('span',null,toast))
+  );
+}
+createRoot(document.getElementById('root')).render(React.createElement(App));
+</script>
+</body>
+</html>

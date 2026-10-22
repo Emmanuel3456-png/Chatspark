@@ -1,0 +1,41 @@
+{
+  "name": "CHATSPARK by Abraham Emmanuel - Real Friends + Quantum Mind",
+  "short_name": "CHATSPARK",
+  "description": "Fast. Private. Uses less data. Real friends only + Quantum Mind AI. Built by Abraham Emmanuel",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111B21",
+  "theme_color": "#00A884",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "communication",
+    "social",
+    "business"
+  ],
+  "shortcuts": [
+    {
+      "name": "Quantum Mind",
+      "url": "/?chat=quantum",
+      "description": "Chat with Quantum Mind AI"
+    },
+    {
+      "name": "New Chat",
+      "url": "/?action=newchat",
+      "description": "Start new chat"
+    }
+  ]
+}
