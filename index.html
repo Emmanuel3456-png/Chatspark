@@ -3,115 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>CHATSPARK - Real</title>
-<link rel="icon" href="./icon-512.png">
-<script src="https://cdn.tailwindcss.com">
-// Global avatar handler for settings
-window.updateProfilePic = (file) => {
-  const reader = new FileReader();
-  reader.onload=()=>{
-    const img=new Image();
-    img.onload=()=>{
-      const c=document.createElement('canvas');c.width=300;c.height=300;
-      const ctx=c.getContext('2d');
-      const s=Math.max(300/img.width,300/img.height);
-      const w=img.width*s; const h=img.height*s;
-      ctx.fillStyle='#fff'; ctx.fillRect(0,0,300,300);
-      ctx.drawImage(img,(300-w)/2,(300-h)/2,w,h);
-      const data=c.toDataURL('image/jpeg',0.85);
-      try{
-        const u=JSON.parse(localStorage.getItem('cs_user')||'{}');
-        u.avatar=data;
-        localStorage.setItem('cs_user',JSON.stringify(u));
-        location.reload();
-      }catch(e){}
-    };
-    img.src=reader.result;
-  };
-  reader.readAsDataURL(file);
-}
-</script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0A0F2C">
+<title>CHATSPARK - REAL</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@800&family=Inter:wght@500;700&display=swap" rel="stylesheet">
 <style>
-*{font-family:Inter,sans-serif}h1{font-family:'Plus Jakarta Sans',sans-serif}
-@keyframes rotateGlow{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-@keyframes pulseRainbow{0%{box-shadow:0 0 15px #5B5BFF,0 0 30px #00D4FF,0 0 45px #FFD60A,0 0 60px #EC4899,0 0 75px rgba(91,91,255,0.5)}25%{box-shadow:0 0 20px #FFD60A,0 0 35px #EC4899,0 0 50px #5B5BFF,0 0 65px #00D4FF,0 0 80px rgba(255,214,10,0.4)}50%{box-shadow:0 0 25px #EC4899,0 0 40px #8B5CF6,0 0 55px #00D4FF,0 0 70px #5B5BFF,0 0 85px rgba(236,72,153,0.4)}75%{box-shadow:0 0 20px #00D4FF,0 0 35px #FFD60A,0 0 50px #EC4899,0 0 65px #5B5BFF,0 0 80px rgba(0,212,255,0.4)}100%{box-shadow:0 0 15px #5B5BFF,0 0 30px #00D4FF,0 0 45px #FFD60A,0 0 60px #EC4899,0 0 75px rgba(91,91,255,0.5)}}
-.q-orb{position:relative;width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#8B9CFF,#5B5BFF 35%,#2D2FA0 75%,#1A1F6B);display:flex;align-items:center;justify-content:center;cursor:pointer;animation:pulseRainbow 2s infinite ease-in-out}
-.q-orb::before{content:'';position:absolute;inset:-7px;border-radius:50%;background:conic-gradient(from 0deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#8B5CF6,#5B5BFF,#00D4FF);animation:rotateGlow 1.5s linear infinite;z-index:-2;filter:blur(2px);box-shadow:0 0 30px #5B5BFF,0 0 60px #00D4FF}
-.q-orb::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(from 180deg,#FFD60A,#EC4899,#5B5BFF,#00D4FF,#FFD60A,#EC4899);animation:rotateGlow 1.2s linear infinite reverse;z-index:-1;opacity:0.95;filter:blur(0.5px)}
-.orb-in{position:relative;z-index:1;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 30% 30%,#9AA8FF,#5B5BFF 35%,#2D2FA0 80%);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 20px rgba(255,255,255,0.3)}
-.logo-glow{position:relative;animation:pulseRainbow 3s infinite}
-.logo-glow::before{content:'';position:absolute;inset:-6px;border-radius:22px;background:conic-gradient(from 0deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#5B5BFF);animation:rotateGlow 2s linear infinite;z-index:-1;filter:blur(8px);opacity:0.8}
-.header-glow{position:relative;}
-.header-glow::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:linear-gradient(90deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#5B5BFF);filter:blur(0.5px);animation:rotateGlow 3s linear infinite}
-.msg-glow{box-shadow:0 0 15px rgba(91,91,255,0.3),0 0 30px rgba(0,212,255,0.15)!important}
-@keyframes floatGlow{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.05)}}
-html,body{touch-action:manipulation;overscroll-behavior:none;-webkit-text-size-adjust:100%;}
-*{-webkit-tap-highlight-color:transparent;}
-.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+*{font-family:Inter,sans-serif;-webkit-tap-highlight-color:transparent}h1{font-family:'Plus Jakarta Sans',sans-serif}
+@keyframes spinGlow{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes glowPulse{0%{box-shadow:0 0 10px #5B5BFF,0 0 20px #00D4FF,0 0 35px #FFD60A,0 0 50px #EC4899}50%{box-shadow:0 0 25px #FFD60A,0 0 40px #EC4899,0 0 55px #5B5BFF,0 0 70px #00D4FF}100%{box-shadow:0 0 10px #5B5BFF,0 0 20px #00D4FF,0 0 35px #FFD60A,0 0 50px #EC4899}}
+.qorb{width:66px;height:66px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;background:radial-gradient(circle at 30% 30%,#8FA0FF,#5B5BFF 40%,#2D2FA0 80%);animation:glowPulse 2s infinite}
+.qorb:before{content:'';position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(from 0deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#8B5CF6,#5B5BFF);animation:spinGlow 1.4s linear infinite;filter:blur(2px);z-index:-2}
+.qorb:after{content:'';position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(from 180deg,#FFD60A,#EC4899,#5B5BFF,#00D4FF);animation:spinGlow 1s linear infinite reverse;z-index:-1;opacity:0.9}
+.qin{width:100%;height:100%;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 30%,#9AA8FF,#5B5BFF 50%,#1E2470 85%);box-shadow:inset 0 0 15px rgba(255,255,255,.3);position:relative;z-index:1}
+html,body{touch-action:manipulation;overscroll-behavior:none;margin:0;padding:0}
+.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{scrollbar-width:none}
 </style>
 </head>
-<body class="bg-[#0A0F2C] text-white m-0 overflow-hidden">
-<div id="root">Loading ChatSpark REAL...</div>
+<body>
+<div id="root"></div>
 <script type="importmap">
 {"imports":{"react":"https://esm.sh/react@18.2.0","react-dom/client":"https://esm.sh/react-dom@18.2.0/client","lucide-react":"https://esm.sh/lucide-react@0.344.0?external=react"}}
-
-// Global avatar handler for settings
-window.updateProfilePic = (file) => {
-  const reader = new FileReader();
-  reader.onload=()=>{
-    const img=new Image();
-    img.onload=()=>{
-      const c=document.createElement('canvas');c.width=300;c.height=300;
-      const ctx=c.getContext('2d');
-      const s=Math.max(300/img.width,300/img.height);
-      const w=img.width*s; const h=img.height*s;
-      ctx.fillStyle='#fff'; ctx.fillRect(0,0,300,300);
-      ctx.drawImage(img,(300-w)/2,(300-h)/2,w,h);
-      const data=c.toDataURL('image/jpeg',0.85);
-      try{
-        const u=JSON.parse(localStorage.getItem('cs_user')||'{}');
-        u.avatar=data;
-        localStorage.setItem('cs_user',JSON.stringify(u));
-        location.reload();
-      }catch(e){}
-    };
-    img.src=reader.result;
-  };
-  reader.readAsDataURL(file);
-}
 </script>
 <script type="module">
-import React, {useState,useEffect,useRef} from 'react';
+import React,{useState,useEffect,useRef} from 'react';
 import {createRoot} from 'react-dom/client';
-import * as Lucide from 'lucide-react';
-const {MessageCircle,Search,Phone,Settings,Brain,ShieldCheck,Lock,Fingerprint,Camera,Sun,Moon,Download,X,Copy,Send,ArrowLeft,Sparkles,CheckCircle,Users,Plus,Compass,Hash,Contact,Link2,Share2} = Lucide;
+import {MessageCircle,Search,Phone,Settings,Brain,ShieldCheck,Lock,Camera,Sun,Moon,Download,X,Copy,Send,ArrowLeft,Sparkles,CheckCircle,Users,Plus,Compass,Hash,Contact,Link2,Share2,LogOut} from 'lucide-react';
 
-async function callGroq(msgs,key){
- try{
-  let r=await fetch('/api/quantum',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:msgs})});
-  if(!r.ok) r=await fetch('/.netlify/functions/quantum',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:msgs})});
-  if(r.ok){const d=await r.json(); if(d.choices&&d.choices[0]&&d.choices[0].message) return {text:d.choices[0].message.content};}
- }catch(e){}
- if(!key) throw new Error('ENV_NOT_SET');
- const rr=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'llama-3.1-70b-versatile',messages:msgs})});
- const dd=await rr.json(); return {text:dd.choices[0].message.content};
+function Logo(){
+ return React.createElement('div',{style:{width:36,height:36,borderRadius:12,background:'linear-gradient(135deg,#5B5BFF,#00D4FF)',display:'flex',alignItems:'center',justifyContent:'center',position:'relative',boxShadow:'0 0 20px rgba(91,91,255,0.6)'}},
+  React.createElement('div',{style:{width:20,height:14,borderRadius:8,background:'white',display:'flex',alignItems:'center',justifyContent:'center'}},React.createElement('div',{style:{width:6,height:6,borderRadius:99,background:'#5B5BFF'}})),
+  React.createElement('div',{style:{position:'absolute',bottom:-4,right:-4,width:18,height:18,borderRadius:99,background:'#FFD60A',display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,boxShadow:'0 2px 6px rgba(0,0,0,0.2)'}},'⚡')
+ );
 }
-function genImgUrl(p){return 'https://image.pollinations.ai/prompt/'+encodeURIComponent(p)+'?width=512&height=512&seed='+Date.now()+'&nologo=true';}
+function AtomBrain(){
+ return React.createElement('div',{style:{width:28,height:28,position:'relative',display:'flex',alignItems:'center',justifyContent:'center'}},
+  React.createElement('div',{style:{position:'absolute',width:24,height:24,borderRadius:'50%',border:'1.5px solid rgba(255,255,255,0.9)',transform:'rotate(0deg)'}}),
+  React.createElement('div',{style:{position:'absolute',width:24,height:24,borderRadius:'50%',border:'1.5px solid rgba(255,255,255,0.6)',transform:'rotate(60deg)'}}),
+  React.createElement('div',{style:{position:'absolute',width:24,height:24,borderRadius:'50%',border:'1.5px solid rgba(255,255,255,0.5)',transform:'rotate(120deg)'}}),
+  React.createElement('div',{style:{width:12,height:12,borderRadius:'50%',background:'white',display:'flex',alignItems:'center',justifyContent:'center'}},React.createElement('div',{style:{width:5,height:5,borderRadius:'50%',background:'#5B5BFF'}}))
+ );
+}
 
 function App(){
  const [theme,setTheme]=useState(()=>{try{return localStorage.getItem('cs_theme')||'dark';}catch{return 'dark';}});
- const [user,setUser]=useState(()=>{try{const s=localStorage.getItem('cs_user');return s?JSON.parse(s):null;}catch{return null;}});
- const [onboarding,setOnboarding]=useState(()=>{try{return !localStorage.getItem('cs_user');}catch{return true;}});
+ const [user,setUser]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_user')||'null');}catch{return null;}});
+ const [onboard,setOnboard]=useState(()=>{try{return !localStorage.getItem('cs_user');}catch{return true;}});
  const [step,setStep]=useState(1);
- const [form,setForm]=useState({name:'',username:'',phone:'',avatar:'',enteredCode:''});
- const [genCode,setGenCode]=useState('');
- const [contacts,setContacts]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_contacts_real_phone')||'[]');}catch{return [];}});
- const [friends,setFriends]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_friends_real_phone')||'[]');}catch{return [];}});
- const [chats,setChats]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_chats_real_phone')||'[]');}catch{return [];}});
- const [selectedId,setSelectedId]=useState(null);
+ const [form,setForm]=useState({name:'',username:'',phone:'',avatar:'',codeIn:''});
+ const [realCode,setRealCode]=useState('');
+ const [contacts,setContacts]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_contacts_real')||'[]');}catch{return [];}});
+ const [chats,setChats]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_chats_real')||'[]');}catch{return [];}});
+ const [sel,setSel]=useState(null);
  const [showAdd,setShowAdd]=useState(false);
- const [search,setSearch]=useState('');
  const [showInvite,setShowInvite]=useState(false);
  const [showSettings,setShowSettings]=useState(false);
  const [showQuantum,setShowQuantum]=useState(false);
@@ -119,417 +62,348 @@ function App(){
  const [filterTab,setFilterTab]=useState('all');
  const [input,setInput]=useState('');
  const [toast,setToast]=useState(null);
- const [groqKey,setGroqKey]=useState(()=>{try{return localStorage.getItem('groq_api_key')||'';}catch{return '';}});
- const [quantumMsgs,setQuantumMsgs]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_quantum_real_phone')||'[{"id":"q0","from":"them","text":"🔵 Quantum Mind - Real blue core + rainbow glowing edges!\nAtom+brain logo at bottom right.","time":"now","type":"text"}]');}catch{return [];}});
+ const [qMsgs,setQMsgs]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_q')||'[{"id":"q0","from":"them","text":"🔵 Quantum Mind - Super Rainbow Glow + Atom Brain at bottom right. Ask me anything!","time":"now"}]');}catch{return [];}});
  const [thinking,setThinking]=useState(false);
- const [deferredPrompt,setDeferredPrompt]=useState(null);
- const [showInstall,setShowInstall]=useState(()=>{try{return localStorage.getItem('cs_install_dismissed')!=='true';}catch{return true;}});
+ const [deferred,setDeferred]=useState(null);
+ const [showInstall,setShowInstall]=useState(true);
  const [isInstalled,setIsInstalled]=useState(false);
- const [channels,setChannels]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_channels')||'[{"id":"ch1","name":"ChatSpark Updates","desc":"Official","members":"12.5K"},{"id":"ch2","name":"Real Tech","desc":"Tech news","members":"3.2K"}]');}catch{return [];}});
  const avatarRef=useRef(null);
- const selectedChat=chats.find(c=>c.id===selectedId)||null;
+ const settingsAvatarRef=useRef(null);
+ const selChat=chats.find(c=>c.id===sel)||null;
  const isDark=theme==='dark';
  const bgMain=isDark?'#0A0F2C':'#FFFFFF';
- const bgSide=isDark?'#141A3A':'#F6F7F9';
- const bgCard=isDark?'#1E264E':'#E9EDEF';
- const border=isDark?'#1E264E':'#E5E7EB';
- const textMuted=isDark?'#9CA3AF':'#667781';
- const textMain=isDark?'white':'#111B21';
+ const bgSide=isDark?'#141A3A':'#F0F2F5';
+ const bgCard=isDark?'#1E264E':'#FFFFFF';
+ const border=isDark?'#242E5E':'#E5E7EB';
+ const muted=isDark?'#9CA3AF':'#667781';
+ const textMain=isDark?'#FFFFFF':'#111B21';
 
  useEffect(()=>{try{localStorage.setItem('cs_theme',theme);}catch{}},[theme]);
- useEffect(()=>{if(user) try{localStorage.setItem('cs_user',JSON.stringify(user));}catch{}},[user]);
- useEffect(()=>{try{localStorage.setItem('cs_contacts_real_phone',JSON.stringify(contacts));}catch{}},[contacts]);
- useEffect(()=>{try{localStorage.setItem('cs_friends_real_phone',JSON.stringify(friends));}catch{}},[friends]);
- useEffect(()=>{try{localStorage.setItem('cs_chats_real_phone',JSON.stringify(chats));}catch{}},[chats]);
- useEffect(()=>{try{localStorage.setItem('cs_quantum_real_phone',JSON.stringify(quantumMsgs));}catch{}},[quantumMsgs]);
- useEffect(()=>{try{localStorage.setItem('cs_channels',JSON.stringify(channels));}catch{}},[channels]);
+ useEffect(()=>{if(user)try{localStorage.setItem('cs_user',JSON.stringify(user));}catch{}},[user]);
+ useEffect(()=>{try{localStorage.setItem('cs_contacts_real',JSON.stringify(contacts));}catch{}},[contacts]);
+ useEffect(()=>{try{localStorage.setItem('cs_chats_real',JSON.stringify(chats));}catch{}},[chats]);
+ useEffect(()=>{try{localStorage.setItem('cs_q',JSON.stringify(qMsgs));}catch{}},[qMsgs]);
  useEffect(()=>{
-  function before(e){e.preventDefault();setDeferredPrompt(e);setShowInstall(true);}
-  function installed(){setIsInstalled(true);setShowInstall(false);try{localStorage.setItem('cs_installed','true');}catch{}}
-  window.addEventListener('beforeinstallprompt',before);
-  window.addEventListener('appinstalled',installed);
-  try{if(window.matchMedia('(display-mode: standalone)').matches) setIsInstalled(true);}catch{}
-  return ()=>{window.removeEventListener('beforeinstallprompt',before);window.removeEventListener('appinstalled',installed);};
+  function b(e){e.preventDefault();setDeferred(e);}
+  function i(){setIsInstalled(true);setShowInstall(false);}
+  window.addEventListener('beforeinstallprompt',b);
+  window.addEventListener('appinstalled',i);
+  return()=>{window.removeEventListener('beforeinstallprompt',b);window.removeEventListener('appinstalled',i);}
  },[]);
 
  function toastMsg(m){setToast(m);setTimeout(()=>setToast(null),3000);}
- function handleAvatar(file){
-  const reader=new FileReader();
-  reader.onload=()=>{
+ function compressAvatar(file, cb){
+  const r=new FileReader();
+  r.onload=()=>{
    const img=new Image();
    img.onload=()=>{
-    const c=document.createElement('canvas');c.width=200;c.height=200;
+    const c=document.createElement('canvas');c.width=300;c.height=300;
     const ctx=c.getContext('2d');
-    const s=Math.max(200/img.width,200/img.height);const w=img.width*s;const h=img.height*s;
-    ctx.fillStyle='#fff';ctx.fillRect(0,0,200,200);ctx.drawImage(img,(200-w)/2,(200-h)/2,w,h);
-    setForm(f=>({...f,avatar:c.toDataURL('image/jpeg',0.8)}));
-   };img.src=reader.result;
-  };reader.readAsDataURL(file);
+    const s=Math.max(300/img.width,300/img.height);const w=img.width*s;const h=img.height*s;
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,300,300);ctx.drawImage(img,(300-w)/2,(300-h)/2,w,h);
+    cb(c.toDataURL('image/jpeg',0.85));
+   };img.src=r.result;
+  };r.readAsDataURL(file);
  }
- function genCodeFunc(){
-  if(!form.name.trim()||form.name.trim().length<2){toastMsg('Enter name');return;}
-  if(!form.username.trim()||form.username.trim().length<3){toastMsg('Username min 3');return;}
-  if(!form.phone.trim()||form.phone.replace(/\D/g,'').length<10){toastMsg('Real phone');return;}
-  const code=Math.floor(100000+Math.random()*900000).toString();setGenCode(code);setStep(2);toastMsg('Code: '+code);
+ function genCode(){
+  if(form.name.trim().length<2){toastMsg('Enter real name');return;}
+  if(form.username.trim().length<3){toastMsg('Username min 3');return;}
+  if(form.phone.replace(/\D/g,'').length<8){toastMsg('Enter real phone');return;}
+  const code=Math.floor(100000+Math.random()*900000).toString();setRealCode(code);setStep(2);toastMsg('Code: '+code);
  }
  function verify(){
-  if(form.enteredCode.trim()!==genCode){toastMsg('Wrong code: '+genCode);return;}
+  if(form.codeIn.trim()!==realCode){toastMsg('Wrong code, it is '+realCode);return;}
   const u={name:form.name.trim(),username:form.username.trim().toLowerCase(),phone:form.phone.trim(),avatar:form.avatar};
-  setUser(u);setOnboarding(false);toastMsg('Welcome real!');
+  setUser(u);setOnboard(false);toastMsg('Welcome real!');
  }
  async function pickReal(){
-  if('contacts' in navigator && 'ContactsManager' in window){
+  if(navigator.contacts && window.ContactsManager){
    try{
     const picked=await navigator.contacts.select(['name','tel'],{multiple:true});
-    if(picked&&picked.length>0){
-     const real=picked.map((c,i)=>{
-      const name=c.name&&c.name[0]?c.name[0]:'Unknown '+(i+1);
-      const phone=c.tel&&c.tel[0]?c.tel[0]:'';
-      return {id:'real-'+Date.now()+'-'+i,name,phone,username:name.toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9]/g,'')+Math.floor(Math.random()*100),hasApp:false,realContact:true};
-     });
-     setContacts(prev=>real.concat(prev));toastMsg('Got '+real.length+' real');return;
+    if(picked&&picked.length){
+     const real=picked.map((c,i)=>({id:'r'+Date.now()+i,name:(c.name&&c.name[0])||'Unknown',phone:(c.tel&&c.tel[0])||'',username:((c.name&&c.name[0])||'user').toLowerCase().replace(/\W/g,'')+i}));
+     setContacts(o=>real.concat(o));toastMsg('Got '+real.length+' real contacts');return;
     }
-   }catch(e){toastMsg('Picker blocked');}
-  }else toastMsg('No picker - use manual');
+   }catch{}
+  }
+  toastMsg('Picker not supported - use manual below');
  }
  function addManual(){
-  const n=document.getElementById('realName');const p=document.getElementById('realPhone');
+  const n=document.getElementById('rName');const p=document.getElementById('rPhone');
   const name=n?n.value.trim():'';const phone=p?p.value.trim():'';
-  if(!name||name.length<2){toastMsg('Enter name');return;}
-  if(!phone||phone.replace(/\D/g,'').length<8){toastMsg('Enter phone');return;}
-  const c={id:'manual-'+Date.now(),name,phone,username:name.toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9]/g,'')+Math.floor(Math.random()*100),hasApp:false,realContact:true};
-  setContacts(prev=>[c].concat(prev));if(n) n.value='';if(p) p.value='';toastMsg('Added '+name);
+  if(name.length<2){toastMsg('Enter name');return;}
+  if(phone.replace(/\D/g,'').length<7){toastMsg('Enter phone');return;}
+  const c={id:'m'+Date.now(),name,phone,username:name.toLowerCase().replace(/\s/g,'')+Math.floor(Math.random()*100)};
+  setContacts(o=>[c].concat(o));if(n)n.value='';if(p)p.value='';toastMsg('Added '+name);
  }
- function inviteContact(c){
-  const inviteLink=window.location.origin+'/join/'+(user?user.username:'chatspark');
-  const msg='Join me on ChatSpark Real! '+inviteLink;
-  const wa='https://wa.me/'+c.phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg);
-  if(c.phone) window.open(wa,'_blank'); else navigator.clipboard.writeText(msg).then(()=>toastMsg('Copied!'));
+ function addToChat(c){
+  const exists=chats.find(ch=>ch.phone===c.phone);
+  if(exists){setSel(exists.id);setShowAdd(false);return;}
+  const chat={id:'c'+Date.now(),name:c.name,phone:c.phone,username:c.username,messages:[{id:'0',from:'them',text:'Hi real! I am '+c.name,textTime:'now'}],lastMessage:'Hi real!',lastTime:'now'};
+  setChats(o=>[chat].concat(o));setSel(chat.id);setShowAdd(false);toastMsg('Chat with '+c.name);
+ }
+ function invite(c){
+  const link=window.location.origin+'/join/'+(user?user.username:'chatspark');
+  const msg='Join me on ChatSpark REAL! '+link;
+  if(c.phone){window.open('https://wa.me/'+c.phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');}else{navigator.clipboard.writeText(msg);toastMsg('Copied link');}
  }
  function send(){
-  if(!input.trim()) return;
-  if(showQuantum){sendQuantum();return;}
-  if(!selectedChat) return;
-  const msg={id:Date.now().toString(),from:'me',text:input.trim(),time:new Date().toLocaleTimeString()};
-  setChats(chats.map(c=>c.id===selectedChat.id?{...c,messages:c.messages.concat([msg]),lastMessage:msg.text,lastTime:msg.time}:c));
+  if(!input.trim())return;
+  if(showQuantum){sendQ();return;}
+  if(!selChat)return;
+  const m={id:Date.now().toString(),from:'me',text:input.trim(),time:new Date().toLocaleTimeString()};
+  setChats(chats.map(c=>c.id===selChat.id?{...c,messages:c.messages.concat([m]),lastMessage:m.text,lastTime:m.time}:c));
   setInput('');
-  setTimeout(()=>{const rep={id:(Date.now()+1).toString(),from:'them',text:'Real reply!',time:new Date().toLocaleTimeString()};setChats(prev=>prev.map(c=>c.id===selectedChat.id?{...c,messages:c.messages.concat([rep]),lastMessage:rep.text,lastTime:rep.time}:c));},700);
+  setTimeout(()=>{const r={id:(Date.now()+1).toString(),from:'them',text:'Real reply from '+selChat.name+'!',time:new Date().toLocaleTimeString()};setChats(p=>p.map(c=>c.id===selChat.id?{...c,messages:c.messages.concat([r]),lastMessage:r.text,lastTime:r.time}:c));},600);
  }
- function sendQuantum(){
-  const text=input.trim();if(!text) return;
-  const uMsg={id:Date.now().toString(),from:'me',text,time:new Date().toLocaleTimeString(),type:'text'};
-  setQuantumMsgs(m=>m.concat([uMsg]));setInput('');setThinking(true);
-  (async()=>{
-   try{
-    if(text.toLowerCase().indexOf('/image')!==-1){
-     const prompt=text.replace(/\/image/gi,'').trim()||'rainbow';const url=genImgUrl(prompt);
-     setTimeout(()=>{setQuantumMsgs(m=>m.concat([{id:(Date.now()+1).toString(),from:'them',text:'🎨 '+prompt,time:new Date().toLocaleTimeString(),type:'image',imageUrl:url}]));setThinking(false);},1000);return;
-    }
-    const msgs=[{role:'system',content:'Quantum Mind'}].concat(quantumMsgs.slice(-6).map(m=>({role:m.from==='me'?'user':'assistant',content:m.text}))).concat([{role:'user',content:text}]);
-    const res=await callGroq(msgs,groqKey);
-    setQuantumMsgs(m=>m.concat([{id:(Date.now()+1).toString(),from:'them',text:res.text,time:new Date().toLocaleTimeString(),type:'text'}]));
-   }catch(e){setQuantumMsgs(m=>m.concat([{id:(Date.now()+1).toString(),from:'them',text:e.message,time:new Date().toLocaleTimeString(),type:'text'}]));}
-   setThinking(false);
-  })();
+ function sendQ(){
+  const t=input.trim();if(!t)return;
+  const u={id:Date.now().toString(),from:'me',text:t,time:new Date().toLocaleTimeString()};
+  setQMsgs(m=>m.concat([u]));setInput('');setThinking(true);
+  setTimeout(()=>{
+   const ans={id:(Date.now()+1).toString(),from:'them',text:'🧠 Quantum Mind (Glowing Rainbow): '+t.slice(0,120)+'\n\nI am atom+brain orb with super glow! Blue core + cyan yellow pink edges rotating. I can code, chat, help!',time:new Date().toLocaleTimeString()};
+   setQMsgs(m=>m.concat([ans]));setThinking(false);
+  },700);
  }
- function handleInstall(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(c=>{if(c.outcome==='accepted'){setIsInstalled(true);setShowInstall(false);}setDeferredPrompt(null);});}else toastMsg('Chrome menu > Install');}
+
  const inviteLink=user?window.location.origin+'/join/'+user.username:window.location.origin;
 
- // FIXED LOGO - ALWAYS SHOWS
- function Logo(){
-  return React.createElement('div',{className:'relative w-9 h-9 rounded-xl flex items-center justify-center shadow-lg',style:{background:'linear-gradient(135deg,#5B5BFF 0%,#8B5CF6 50%,#00D4FF 100%)'}},
-   React.createElement('div',{className:'w-5 h-3.5 rounded-[8px] bg-white flex items-center justify-center relative'},
-    React.createElement('div',{className:'w-1.5 h-1.5 rounded-full bg-[#5B5BFF]'}),
-    React.createElement('div',{className:'absolute -bottom-0.5 right-1 w-0 h-0 border-l-[3px] border-r-[3px] border-t-[4px] border-l-transparent border-r-transparent border-t-white'})
-   ),
-   React.createElement('div',{className:'absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#FFD60A] flex items-center justify-center shadow text-[10px]'},'⚡')
-  );
- }
- function AtomBrain(){
-  return React.createElement('div',{className:'relative w-7 h-7 flex items-center justify-center'},
-   React.createElement('div',{className:'absolute rounded-full border-[1.5px] border-white/80',style:{width:26,height:26,transform:'rotate(0deg)'}}),
-   React.createElement('div',{className:'absolute rounded-full border-[1.5px] border-white/60',style:{width:26,height:26,transform:'rotate(60deg)'}}),
-   React.createElement('div',{className:'absolute rounded-full border-[1.5px] border-white/50',style:{width:26,height:26,transform:'rotate(120deg)'}}),
-   React.createElement('div',{className:'relative w-3.5 h-3.5 rounded-full bg-white flex items-center justify-center'},
-    React.createElement('div',{className:'w-1.5 h-1.5 rounded-full bg-[#5B5BFF] animate-pulse'})
-   )
-  );
- }
-
- return React.createElement('div',{className:'min-h-screen w-full flex flex-col',style:{background:bgMain,color:textMain}},
-  onboarding&&React.createElement('div',{className:'fixed inset-0 z-50 flex flex-col overflow-y-auto p-6',style:{background:'radial-gradient(ellipse at top,#1A2144 0%,'+bgMain+' 60%)'}},
-   React.createElement('div',{className:'w-full max-w-[420px] mx-auto flex-1 flex flex-col'},
-    React.createElement('div',{className:'text-center mt-4 mb-6'},
-     React.createElement('div',{className:'relative w-20 h-20 mx-auto'},
-      React.createElement('div',{className:'absolute inset-[-6px] rounded-[22px]',style:{background:'conic-gradient(from 0deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#5B5BFF)',filter:'blur(10px)',animation:'rotateGlow 3s linear infinite'}}),
-      React.createElement('div',{className:'relative w-20 h-20 rounded-[20px] flex items-center justify-center',style:{background:'linear-gradient(135deg,#5B5BFF,#8B5CF6)'}},
-       React.createElement(Logo,null)
-      )
+ return React.createElement('div',{style:{minHeight:'100vh',background:bgMain,color:textMain,display:'flex',flexDirection:'column'}},
+  onboard&&React.createElement('div',{style:{position:'fixed',inset:0,zIndex:50,background:'radial-gradient(ellipse at top,#1A2144 0%,'+bgMain+' 65%)',display:'flex',flexDirection:'column',overflowY:'auto',padding:20}},
+   React.createElement('div',{style:{maxWidth:420,width:'100%',margin:'0 auto',flex:1,display:'flex',flexDirection:'column'}},
+    React.createElement('div',{style:{textAlign:'center',marginTop:16,marginBottom:24}},
+     React.createElement('div',{style:{width:80,height:80,margin:'0 auto',position:'relative'}},
+      React.createElement('div',{style:{position:'absolute',inset:-8,borderRadius:22,background:'conic-gradient(from 0deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#5B5BFF)',filter:'blur(10px)',animation:'spinGlow 2s linear infinite'}}),
+      React.createElement('div',{style:{width:80,height:80,borderRadius:20,background:'linear-gradient(135deg,#5B5BFF,#8B5CF6)',display:'flex',alignItems:'center',justifyContent:'center',position:'relative',zIndex:1}},React.createElement(Logo,null))
      ),
-     React.createElement('h1',{className:'text-[26px] font-[800] mt-3',style:{color:'#5B5BFF'}},'ChatSpark'),
-     React.createElement('div',{className:'mt-2 flex justify-center'},
-      React.createElement('div',{className:'h-6 px-3 rounded-full flex items-center gap-1 border',style:{background:'rgba(91,91,255,0.15)',borderColor:'#5B5BFF'}},
-       React.createElement(Lock,{className:'w-3 h-3 text-[#5B5BFF]'}),React.createElement('span',{className:'text-[9px] font-bold tracking-widest',style:{color:'#5B5BFF'}},'REAL • ENCRYPTED')
-      )
+     React.createElement('h1',{style:{fontSize:26,fontWeight:800,color:'#5B5BFF',marginTop:12}},'ChatSpark'),
+     React.createElement('div',{style:{marginTop:8,display:'flex',justifyContent:'center'}},
+      React.createElement('div',{style:{height:22,padding:'0 12px',borderRadius:99,display:'flex',alignItems:'center',gap:4,border:'1px solid #5B5BFF',background:'rgba(91,91,255,0.15)'}},React.createElement(Lock,{style:{width:12,height:12,color:'#5B5BFF'}}),React.createElement('span',{style:{fontSize:9,fontWeight:800,letterSpacing:'0.15em',color:'#5B5BFF'}},'REAL • ENCRYPTED • GLOWING'))
      )
     ),
-    React.createElement('div',{className:'rounded-[24px] p-6 border shadow-2xl',style:{background:bgSide,borderColor:border}},
+    React.createElement('div',{style:{borderRadius:24,padding:24,border:'1px solid '+border,background:bgSide,boxShadow:'0 20px 60px rgba(0,0,0,0.4)'}},
      step===1?React.createElement(React.Fragment,null,
-      React.createElement('h2',{className:'font-bold text-[16px] flex items-center gap-2'},React.createElement(ShieldCheck,{className:'w-5 h-5 text-[#5B5BFF]'}),'Secure Account'),
-      React.createElement('div',{className:'flex flex-col items-center mt-5'},
-       React.createElement('div',{className:'relative cursor-pointer',onClick:()=>{if(avatarRef.current) avatarRef.current.click();}},
-        form.avatar?React.createElement('img',{src:form.avatar,className:'w-20 h-20 rounded-full object-cover ring-4 ring-[#5B5BFF]/30'}):React.createElement('div',{className:'w-20 h-20 rounded-full flex items-center justify-center border-2 border-dashed',style:{background:bgCard,borderColor:border}},React.createElement(Camera,{className:'w-6 h-6',style:{color:textMuted}})),
-        React.createElement('div',{className:'absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[#5B5BFF] flex items-center justify-center'},React.createElement(Camera,{className:'w-3.5 h-3.5 text-white'}))
+      React.createElement('h2',{style:{fontWeight:800,fontSize:16,display:'flex',alignItems:'center',gap:8}},React.createElement(ShieldCheck,{style:{width:20,height:20,color:'#5B5BFF'}}),'Secure Account + Profile Pic'),
+      React.createElement('div',{style:{display:'flex',flexDirection:'column',alignItems:'center',marginTop:20}},
+       React.createElement('div',{style:{position:'relative',cursor:'pointer'},onClick:()=>avatarRef.current&&avatarRef.current.click()},
+        form.avatar?React.createElement('img',{src:form.avatar,style:{width:90,height:90,borderRadius:999,objectFit:'cover',border:'4px solid rgba(91,91,255,0.4)',boxShadow:'0 0 30px rgba(91,91,255,0.6),0 0 60px rgba(0,212,255,0.3)'}}):React.createElement('div',{style:{width:90,height:90,borderRadius:999,display:'flex',alignItems:'center',justifyContent:'center',border:'2px dashed '+border,background:bgCard}},React.createElement(Camera,{style:{width:28,height:28,color:muted}})),
+        React.createElement('div',{style:{position:'absolute',bottom:-2,right:-2,width:32,height:32,borderRadius:99,background:'#5B5BFF',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 0 15px #5B5BFF'}},React.createElement(Camera,{style:{width:16,height:16,color:'white'}}))
        ),
-       React.createElement('input',{ref:avatarRef,type:'file',accept:'image/*',hidden:true,onChange:e=>{const f=e.target.files&&e.target.files[0];if(f) handleAvatar(f);}})
+       React.createElement('span',{style:{fontSize:11,marginTop:8,color:muted}},'Tap to upload real photo + glowing ring'),
+       React.createElement('input',{ref:avatarRef,type:'file',accept:'image/*',style:{display:'none'},onChange:e=>{const f=e.target.files&&e.target.files[0];if(f)compressAvatar(f,d=>setForm(s=>({...s,avatar:d})));}})
       ),
-      React.createElement('div',{className:'mt-6 space-y-3'},
-       React.createElement('input',{value:form.name,onChange:e=>setForm({...form,name:e.target.value}),placeholder:'Real Full Name',className:'w-full h-11 px-4 rounded-xl border outline-none text-[14px]',style:{background:bgCard,borderColor:border,color:textMain}}),
-       React.createElement('input',{value:form.username,onChange:e=>setForm({...form,username:e.target.value.toLowerCase().replace(/\s+/g,'')}),placeholder:'Username',className:'w-full h-11 px-4 rounded-xl border outline-none text-[14px]',style:{background:bgCard,borderColor:border,color:textMain}}),
-       React.createElement('input',{value:form.phone,onChange:e=>setForm({...form,phone:e.target.value}),placeholder:'Real Phone +234...',className:'w-full h-11 px-4 rounded-xl border outline-none text-[14px]',style:{background:bgCard,borderColor:border,color:textMain}}),
-       React.createElement('button',{onClick:genCodeFunc,className:'w-full h-12 rounded-full bg-[#5B5BFF] text-white font-bold text-[14px] flex items-center justify-center gap-2'},'Generate Code')
+      React.createElement('div',{style:{marginTop:20,display:'flex',flexDirection:'column',gap:12}},
+       React.createElement('input',{value:form.name,onChange:e=>setForm({...form,name:e.target.value}),placeholder:'Real Full Name',style:{width:'100%',height:46,padding:'0 16px',borderRadius:12,border:'1px solid '+border,background:bgCard,color:textMain,outline:'none',fontSize:14}}),
+       React.createElement('input',{value:form.username,onChange:e=>setForm({...form,username:e.target.value.toLowerCase().replace(/\s/g,'')}),placeholder:'Username (real)',style:{width:'100%',height:46,padding:'0 16px',borderRadius:12,border:'1px solid '+border,background:bgCard,color:textMain,outline:'none',fontSize:14}}),
+       React.createElement('input',{value:form.phone,onChange:e=>setForm({...form,phone:e.target.value}),placeholder:'Real Phone +234...',style:{width:'100%',height:46,padding:'0 16px',borderRadius:12,border:'1px solid '+border,background:bgCard,color:textMain,outline:'none',fontSize:14}}),
+       React.createElement('button',{onClick:genCode,style:{width:'100%',height:48,borderRadius:99,background:'#5B5BFF',color:'white',fontWeight:800,fontSize:14,border:'none',display:'flex',alignItems:'center',justifyContent:'center',gap:8,boxShadow:'0 0 25px rgba(91,91,255,0.6)'}},'Generate Secure Code')
       )
-     ):React.createElement(React.Fragment,null,
-      React.createElement('div',{className:'p-3 rounded-xl border text-center',style:{background:bgCard,borderColor:border}},
-       React.createElement('div',{className:'text-[11px]',style:{color:textMuted}},'Code:'),React.createElement('div',{className:'text-[20px] font-bold tracking-[0.3em] mt-1',style:{color:'#5B5BFF'}},genCode)
+     ):
+     React.createElement(React.Fragment,null,
+      React.createElement('div',{style:{padding:12,borderRadius:12,border:'1px solid '+border,background:bgCard,textAlign:'center'}},
+       React.createElement('div',{style:{fontSize:11,color:muted}},'Your Secure Code:'),React.createElement('div',{style:{fontSize:22,fontWeight:800,letterSpacing:'0.3em',marginTop:6,color:'#5B5BFF'}},realCode)
       ),
-      React.createElement('input',{value:form.enteredCode,onChange:e=>setForm({...form,enteredCode:e.target.value}),placeholder:'Enter code',className:'w-full h-12 px-4 rounded-xl border outline-none text-[16px] tracking-[0.2em] text-center mt-4',style:{background:bgCard,borderColor:'#5B5BFF',color:textMain},maxLength:6}),
-      React.createElement('button',{onClick:verify,className:'w-full h-12 rounded-full bg-[#5B5BFF] text-white font-bold text-[14px] mt-4'},'Verify'),
-      React.createElement('button',{onClick:()=>setStep(1),className:'w-full h-11 rounded-full border text-[13px] mt-2',style:{background:bgCard,borderColor:border}},'Back')
+      React.createElement('input',{value:form.codeIn,onChange:e=>setForm({...form,codeIn:e.target.value}),placeholder:'Enter code',style:{width:'100%',height:48,padding:'0 16px',borderRadius:12,border:'2px solid #5B5BFF',background:bgCard,color:textMain,outline:'none',fontSize:16,letterSpacing:'0.2em',textAlign:'center',marginTop:16},maxLength:6}),
+      React.createElement('button',{onClick:verify,style:{width:'100%',height:48,borderRadius:99,background:'#5B5BFF',color:'white',fontWeight:800,fontSize:14,marginTop:12,border:'none'}},'Verify & Enter'),
+      React.createElement('button',{onClick:()=>setStep(1),style:{width:'100%',height:44,borderRadius:99,border:'1px solid '+border,background:bgCard,color:textMain,marginTop:8}},'Back')
      )
     )
    )
   ),
 
-  !onboarding&&React.createElement('div',{className:'flex-1 flex flex-col overflow-hidden relative'},
-   showInstall&&!isInstalled&&React.createElement('div',{className:'h-[44px] px-4 flex items-center justify-between shrink-0',style:{background:'linear-gradient(90deg,#5B5BFF,#00D4FF,#8B5CF6)',color:'white'}},
-    React.createElement('div',{className:'flex items-center gap-2'},React.createElement(Download,{className:'w-4 h-4'}),React.createElement('span',{className:'text-[12px] font-bold'},'Install Secure ChatSpark')),
-    React.createElement('div',{className:'flex gap-2'},React.createElement('button',{onClick:handleInstall,className:'h-7 px-3 rounded-full bg-white text-[#5B5BFF] text-[11px] font-bold'},'Install'),React.createElement('button',{onClick:()=>{setShowInstall(false);try{localStorage.setItem('cs_install_dismissed','true');}catch{}},className:'w-7 h-7 rounded-full bg-white/20 flex items-center justify-center'},React.createElement(X,{className:'w-3.5 h-3.5'})))
+  !onboard&&React.createElement('div',{style:{flex:1,display:'flex',flexDirection:'column',overflow:'hidden',position:'relative'}},
+   showInstall&&!isInstalled&&React.createElement('div',{style:{height:44,padding:'0 16px',display:'flex',alignItems:'center',justifyContent:'space-between',background:'linear-gradient(90deg,#5B5BFF,#00D4FF,#8B5CF6)',color:'white',flexShrink:0}},
+    React.createElement('div',{style:{display:'flex',alignItems:'center',gap:8}},React.createElement(Download,{style:{width:16,height:16}}),React.createElement('span',{style:{fontSize:12,fontWeight:800}},'Install ChatSpark Glowing')),
+    React.createElement('div',{style:{display:'flex',gap:8}},React.createElement('button',{onClick:()=>{if(deferred){deferred.prompt();}else toastMsg('Chrome menu > Install');},style:{height:28,padding:'0 12px',borderRadius:99,background:'white',color:'#5B5BFF',fontSize:11,fontWeight:800,border:'none'}},'Install'),React.createElement('button',{onClick:()=>setShowInstall(false),style:{width:28,height:28,borderRadius:99,background:'rgba(255,255,255,0.2)',display:'flex',alignItems:'center',justifyContent:'center',border:'none'}},React.createElement(X,{style:{width:14,height:14}})))
    ),
-   React.createElement('div',{className:'h-[56px] px-4 flex items-center justify-between border-b shrink-0',style:{background:bgSide,borderColor:border}},
-    React.createElement('div',{className:'flex items-center gap-2.5'},user&&user.avatar?React.createElement('img',{src:user.avatar,className:'w-9 h-9 rounded-full object-cover ring-2 ring-[#5B5BFF]/30 cursor-pointer',onClick:()=>setShowSettings(true)}):React.createElement(Logo,null),React.createElement('span',{className:'font-[800] text-[19px] tracking-tight'},'ChatSpark'),React.createElement('span',{className:'text-[8px] px-1.5 py-0.5 rounded bg-green-500 text-white font-bold tracking-widest'},'REAL')),
-    React.createElement('div',{className:'flex items-center gap-1.5'},
-     React.createElement('button',{onClick:()=>setShowSettings(true),className:'w-9 h-9 rounded-full flex items-center justify-center border',style:{background:bgCard,borderColor:border}},React.createElement(Settings,{className:'w-4 h-4'}))
+   React.createElement('div',{style:{height:56,padding:'0 16px',display:'flex',alignItems:'center',justifyContent:'space-between',borderBottom:'1px solid '+border,background:bgSide,flexShrink:0,position:'relative'}},
+    React.createElement('div',{style:{position:'absolute',bottom:-2,left:0,right:0,height:2,background:'linear-gradient(90deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#5B5BFF)',filter:'blur(0.5px)'}}),
+    React.createElement('div',{style:{display:'flex',alignItems:'center',gap:10}},
+     user&&user.avatar?React.createElement('img',{src:user.avatar,style:{width:36,height:36,borderRadius:99,objectFit:'cover',border:'2px solid #5B5BFF',boxShadow:'0 0 15px rgba(91,91,255,0.6)',cursor:'pointer'},onClick:()=>setShowSettings(true)}):React.createElement(Logo,null),
+     React.createElement('span',{style:{fontWeight:800,fontSize:19,letterSpacing:'-0.02em'}},'ChatSpark'),React.createElement('span',{style:{fontSize:8,padding:'2px 6px',borderRadius:4,background:'#22C55E',color:'white',fontWeight:800}},'REAL GLOW')
+    ),
+    React.createElement('div',{style:{display:'flex',alignItems:'center',gap:6}},
+     React.createElement('button',{onClick:()=>setShowSettings(true),style:{width:36,height:36,borderRadius:99,display:'flex',alignItems:'center',justifyContent:'center',border:'1px solid '+border,background:bgCard}},React.createElement(Settings,{style:{width:16,height:16}}))
     )
    ),
-   activeTab==='chats'&&React.createElement('div',{className:'h-[48px] px-3 flex items-center gap-2 border-b shrink-0 overflow-x-auto no-scrollbar',style:{background:bgSide,borderColor:border}},
-    [{id:'all',label:'All'},{id:'unread',label:'Unread'},{id:'favourite',label:'Favourite'},{id:'groups',label:'Groups'}].map(t=>React.createElement('button',{key:t.id,onClick:()=>setFilterTab(t.id),className:'h-8 px-4 rounded-full text-[13px] font-semibold whitespace-nowrap border '+(filterTab===t.id?'bg-[#5B5BFF] text-white border-[#5B5BFF]':' '),style:filterTab!==t.id?{background:bgCard,borderColor:border,color:textMuted}:{}},t.label)),
-    React.createElement('button',{onClick:()=>setShowAdd(true),className:'ml-auto h-8 w-8 rounded-full bg-[#5B5BFF] text-white flex items-center justify-center'},React.createElement(Plus,{className:'w-4 h-4'}))
+   activeTab==='chats'&&React.createElement('div',{style:{height:48,padding:'0 12px',display:'flex',alignItems:'center',gap:8,borderBottom:'1px solid '+border,background:bgSide,overflowX:'auto',flexShrink:0}},
+    [{id:'all',label:'All'},{id:'unread',label:'Unread'},{id:'favourite',label:'Favourite'},{id:'groups',label:'Groups'}].map(t=>React.createElement('button',{key:t.id,onClick:()=>setFilterTab(t.id),style:{height:32,padding:'0 16px',borderRadius:99,fontSize:13,fontWeight:700,whiteSpace:'nowrap',border:'1px solid '+(filterTab===t.id?'#5B5BFF':border),background:filterTab===t.id?'#5B5BFF':'',color:filterTab===t.id?'white':muted}},t.label)),
+    React.createElement('button',{onClick:()=>setShowAdd(true),style:{marginLeft:'auto',height:32,width:32,borderRadius:99,background:'#5B5BFF',color:'white',display:'flex',alignItems:'center',justifyContent:'center',border:'none'}},React.createElement(Plus,{style:{width:16,height:16}}))
    ),
-   React.createElement('div',{className:'flex-1 flex overflow-hidden relative'},
-    React.createElement('div',{className:'flex-1 flex flex-col overflow-hidden',style:{background:bgMain}},
-     selectedId?React.createElement(React.Fragment,null,
-      React.createElement('div',{className:'h-[56px] px-4 flex items-center gap-3 border-b shrink-0',style:{background:bgSide,borderColor:border}},
-       React.createElement('button',{onClick:()=>setSelectedId(null),className:'w-8 h-8 rounded-full flex items-center justify-center border',style:{background:bgCard}},React.createElement(ArrowLeft,{className:'w-5 h-5'})),
-       React.createElement('div',{className:'w-9 h-9 rounded-full bg-[#5B5BFF] flex items-center justify-center font-bold text-white'},selectedChat.name[0]),
-       React.createElement('div',null,React.createElement('div',{className:'font-bold text-[14px] flex items-center gap-1'},selectedChat.name,React.createElement(ShieldCheck,{className:'w-4 h-4 text-green-500'})),React.createElement('div',{className:'text-[11px] text-green-600'},selectedChat.phone))
+   React.createElement('div',{style:{flex:1,display:'flex',overflow:'hidden',position:'relative'}},
+    React.createElement('div',{style:{flex:1,display:'flex',flexDirection:'column',overflow:'hidden',background:bgMain}},
+     sel?React.createElement(React.Fragment,null,
+      React.createElement('div',{style:{height:56,padding:'0 16px',display:'flex',alignItems:'center',gap:12,borderBottom:'1px solid '+border,background:bgSide,flexShrink:0}},
+       React.createElement('button',{onClick:()=>setSel(null),style:{width:32,height:32,borderRadius:99,display:'flex',alignItems:'center',justifyContent:'center',border:'1px solid '+border,background:bgCard}},React.createElement(ArrowLeft,{style:{width:18,height:18}})),
+       React.createElement('div',{style:{width:36,height:36,borderRadius:99,background:'#5B5BFF',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,color:'white'}},selChat.name[0]),
+       React.createElement('div',null,React.createElement('div',{style:{fontWeight:800,fontSize:14,display:'flex',alignItems:'center',gap:4}},selChat.name,React.createElement(ShieldCheck,{style:{width:16,height:16,color:'#22C55E'}})),React.createElement('div',{style:{fontSize:11,color:'#22C55E'}},selChat.phone))
       ),
-      React.createElement('div',{className:'flex-1 overflow-y-auto p-4 space-y-3 pb-24'},
-       selectedChat.messages.map(m=>React.createElement('div',{key:m.id,className:'flex '+(m.from==='me'?'justify-end':'justify-start')},
-        React.createElement('div',{className:'max-w-[78%] px-4 py-2.5 rounded-[16px] text-[14px] '+(m.from==='me'?'bg-[#5B5BFF] text-white rounded-br-[4px]':'border rounded-bl-[4px]'),style:m.from!=='me'?{background:bgSide,borderColor:border}:{}},
-         React.createElement('div',null,m.text),React.createElement('div',{className:'text-[10px] opacity-60 mt-1'},m.time)
+      React.createElement('div',{style:{flex:1,overflowY:'auto',padding:16,paddingBottom:100,display:'flex',flexDirection:'column',gap:12}},
+       selChat.messages.map(m=>React.createElement('div',{key:m.id,style:{display:'flex',justifyContent:m.from==='me'?'flex-end':'flex-start'}},
+        React.createElement('div',{style:{maxWidth:'78%',padding:'10px 14px',borderRadius:16,fontSize:14,background:m.from==='me'?'#5B5BFF':'',color:m.from==='me'?'white':textMain,border:m.from!=='me'?'1px solid '+border:'none',boxShadow:m.from==='me'?'0 0 20px rgba(91,91,255,0.5)':''}},
+         React.createElement('div',null,m.text),React.createElement('div',{style:{fontSize:10,opacity:0.6,marginTop:4}},m.time)
         )
        ))
       ),
-      React.createElement('div',{className:'p-3 flex gap-2 border-t absolute bottom-[72px] left-0 right-0',style:{background:bgSide,borderColor:border}},
-       React.createElement('input',{value:input,onChange:e=>setInput(e.target.value),onKeyDown:e=>{if(e.key==='Enter'){e.preventDefault();send();}},placeholder:'Message real',className:'flex-1 h-11 px-4 rounded-full border outline-none text-[14px]',style:{background:bgCard,borderColor:border,color:textMain}}),
-       React.createElement('button',{onClick:send,className:'w-11 h-11 rounded-full bg-[#5B5BFF] text-white flex items-center justify-center'},React.createElement(Send,{className:'w-5 h-5'}))
+      React.createElement('div',{style:{padding:12,display:'flex',gap:8,borderTop:'1px solid '+border,background:bgSide,position:'absolute',bottom:72,left:0,right:0}},
+       React.createElement('input',{value:input,onChange:e=>setInput(e.target.value),onKeyDown:e=>{if(e.key==='Enter'){e.preventDefault();send();}},placeholder:'Message real...',style:{flex:1,height:44,padding:'0 16px',borderRadius:99,border:'1px solid #5B5BFF',background:bgCard,color:textMain,outline:'none',fontSize:14,boxShadow:'0 0 15px rgba(91,91,255,0.2)'}}),
+       React.createElement('button',{onClick:send,style:{width:44,height:44,borderRadius:99,background:'#5B5BFF',color:'white',display:'flex',alignItems:'center',justifyContent:'center',border:'none',boxShadow:'0 0 20px rgba(91,91,255,0.5)'}},React.createElement(Send,{style:{width:20,height:20}}))
       )
      ):
-     activeTab==='chats'?React.createElement('div',{className:'flex-1 overflow-y-auto p-3 pb-24'},
-      chats.length===0?React.createElement('div',{className:'p-8 text-center mt-6 rounded-[20px] border border-dashed',style:{borderColor:border}},
-       React.createElement(Contact,{className:'w-12 h-12 mx-auto mb-3 text-[#5B5BFF]'}),React.createElement('p',{className:'text-[14px] font-bold',style:{color:textMain}},'No chats yet'),React.createElement('p',{className:'text-[12px] mt-2',style:{color:textMuted}},'Pick real phone contacts'),
-       React.createElement('button',{onClick:()=>setShowAdd(true),className:'mt-5 h-11 px-6 rounded-full bg-[#5B5BFF] text-white text-[13px] font-bold flex items-center gap-2 mx-auto'},React.createElement(Contact,{className:'w-4 h-4'}),'Pick Real Contacts')
-      ):chats.filter(c=>{
-       if(filterTab==='all') return true;
-       if(filterTab==='unread') return c.unread;
-       if(filterTab==='favourite') return c.fav;
-       if(filterTab==='groups') return c.isGroup;
-       return true;
-      }).map(c=>React.createElement('button',{key:c.id,onClick:()=>setSelectedId(c.id),className:'w-full p-3 rounded-xl flex items-center gap-3 text-left mb-1'},
-       React.createElement('div',{className:'w-12 h-12 rounded-full bg-[#5B5BFF] flex items-center justify-center font-bold text-white text-[16px]'},c.name[0]),
-       React.createElement('div',{className:'flex-1 min-w-0 text-left'},React.createElement('div',{className:'font-semibold text-[14px] truncate flex items-center gap-1'},c.name,React.createElement(CheckCircle,{className:'w-3 h-3 text-green-500'})),React.createElement('div',{className:'text-[12px] truncate',style:{color:textMuted}},c.phone+' • '+c.lastMessage)),
-       React.createElement('div',{className:'text-[10px]',style:{color:textMuted}},c.lastTime)
+     activeTab==='chats'?React.createElement('div',{style:{flex:1,overflowY:'auto',padding:12,paddingBottom:100}},
+      chats.length===0?React.createElement('div',{style:{padding:32,textAlign:'center',marginTop:24,borderRadius:20,border:'1px dashed '+border}},
+       React.createElement(Contact,{style:{width:48,height:48,margin:'0 auto 12px',color:'#5B5BFF'}}),React.createElement('p',{style:{fontSize:14,fontWeight:800,color:textMain}},'No chats yet - Real Only'),React.createElement('p',{style:{fontSize:12,marginTop:8,color:muted}},'Pick real phone contacts, super glowing!'),
+       React.createElement('button',{onClick:()=>setShowAdd(true),style:{marginTop:20,height:44,padding:'0 24px',borderRadius:99,background:'#5B5BFF',color:'white',fontSize:13,fontWeight:800,border:'none',display:'flex',alignItems:'center',gap:8,margin:'20px auto 0',boxShadow:'0 0 25px rgba(91,91,255,0.5)'}},React.createElement(Contact,{style:{width:16,height:16}}),'Pick Real Contacts - Glowing')
+      ):chats.map(c=>React.createElement('button',{key:c.id,onClick:()=>setSel(c.id),style:{width:'100%',padding:12,borderRadius:12,display:'flex',alignItems:'center',gap:12,textAlign:'left',marginBottom:4,border:'none',background:'transparent'}},
+       React.createElement('div',{style:{width:48,height:48,borderRadius:99,background:'#5B5BFF',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,color:'white',fontSize:16,boxShadow:'0 0 15px rgba(91,91,255,0.4)'}},c.name[0]),
+       React.createElement('div',{style:{flex:1,minWidth:0,textAlign:'left'}},React.createElement('div',{style:{fontWeight:700,fontSize:14,display:'flex',alignItems:'center',gap:4}},c.name,React.createElement(CheckCircle,{style:{width:12,height:12,color:'#22C55E'}})),React.createElement('div',{style:{fontSize:12,color:muted,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}},c.phone+' • '+c.lastMessage)),
+       React.createElement('div',{style:{fontSize:10,color:muted}},c.lastTime)
       ))
      ):
-     activeTab==='calls'?React.createElement('div',{className:'flex-1 flex flex-col items-center justify-center p-8 text-center pb-24'},
-      React.createElement(Phone,{className:'w-14 h-14 text-[#5B5BFF] mb-4'}),React.createElement('h3',{className:'font-bold text-[16px]'},'Calls - Real'),React.createElement('p',{className:'text-[12px] mt-2',style:{color:textMuted}},'Call real verified contacts'),
-      React.createElement('button',{onClick:()=>setShowAdd(true),className:'mt-6 h-11 px-6 rounded-full bg-[#5B5BFF] text-white text-[13px] font-bold'},'Add Real Contact')
+     activeTab==='calls'?React.createElement('div',{style:{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:32,textAlign:'center',paddingBottom:100}},
+      React.createElement(Phone,{style:{width:56,height:56,color:'#5B5BFF',marginBottom:16}}),React.createElement('h3',{style:{fontWeight:800,fontSize:16}},'Calls - Real Glowing'),React.createElement('p',{style:{fontSize:12,marginTop:8,color:muted}},'Call real verified contacts'),
+      React.createElement('button',{onClick:()=>setShowAdd(true),style:{marginTop:24,height:44,padding:'0 24px',borderRadius:99,background:'#5B5BFF',color:'white',fontSize:13,fontWeight:800,border:'none'}},'Add Real Contact')
      ):
-     activeTab==='updates'?React.createElement('div',{className:'flex-1 overflow-y-auto p-4 space-y-5 pb-24'},
-      React.createElement('div',{className:'flex items-center justify-between'},
-       React.createElement('h2',{className:'font-bold text-[18px]'},'Channels'),
-       React.createElement('div',{className:'flex gap-2'},
-        React.createElement('button',{onClick:()=>toastMsg('Explore channels'),className:'h-9 px-4 rounded-full border text-[12px] font-semibold flex items-center gap-1.5',style:{background:bgCard,borderColor:border}},React.createElement(Compass,{className:'w-4 h-4'}),'Explore'),
-        React.createElement('button',{onClick:()=>{const name=prompt('Channel name:'); if(name){setChannels(ch=>[{id:'ch-'+Date.now(),name,desc:'Real channel',members:'1'}].concat(ch)); toastMsg('Created '+name);}},className:'h-9 px-4 rounded-full bg-[#5B5BFF] text-white text-[12px] font-bold flex items-center gap-1'},React.createElement(Plus,{className:'w-3 h-3'}),'Create')
-       )
-      ),
-      React.createElement('div',{className:'space-y-2'},
-       channels.map(ch=>React.createElement('div',{key:ch.id,className:'p-4 rounded-[16px] border flex items-center gap-3',style:{background:bgSide,borderColor:border}},
-        React.createElement('div',{className:'w-12 h-12 rounded-full bg-gradient-to-br from-[#5B5BFF] to-[#00D4FF] flex items-center justify-center'},React.createElement(Hash,{className:'w-6 h-6 text-white'})),
-        React.createElement('div',{className:'flex-1 min-w-0'},React.createElement('div',{className:'font-bold text-[14px] truncate'},ch.name),React.createElement('div',{className:'text-[11px] truncate',style:{color:textMuted}},ch.desc+' • '+ch.members+' members')),
-        React.createElement('button',{onClick:()=>toastMsg('Joined '+ch.name),className:'h-8 px-4 rounded-full bg-[#5B5BFF] text-white text-[11px] font-bold'},'Follow')
-       ))
+     activeTab==='updates'?React.createElement('div',{style:{flex:1,overflowY:'auto',padding:16,paddingBottom:100}},
+      React.createElement('h2',{style:{fontWeight:800,fontSize:18,marginBottom:16}},'Channels - Real'),
+      React.createElement('div',{style:{padding:16,borderRadius:16,border:'1px solid '+border,background:bgSide,display:'flex',alignItems:'center',gap:12}},
+       React.createElement('div',{style:{width:48,height:48,borderRadius:99,background:'linear-gradient(135deg,#5B5BFF,#00D4FF)',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 0 20px rgba(91,91,255,0.4)'}},React.createElement(Hash,{style:{width:24,height:24,color:'white'}})),
+       React.createElement('div',{style:{flex:1}},React.createElement('div',{style:{fontWeight:800,fontSize:14}},'ChatSpark Updates'),React.createElement('div',{style:{fontSize:11,color:muted}},'Official • Glowing updates')),
+       React.createElement('button',{style:{height:32,padding:'0 16px',borderRadius:99,background:'#5B5BFF',color:'white',fontSize:11,fontWeight:800,border:'none'}},'Follow')
       )
      ):
-     React.createElement('div',{className:'flex-1 overflow-y-auto p-4 space-y-4 pb-24'},
-      React.createElement('h2',{className:'font-bold text-[18px] flex items-center gap-2'},React.createElement(Sparkles,{className:'w-5 h-5 text-[#5B5BFF]'}),'Tools'),
-      React.createElement('div',{className:'grid grid-cols-2 gap-3'},
-       [{icon:Contact,label:'Real Contacts',desc:'Pick phone'},{icon:Link2,label:'Invite Link',desc:'Real link'},{icon:ShieldCheck,label:'Secure',desc:'Verify'},{icon:Brain,label:'Quantum',desc:'AI orb'}].map(t=>React.createElement('button',{key:t.label,onClick:()=>{if(t.label==='Real Contacts') setShowAdd(true); else if(t.label==='Invite Link') setShowInvite(true); else if(t.label==='Quantum') setShowQuantum(true); else toastMsg(t.label);},className:'p-4 rounded-[16px] border text-left',style:{background:bgSide,borderColor:border}},
-        React.createElement(t.icon,{className:'w-6 h-6 text-[#5B5BFF] mb-2'}),React.createElement('div',{className:'font-bold text-[13px]'},t.label),React.createElement('div',{className:'text-[11px] mt-1',style:{color:textMuted}},t.desc)
+     React.createElement('div',{style:{flex:1,overflowY:'auto',padding:16,paddingBottom:100}},
+      React.createElement('h2',{style:{fontWeight:800,fontSize:18,display:'flex',alignItems:'center',gap:8,marginBottom:16}},React.createElement(Sparkles,{style:{width:20,height:20,color:'#5B5BFF'}}),'Tools - Glowing'),
+      React.createElement('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}},
+       [{icon:Contact,label:'Real Contacts',desc:'Phone picker'},{icon:Link2,label:'Invite Link',desc:'Real link'},{icon:ShieldCheck,label:'Secure',desc:'Encrypted'},{icon:Brain,label:'Quantum',desc:'Super glow orb'}].map(t=>React.createElement('button',{key:t.label,onClick:()=>{if(t.label==='Real Contacts')setShowAdd(true);else if(t.label==='Invite Link')setShowInvite(true);else if(t.label==='Quantum')setShowQuantum(true);else toastMsg(t.label);},style:{padding:16,borderRadius:16,border:'1px solid '+border,background:bgSide,textAlign:'left'}},
+        React.createElement(t.icon,{style:{width:24,height:24,color:'#5B5BFF',marginBottom:8}}),React.createElement('div',{style:{fontWeight:800,fontSize:13}},t.label),React.createElement('div',{style:{fontSize:11,marginTop:4,color:muted}},t.desc)
        ))
       )
      ),
-     React.createElement('div',{className:'absolute bottom-28 right-4 z-20'},
-      React.createElement('div',{onClick:()=>setShowQuantum(true),className:'q-orb'},React.createElement('div',{className:'orb-in'},React.createElement(AtomBrain,null)))
+     React.createElement('div',{style:{position:'absolute',bottom:108,right:16,zIndex:20}},
+      React.createElement('div',{onClick:()=>setShowQuantum(true),className:'qorb'},React.createElement('div',{className:'qin'},React.createElement(AtomBrain,null)))
      )
     ),
-    React.createElement('div',{className:'absolute bottom-0 left-0 right-0 h-[72px] border-t flex items-center justify-around px-2 z-30',style:{background:bgSide,borderColor:border}},
+    React.createElement('div',{style:{position:'absolute',bottom:0,left:0,right:0,height:72,borderTop:'1px solid '+border,display:'flex',alignItems:'center',justifyContent:'space-around',padding:'0 8px',background:bgSide,zIndex:30}},
      [{id:'chats',label:'Chats',icon:MessageCircle},{id:'calls',label:'Calls',icon:Phone},{id:'updates',label:'Updates',icon:Hash},{id:'tools',label:'Tools',icon:Sparkles}].map(tab=>{
       const isActive=activeTab===tab.id;
-      return React.createElement('button',{key:tab.id,onClick:()=>{setActiveTab(tab.id);setSelectedId(null);},className:'flex flex-col items-center justify-center gap-1 px-5 py-2 rounded-[12px] '+(isActive?'text-[#5B5BFF]':''),style:isActive?{background:'rgba(91,91,255,0.12)'}:{color:textMuted}},
-       React.createElement(tab.icon,{className:'w-5 h-5'}),React.createElement('span',{className:'text-[10px] font-bold'},tab.label)
+      return React.createElement('button',{key:tab.id,onClick:()=>{setActiveTab(tab.id);setSel(null);},style:{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:4,padding:'8px 20px',borderRadius:12,border:'none',background:isActive?'rgba(91,91,255,0.12)':'transparent',color:isActive?'#5B5BFF':muted}},
+       React.createElement(tab.icon,{style:{width:20,height:20}}),React.createElement('span',{style:{fontSize:10,fontWeight:800}},tab.label)
       );
      })
     )
    )
   ),
 
-  showAdd&&React.createElement('div',{className:'fixed inset-0 z-40 bg-black/70 backdrop-blur flex items-end md:items-center justify-center p-0 md:p-6'},
-   React.createElement('div',{className:'w-full md:max-w-[440px] rounded-t-[28px] md:rounded-[28px] max-h-[88vh] flex flex-col overflow-hidden border shadow-2xl',style:{background:bgSide,borderColor:border}},
-    React.createElement('div',{className:'p-5 border-b',style:{borderColor:border}},
-     React.createElement('div',{className:'flex items-center justify-between'},React.createElement('div',{className:'flex items-center gap-2'},React.createElement(Contact,{className:'w-5 h-5 text-[#5B5BFF]'}),React.createElement('h3',{className:'font-bold text-[15px]'},'Real Phone Contacts')),React.createElement('button',{onClick:()=>setShowAdd(false),className:'w-8 h-8 rounded-full flex items-center justify-center',style:{background:bgCard}},React.createElement(X,{className:'w-4 h-4'}))),
-     React.createElement('div',{className:'mt-4 space-y-3'},
-      React.createElement('button',{onClick:pickReal,className:'w-full h-12 rounded-full bg-[#5B5BFF] text-white font-bold text-[13px] flex items-center justify-center gap-2'},React.createElement(Contact,{className:'w-5 h-5'}),'Pick Actual Phone Contacts'),
-      React.createElement('div',{className:'grid grid-cols-[1fr_auto] gap-2'},
-       React.createElement('input',{id:'realName',placeholder:'Real name',className:'h-11 px-4 rounded-full border text-[13px] outline-none',style:{background:bgCard,borderColor:border,color:textMain}}),
-       React.createElement('input',{id:'realPhone',placeholder:'Phone +234',className:'h-11 px-4 rounded-full border text-[13px] outline-none',style:{background:bgCard,borderColor:border,color:textMain}})
+  showAdd&&React.createElement('div',{style:{position:'fixed',inset:0,zIndex:40,background:'rgba(0,0,0,0.7)',backdropFilter:'blur(8px)',display:'flex',alignItems:'flex-end',justifyContent:'center'}},
+   React.createElement('div',{style:{width:'100%',maxWidth:440,maxHeight:'88vh',borderRadius:'28px 28px 0 0',display:'flex',flexDirection:'column',overflow:'hidden',border:'1px solid '+border,background:bgSide,boxShadow:'0 0 40px rgba(91,91,255,0.3)'}},
+    React.createElement('div',{style:{padding:20,borderBottom:'1px solid '+border}},
+     React.createElement('div',{style:{display:'flex',alignItems:'center',justifyContent:'space-between'}},React.createElement('div',{style:{display:'flex',alignItems:'center',gap:8}},React.createElement(Contact,{style:{width:20,height:20,color:'#5B5BFF'}}),React.createElement('h3',{style:{fontWeight:800,fontSize:15}},'Real Phone Contacts - Glowing')),React.createElement('button',{onClick:()=>setShowAdd(false),style:{width:32,height:32,borderRadius:99,display:'flex',alignItems:'center',justifyContent:'center',border:'none',background:bgCard}},React.createElement(X,{style:{width:16,height:16}}))),
+     React.createElement('div',{style:{marginTop:16,display:'flex',flexDirection:'column',gap:12}},
+      React.createElement('button',{onClick:pickReal,style:{width:'100%',height:48,borderRadius:99,background:'#5B5BFF',color:'white',fontWeight:800,fontSize:13,display:'flex',alignItems:'center',justifyContent:'center',gap:8,border:'none',boxShadow:'0 0 25px rgba(91,91,255,0.5)'}},React.createElement(Contact,{style:{width:20,height:20}}),'Pick Actual Phone Contacts'),
+      React.createElement('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}},
+       React.createElement('input',{id:'rName',placeholder:'Real name',style:{height:44,padding:'0 16px',borderRadius:99,border:'1px solid '+border,background:bgCard,color:textMain,outline:'none',fontSize:13}}),
+       React.createElement('input',{id:'rPhone',placeholder:'Phone +234',style:{height:44,padding:'0 16px',borderRadius:99,border:'1px solid '+border,background:bgCard,color:textMain,outline:'none',fontSize:13}})
       ),
-      React.createElement('button',{onClick:addManual,className:'w-full h-10 rounded-full border text-[12px] font-semibold',style:{background:bgCard,borderColor:border}},'Add Manual Real')
+      React.createElement('button',{onClick:addManual,style:{width:'100%',height:40,borderRadius:99,border:'1px solid '+border,background:bgCard,color:textMain,fontSize:12,fontWeight:700}},'Add Manual Real')
      )
     ),
-    React.createElement('div',{className:'flex-1 overflow-y-auto p-3 space-y-2'},
-     contacts.length===0?React.createElement('div',{className:'p-8 text-center rounded-xl border border-dashed',style:{borderColor:border}},
-      React.createElement(Contact,{className:'w-10 h-10 mx-auto mb-3 opacity-30'}),React.createElement('p',{className:'text-[13px] font-bold'},'No real contacts yet')):contacts.map(c=>React.createElement('div',{key:c.id,className:'flex items-center justify-between p-3.5 rounded-[16px] border',style:{background:bgCard,borderColor:border}},
-      React.createElement('div',{className:'flex items-center gap-3'},
-       React.createElement('div',{className:'w-11 h-11 rounded-full flex items-center justify-center font-bold text-white bg-[#5B5BFF]'},c.name[0]),
-       React.createElement('div',null,React.createElement('div',{className:'flex items-center gap-1.5'},React.createElement('span',{className:'text-[14px] font-semibold'},c.name),React.createElement(ShieldCheck,{className:'w-4 h-4 text-[#5B5BFF]'})),React.createElement('div',{className:'text-[11px]',style:{color:textMuted}},c.phone))
+    React.createElement('div',{style:{flex:1,overflowY:'auto',padding:12,display:'flex',flexDirection:'column',gap:8}},
+     contacts.length===0?React.createElement('div',{style:{padding:32,textAlign:'center',borderRadius:12,border:'1px dashed '+border}},
+      React.createElement(Contact,{style:{width:40,height:40,margin:'0 auto 12px',opacity:0.3}}),React.createElement('p',{style:{fontSize:13,fontWeight:800}},'No real contacts yet - Add glowing')):contacts.map(c=>React.createElement('div',{key:c.id,style:{display:'flex',alignItems:'center',justifyContent:'space-between',padding:14,borderRadius:16,border:'1px solid '+border,background:bgCard}},
+      React.createElement('div',{style:{display:'flex',alignItems:'center',gap:12}},
+       React.createElement('div',{style:{width:44,height:44,borderRadius:99,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,color:'white',background:'#5B5BFF',boxShadow:'0 0 15px rgba(91,91,255,0.4)'}},c.name[0]),
+       React.createElement('div',null,React.createElement('div',{style:{display:'flex',alignItems:'center',gap:6}},React.createElement('span',{style:{fontSize:14,fontWeight:700}},c.name),React.createElement(ShieldCheck,{style:{width:16,height:16,color:'#5B5BFF'}})),React.createElement('div',{style:{fontSize:11,color:muted}},c.phone))
       ),
-      React.createElement('button',{onClick:()=>inviteContact(c),className:'h-9 px-3 rounded-full bg-green-500 text-white text-[11px] font-bold flex items-center gap-1'},React.createElement(Share2,{className:'w-3 h-3'}),'Invite')
+      React.createElement('div',{style:{display:'flex',gap:6}},
+       React.createElement('button',{onClick:()=>addToChat(c),style:{height:36,padding:'0 12px',borderRadius:99,background:'#5B5BFF',color:'white',fontSize:11,fontWeight:800,border:'none'}},'Chat'),
+       React.createElement('button',{onClick:()=>invite(c),style:{height:36,padding:'0 12px',borderRadius:99,background:'#22C55E',color:'white',fontSize:11,fontWeight:800,border:'none',display:'flex',alignItems:'center',gap:4}},React.createElement(Share2,{style:{width:12,height:12}}),'Invite')
+      )
      ))
     )
    )
   ),
 
-  showInvite&&React.createElement('div',{className:'fixed inset-0 z-40 flex flex-col',style:{background:bgMain}},
-   React.createElement('div',{className:'h-[60px] border-b flex items-center px-4 gap-3',style:{background:bgSide,borderColor:border}},
-    React.createElement('button',{onClick:()=>setShowInvite(false),className:'w-9 h-9 rounded-full flex items-center justify-center border',style:{background:bgCard}},React.createElement(ArrowLeft,{className:'w-5 h-5'})),
-    React.createElement('h2',{className:'font-bold text-[16px]'},'Real Invite Link')
+  showInvite&&React.createElement('div',{style:{position:'fixed',inset:0,zIndex:40,display:'flex',flexDirection:'column',background:bgMain}},
+   React.createElement('div',{style:{height:60,borderBottom:'1px solid '+border,display:'flex',alignItems:'center',padding:'0 16px',gap:12,background:bgSide}},
+    React.createElement('button',{onClick:()=>setShowInvite(false),style:{width:36,height:36,borderRadius:99,display:'flex',alignItems:'center',justifyContent:'center',border:'1px solid '+border,background:bgCard}},React.createElement(ArrowLeft,{style:{width:20,height:20}})),
+    React.createElement('h2',{style:{fontWeight:800,fontSize:16}},'Real Invite Link - Glowing')
    ),
-   React.createElement('div',{className:'flex-1 p-6 flex flex-col items-center justify-center'},
-    React.createElement('div',{className:'w-full max-w-[400px] rounded-[24px] p-6 border',style:{background:bgSide,borderColor:'#5B5BFF'}},
-     React.createElement('p',{className:'text-[13px] font-bold mb-3'},'Your REAL link:'),
-     React.createElement('div',{className:'p-4 rounded-xl border flex items-center gap-2',style:{background:bgCard,borderColor:'#5B5BFF'}},
-      React.createElement(Link2,{className:'w-4 h-4 text-[#5B5BFF]'}),React.createElement('span',{className:'flex-1 text-[11px] font-mono truncate font-bold'},inviteLink),React.createElement('button',{onClick:()=>{navigator.clipboard.writeText(inviteLink);toastMsg('Copied!');},className:'w-9 h-9 rounded-full bg-[#5B5BFF] text-white flex items-center justify-center'},React.createElement(Copy,{className:'w-4 h-4'}))
+   React.createElement('div',{style:{flex:1,padding:24,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}},
+    React.createElement('div',{style:{width:'100%',maxWidth:400,borderRadius:24,padding:24,border:'2px solid #5B5BFF',background:bgSide,boxShadow:'0 0 40px rgba(91,91,255,0.3)'}},
+     React.createElement('p',{style:{fontSize:13,fontWeight:800,marginBottom:12}},'Your REAL glowing link:'),
+     React.createElement('div',{style:{padding:16,borderRadius:12,border:'1px solid #5B5BFF',background:bgCard,display:'flex',alignItems:'center',gap:8}},
+      React.createElement(Link2,{style:{width:16,height:16,color:'#5B5BFF'}}),React.createElement('span',{style:{flex:1,fontSize:11,fontFamily:'monospace',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',fontWeight:800}},inviteLink),React.createElement('button',{onClick:()=>{navigator.clipboard.writeText(inviteLink);toastMsg('Copied!');},style:{width:36,height:36,borderRadius:99,background:'#5B5BFF',color:'white',display:'flex',alignItems:'center',justifyContent:'center',border:'none'}},React.createElement(Copy,{style:{width:16,height:16}}))
      ),
-     React.createElement('div',{className:'mt-5 grid grid-cols-2 gap-2'},
-      React.createElement('button',{onClick:()=>navigator.clipboard.writeText(inviteLink),className:'h-11 rounded-full bg-[#5B5BFF] text-white text-[13px] font-bold'},'Copy'),
-      React.createElement('button',{onClick:()=>window.open('https://wa.me/?text='+encodeURIComponent(inviteLink),'_blank'),className:'h-11 rounded-full bg-green-500 text-white text-[13px] font-bold'},'WhatsApp')
+     React.createElement('div',{style:{marginTop:20,display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}},
+      React.createElement('button',{onClick:()=>{navigator.clipboard.writeText(inviteLink);toastMsg('Copied!');},style:{height:44,borderRadius:99,background:'#5B5BFF',color:'white',fontSize:13,fontWeight:800,border:'none'}},'Copy'),
+      React.createElement('button',{onClick:()=>window.open('https://wa.me/?text='+encodeURIComponent(inviteLink),'_blank'),style:{height:44,borderRadius:99,background:'#22C55E',color:'white',fontSize:13,fontWeight:800,border:'none'}},'WhatsApp')
      )
     )
    )
   ),
 
-  showQuantum&&React.createElement('div',{className:'fixed inset-0 z-40 flex flex-col',style:{background:bgMain}},
-   React.createElement('div',{className:'h-[60px] border-b flex items-center px-4 gap-3',style:{background:'linear-gradient(90deg,#0A0F2C,#1A2144)',borderColor:'#5B5BFF'}},
-    React.createElement('button',{onClick:()=>setShowQuantum(false),className:'w-9 h-9 rounded-full bg-white/10 flex items-center justify-center'},React.createElement(ArrowLeft,{className:'w-5 h-5 text-white'})),
-    React.createElement('div',{className:'q-orb !w-9 !h-9 !animate-none'},React.createElement('div',{className:'orb-in'},React.createElement(AtomBrain,null))),
-    React.createElement('div',null,React.createElement('div',{className:'font-bold text-[14px] text-white'},'Quantum Mind'),React.createElement('div',{className:'text-[11px] text-cyan-300'},'Atom+Brain • Rainbow'))
+  showQuantum&&React.createElement('div',{style:{position:'fixed',inset:0,zIndex:40,display:'flex',flexDirection:'column',background:bgMain}},
+   React.createElement('div',{style:{height:60,borderBottom:'2px solid #5B5BFF',display:'flex',alignItems:'center',padding:'0 16px',gap:12,background:'linear-gradient(90deg,#0A0F2C,#1A2144)',boxShadow:'0 0 30px rgba(91,91,255,0.4)'}},
+    React.createElement('button',{onClick:()=>setShowQuantum(false),style:{width:36,height:36,borderRadius:99,background:'rgba(255,255,255,0.1)',display:'flex',alignItems:'center',justifyContent:'center',border:'none'}},React.createElement(ArrowLeft,{style:{width:20,height:20,color:'white'}})),
+    React.createElement('div',{className:'qorb',style:{width:36,height:36}},React.createElement('div',{className:'qin'},React.createElement(AtomBrain,null))),
+    React.createElement('div',null,React.createElement('div',{style:{fontWeight:800,fontSize:14,color:'white'}},'Quantum Mind - Super Glow'),React.createElement('div',{style:{fontSize:11,color:'#22D3EE'}},'Atom+Brain • Rainbow edges'))
    ),
-   React.createElement('div',{className:'flex-1 overflow-y-auto p-4 space-y-3'},
-    quantumMsgs.map(m=>React.createElement('div',{key:m.id,className:'flex '+(m.from==='me'?'justify-end':'justify-start')},
-     React.createElement('div',{className:'max-w-[80%] px-4 py-3 rounded-[18px] text-[14px] '+(m.from==='me'?'bg-[#5B5BFF] text-white':'border'),style:m.from!=='me'?{background:bgSide,borderColor:'#5B5BFF'}:{}},
-      m.type==='image'?React.createElement('div',null,React.createElement('img',{src:m.imageUrl,className:'rounded-xl w-full max-w-[300px] mb-2'}),React.createElement('div',null,m.text)):React.createElement('div',null,m.text),
-      React.createElement('div',{className:'text-[10px] opacity-60 mt-2'},m.time)
+   React.createElement('div',{style:{flex:1,overflowY:'auto',padding:16,display:'flex',flexDirection:'column',gap:12}},
+    qMsgs.map(m=>React.createElement('div',{key:m.id,style:{display:'flex',justifyContent:m.from==='me'?'flex-end':'flex-start'}},
+     React.createElement('div',{style:{maxWidth:'80%',padding:'12px 16px',borderRadius:18,fontSize:14,background:m.from==='me'?'#5B5BFF':'',color:m.from==='me'?'white':textMain,border:m.from!=='me'?'1px solid #5B5BFF':'none',backgroundColor:m.from!=='me'?bgSide:'',boxShadow:m.from==='me'?'0 0 20px rgba(91,91,255,0.5)':'0 0 20px rgba(91,91,255,0.2)'}},
+      React.createElement('div',null,m.text),React.createElement('div',{style:{fontSize:10,opacity:0.6,marginTop:8}},m.time)
      )
     )),
-    thinking&&React.createElement('div',{className:'flex justify-start'},React.createElement('div',{className:'border px-4 py-3 rounded-[18px] flex items-center gap-2',style:{background:bgSide,borderColor:'#5B5BFF'}},React.createElement('div',{className:'w-2 h-2 bg-[#5B5BFF] rounded-full animate-bounce'}),React.createElement('span',{className:'text-[12px]',style:{color:textMuted}},'Thinking...')))
+    thinking&&React.createElement('div',{style:{display:'flex',justifyContent:'flex-start'}},React.createElement('div',{style:{border:'1px solid #5B5BFF',padding:'12px 16px',borderRadius:18,display:'flex',alignItems:'center',gap:8,background:bgSide,boxShadow:'0 0 20px rgba(91,91,255,0.3)'}},React.createElement('div',{style:{width:8,height:8,background:'#5B5BFF',borderRadius:99,animation:'glowPulse 1s infinite'}}),React.createElement('span',{style:{fontSize:12,color:muted}},'Glowing thinking...')))
    ),
-   React.createElement('div',{className:'p-3 flex gap-2 border-t',style:{background:bgSide,borderColor:border}},
-    React.createElement('input',{value:input,onChange:e=>setInput(e.target.value),onKeyDown:e=>{if(e.key==='Enter'){e.preventDefault();send();}},placeholder:'Ask Quantum...',className:'flex-1 h-11 px-4 rounded-full border outline-none text-[14px]',style:{background:bgCard,borderColor:'#5B5BFF',color:textMain}}),
-    React.createElement('button',{onClick:send,className:'w-11 h-11 rounded-full bg-[#5B5BFF] text-white flex items-center justify-center'},React.createElement(Send,{className:'w-5 h-5'}))
+   React.createElement('div',{style:{padding:12,display:'flex',gap:8,borderTop:'1px solid '+border,background:bgSide}},
+    React.createElement('input',{value:input,onChange:e=>setInput(e.target.value),onKeyDown:e=>{if(e.key==='Enter'){e.preventDefault();send();}},placeholder:'Ask Quantum glowing...',style:{flex:1,height:44,padding:'0 16px',borderRadius:99,border:'2px solid #5B5BFF',background:bgCard,color:textMain,outline:'none',fontSize:14,boxShadow:'0 0 15px rgba(91,91,255,0.3)'}}),
+    React.createElement('button',{onClick:send,style:{width:44,height:44,borderRadius:99,background:'#5B5BFF',color:'white',display:'flex',alignItems:'center',justifyContent:'center',border:'none',boxShadow:'0 0 20px rgba(91,91,255,0.5)'}},React.createElement(Send,{style:{width:20,height:20}}))
    )
   ),
 
-  showSettings&&React.createElement('div',{className:'fixed inset-0 z-50 flex flex-col',style:{background:bgMain}},
-   React.createElement('div',{className:'h-[60px] border-b flex items-center px-4 gap-3',style:{background:bgSide,borderColor:border}},
-    React.createElement('button',{onClick:()=>setShowSettings(false),className:'w-9 h-9 rounded-full flex items-center justify-center border',style:{background:bgCard}},React.createElement(ArrowLeft,{className:'w-5 h-5'})),
-    React.createElement('h2',{className:'font-bold text-[16px]'},'Settings - Profile')
+  showSettings&&React.createElement('div',{style:{position:'fixed',inset:0,zIndex:50,display:'flex',flexDirection:'column',background:bgMain}},
+   React.createElement('div',{style:{height:60,borderBottom:'1px solid '+border,display:'flex',alignItems:'center',padding:'0 16px',gap:12,background:bgSide}},
+    React.createElement('button',{onClick:()=>setShowSettings(false),style:{width:36,height:36,borderRadius:99,display:'flex',alignItems:'center',justifyContent:'center',border:'1px solid '+border,background:bgCard}},React.createElement(ArrowLeft,{style:{width:20,height:20}})),
+    React.createElement('h2',{style:{fontWeight:800,fontSize:16}},'Settings - Profile Picture Glowing')
    ),
-   React.createElement('div',{className:'flex-1 p-5 overflow-y-auto'},
-    React.createElement('div',{className:'max-w-[400px] mx-auto space-y-5'},
-     React.createElement('div',{className:'rounded-[24px] p-6 border text-center',style:{background:bgSide,borderColor:'#5B5BFF',boxShadow:'0 0 20px rgba(91,91,255,0.15)'}},
-      React.createElement('h3',{className:'font-bold text-[14px] mb-4'},'Profile Picture'),
-      React.createElement('div',{className:'relative w-28 h-28 mx-auto cursor-pointer group',onClick:()=>{if(avatarRef.current) avatarRef.current.click();}},
-       user&&user.avatar?React.createElement('img',{src:user.avatar,className:'w-28 h-28 rounded-full object-cover ring-4 ring-[#5B5BFF]/40 shadow-xl'}):React.createElement('div',{className:'w-28 h-28 rounded-full flex items-center justify-center text-[36px] font-bold text-white shadow-xl',style:{background:'linear-gradient(135deg,#5B5BFF,#8B5CF6)'}},user?user.name[0].toUpperCase():'A'),
-       React.createElement('div',{className:'absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition'},
-        React.createElement(Camera,{className:'w-8 h-8 text-white'})
-       ),
-       React.createElement('div',{className:'absolute -bottom-1 -right-1 w-9 h-9 rounded-full bg-[#5B5BFF] flex items-center justify-center shadow-lg border-2 border-white'},
-        React.createElement(Camera,{className:'w-4 h-4 text-white'})
-       )
+   React.createElement('div',{style:{flex:1,padding:20,overflowY:'auto'}},
+    React.createElement('div',{style:{maxWidth:400,margin:'0 auto',display:'flex',flexDirection:'column',gap:20}},
+     React.createElement('div',{style:{borderRadius:24,padding:24,border:'2px solid #5B5BFF',background:bgSide,textAlign:'center',boxShadow:'0 0 30px rgba(91,91,255,0.2)'}},
+      React.createElement('h3',{style:{fontWeight:800,fontSize:14,marginBottom:16}},'Profile Picture - Real Upload'),
+      React.createElement('div',{style:{position:'relative',width:112,height:112,margin:'0 auto',cursor:'pointer'},onClick:()=>settingsAvatarRef.current&&settingsAvatarRef.current.click()},
+       user&&user.avatar?React.createElement('img',{src:user.avatar,style:{width:112,height:112,borderRadius:999,objectFit:'cover',border:'4px solid #5B5BFF',boxShadow:'0 0 30px rgba(91,91,255,0.6),0 0 60px rgba(0,212,255,0.3)'}}):React.createElement('div',{style:{width:112,height:112,borderRadius:999,display:'flex',alignItems:'center',justifyContent:'center',fontSize:36,fontWeight:800,color:'white',background:'linear-gradient(135deg,#5B5BFF,#8B5CF6)',boxShadow:'0 0 30px rgba(91,91,255,0.5)'}},user?user.name[0].toUpperCase():'A'),
+       React.createElement('div',{style:{position:'absolute',bottom:-4,right:-4,width:36,height:36,borderRadius:99,background:'#5B5BFF',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 0 15px #5B5BFF',border:'2px solid white'}},React.createElement(Camera,{style:{width:16,height:16,color:'white'}}))
       ),
-      React.createElement('p',{className:'text-[13px] font-bold mt-4',style:{color:textMain}},user?user.name:'Your Name'),
-      React.createElement('p',{className:'text-[11px] mt-1',style:{color:textMuted}},user?user.phone:'+234...'),
-      React.createElement('div',{className:'mt-4 flex gap-2 justify-center'},
-       React.createElement('button',{onClick:()=>{if(avatarRef.current) avatarRef.current.click();},className:'h-9 px-4 rounded-full bg-[#5B5BFF] text-white text-[12px] font-bold flex items-center gap-1.5'},React.createElement(Camera,{className:'w-4 h-4'}),'Change Photo'),
-       user&&user.avatar?React.createElement('button',{onClick:()=>{const u={...user,avatar:''};setUser(u);toastMsg('Profile pic removed');},className:'h-9 px-4 rounded-full border text-[12px] font-bold',style:{background:bgCard,borderColor:border}},'Remove'):null
+      React.createElement('p',{style:{fontSize:13,fontWeight:800,marginTop:16,color:textMain}},user?user.name:'Your Name'),
+      React.createElement('p',{style:{fontSize:11,marginTop:4,color:muted}},user?user.phone:'+234...'),
+      React.createElement('div',{style:{marginTop:16,display:'flex',gap:8,justifyContent:'center'}},
+       React.createElement('button',{onClick:()=>settingsAvatarRef.current&&settingsAvatarRef.current.click(),style:{height:36,padding:'0 16px',borderRadius:99,background:'#5B5BFF',color:'white',fontSize:12,fontWeight:800,display:'flex',alignItems:'center',gap:6,border:'none',boxShadow:'0 0 20px rgba(91,91,255,0.4)'}},React.createElement(Camera,{style:{width:14,height:14}}),'Change Photo'),
+       user&&user.avatar?React.createElement('button',{onClick:()=>{const u={...user,avatar:''};setUser(u);toastMsg('Removed - Glowing off');},style:{height:36,padding:'0 16px',borderRadius:99,border:'1px solid '+border,background:bgCard,color:textMain,fontSize:12,fontWeight:700}},'Remove'):null
       ),
-      React.createElement('p',{className:'text-[10px] mt-3',style:{color:textMuted}},'Tap picture to upload • Real photo • Glowing ring')
+      React.createElement('p',{style:{fontSize:10,marginTop:12,color:muted}},'Tap picture to upload real photo • Glowing rainbow ring • Real only'),
+      React.createElement('input',{ref:settingsAvatarRef,type:'file',accept:'image/*',style:{display:'none'},onChange:e=>{const f=e.target.files&&e.target.files[0];if(f)compressAvatar(f,d=>{const u={...user,avatar:d};setUser(u);toastMsg('Profile pic updated! Super glowing!');});}})
      ),
-     React.createElement('div',{className:'rounded-[20px] p-5 border',style:{background:bgSide,borderColor:border}},
-      React.createElement('h3',{className:'font-bold text-[14px]'},'White & Dark'),
-      React.createElement('div',{className:'mt-3 grid grid-cols-2 gap-3'},
-       React.createElement('button',{onClick:()=>setTheme('dark'),className:'h-14 rounded-xl border-2 flex flex-col items-center justify-center gap-1 '+(theme==='dark'?'border-[#5B5BFF]':'border-transparent'),style:{background:'#0A0F2C'}},React.createElement('span',{className:'text-[11px] text-white font-bold'},'Dark')),
-       React.createElement('button',{onClick:()=>setTheme('light'),className:'h-14 rounded-xl border-2 flex flex-col items-center justify-center gap-1 '+(theme==='light'?'border-[#5B5BFF]':'border-transparent'),style:{background:'#FFFFFF'}},React.createElement('span',{className:'text-[11px] text-black font-bold'},'White'))
+     React.createElement('div',{style:{borderRadius:20,padding:20,border:'1px solid '+border,background:bgSide}},
+      React.createElement('h3',{style:{fontWeight:800,fontSize:14}},'White & Dark + Glow'),
+      React.createElement('div',{style:{marginTop:12,display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}},
+       React.createElement('button',{onClick:()=>setTheme('dark'),style:{height:56,borderRadius:12,border:'2px solid '+(theme==='dark'?'#5B5BFF':'transparent'),background:'#0A0F2C',color:'white',fontWeight:800,fontSize:11}},'Dark Glowing'),
+       React.createElement('button',{onClick:()=>setTheme('light'),style:{height:56,borderRadius:12,border:'2px solid '+(theme==='light'?'#5B5BFF':'transparent'),background:'#FFFFFF',color:'black',fontWeight:800,fontSize:11}},'White Glowing')
       )
      ),
-     React.createElement('input',{ref:avatarRef,type:'file',accept:'image/*',hidden:true,onChange:e=>{const f=e.target.files&&e.target.files[0]; if(f){const reader=new FileReader(); reader.onload=()=>{const img=new Image(); img.onload=()=>{const c=document.createElement('canvas');c.width=300;c.height=300;const ctx=c.getContext('2d');const s=Math.max(300/img.width,300/img.height);const w=img.width*s;const h=img.height*s;ctx.fillStyle='#fff';ctx.fillRect(0,0,300,300);ctx.drawImage(img,(300-w)/2,(300-h)/2,w,h);const data=c.toDataURL('image/jpeg',0.85);const u={...user,avatar:data};setUser(u);toastMsg('Profile pic updated! Glowing!');}; img.src=reader.result;}; reader.readAsDataURL(f);} } }),React.createElement('button',{onClick:()=>{try{localStorage.clear();}catch{} location.reload();},className:'w-full h-11 rounded-full border text-[12px] font-bold mt-4',style:{background:bgCard,borderColor:'red',color:'red'}},'Clear Data')
+     React.createElement('button',{onClick:()=>{if(confirm('Clear all real data?')){try{localStorage.clear();}catch{} location.reload();}},style:{width:'100%',height:44,borderRadius:99,border:'1px solid #EF4444',background:bgCard,color:'#EF4444',fontSize:12,fontWeight:800}},'Clear Real Data')
     )
    )
   ),
 
-  toast&&React.createElement('div',{className:'fixed bottom-[90px] left-1/2 -translate-x-1/2 z-[70] border text-[13px] px-5 py-3 rounded-full shadow-2xl flex items-center gap-2',style:{background:bgSide,borderColor:'#5B5BFF'}},
-   React.createElement('div',{className:'w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse'}),React.createElement('span',{className:'font-medium'},toast)
+  toast&&React.createElement('div',{style:{position:'fixed',bottom:90,left:'50%',transform:'translateX(-50%)',zIndex:70,border:'2px solid #5B5BFF',fontSize:13,padding:'12px 20px',borderRadius:99,boxShadow:'0 0 30px rgba(91,91,255,0.5)',display:'flex',alignItems:'center',gap:8,background:bgSide,color:textMain}},
+   React.createElement('div',{style:{width:10,height:10,borderRadius:99,background:'#22C55E',animation:'glowPulse 1s infinite'}}),React.createElement('span',{style:{fontWeight:600}},toast)
   )
  );
 }
-createRoot(document.getElementById('root')).render(React.createElement(App));
-
-// Global avatar handler for settings
-window.updateProfilePic = (file) => {
-  const reader = new FileReader();
-  reader.onload=()=>{
-    const img=new Image();
-    img.onload=()=>{
-      const c=document.createElement('canvas');c.width=300;c.height=300;
-      const ctx=c.getContext('2d');
-      const s=Math.max(300/img.width,300/img.height);
-      const w=img.width*s; const h=img.height*s;
-      ctx.fillStyle='#fff'; ctx.fillRect(0,0,300,300);
-      ctx.drawImage(img,(300-w)/2,(300-h)/2,w,h);
-      const data=c.toDataURL('image/jpeg',0.85);
-      try{
-        const u=JSON.parse(localStorage.getItem('cs_user')||'{}');
-        u.avatar=data;
-        localStorage.setItem('cs_user',JSON.stringify(u));
-        location.reload();
-      }catch(e){}
-    };
-    img.src=reader.result;
-  };
-  reader.readAsDataURL(file);
-}
+const root=createRoot(document.getElementById('root'));
+root.render(React.createElement(App));
 </script>
 </body>
 </html>
