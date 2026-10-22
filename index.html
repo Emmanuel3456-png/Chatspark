@@ -2,478 +2,375 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>CHATSPARK - Secure Real Chat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CHATSPARK Secure Real</title>
 <link rel="icon" href="./icon-512.png">
-<meta name="theme-color" content="#0A0F2C">
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <style>
-*{font-family:Inter,system-ui,sans-serif}h1,h2{font-family:'Plus Jakarta Sans',sans-serif}
-@keyframes glowRotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-@keyframes pulseGlow{0%,100%{box-shadow:0 0 15px #5B5BFF,0 0 30px #8B5CF6,0 0 45px #EC4899}50%{box-shadow:0 0 25px #00D4FF,0 0 45px #5B5BFF,0 0 65px #FFD60A}}
-.quantum-orb{position:relative;width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#7A7CFF,#5B5BFF 40%,#2D2FA0 80%);display:flex;align-items:center;justify-content:center;animation:pulseGlow 2.5s infinite;cursor:pointer;z-index:30}
-.quantum-orb::before{content:'';position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(from 0deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#8B5CF6,#5B5BFF);animation:glowRotate 3s linear infinite;z-index:-1}
-.quantum-orb::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 30% 30%,#7A7CFF,#5B5BFF 40%,#2D2FA0);z-index:0}
-.orb-content{position:relative;z-index:1}
-@keyframes securePulse{0%,100%{opacity:1}50%{opacity:0.6}}
-.secure-badge{animation:securePulse 2s infinite}
-::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:#1E264E;border-radius:10px}
-.code-box{letter-spacing:0.5em}
+*{font-family:Inter,sans-serif}h1{font-family:'Plus Jakarta Sans',sans-serif}
+@keyframes rotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes pulseG{0%,100%{box-shadow:0 0 12px #5B5BFF,0 0 24px #8B5CF6}50%{box-shadow:0 0 20px #00D4FF,0 0 40px #5B5BFF}}
+.q-orb{position:relative;width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#7A7CFF,#5B5BFF 45%,#2D2FA0);display:flex;align-items:center;justify-content:center;animation:pulseG 2s infinite;cursor:pointer}
+.q-orb:before{content:'';position:absolute;inset:-3px;border-radius:50%;background:conic-gradient(from 0deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#5B5BFF);animation:rotate 3s linear infinite;z-index:-1}
 </style>
 </head>
-<body class="bg-[#0A0F2C] text-white">
-<div id="root"></div>
+<body class="bg-[#0A0F2C] text-white m-0">
+<div id="root">Loading ChatSpark Secure...</div>
 <script type="importmap">
 {"imports":{"react":"https://esm.sh/react@18.2.0","react-dom/client":"https://esm.sh/react-dom@18.2.0/client","lucide-react":"https://esm.sh/lucide-react@0.344.0?external=react"}}
 </script>
 <script type="module">
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState,useEffect,useRef} from 'react';
 import {createRoot} from 'react-dom/client';
 import * as Lucide from 'lucide-react';
-const { MessageCircle, Search, UserPlus, Link2, X, Copy, Send, ArrowLeft, Brain, Settings, Sparkles, ShieldCheck, Lock, Fingerprint, KeyRound, Eye, EyeOff, Smartphone, CheckCircle, AlertTriangle, Palette, Sun, Moon, Zap, Download } = Lucide;
+const {MessageCircle,Search,UserPlus,Link2,X,Copy,Send,ArrowLeft,Brain,Settings,Sparkles,ShieldCheck,Lock,Fingerprint,Smartphone,CheckCircle,AlertTriangle,Sun,Moon,Download,KeyRound,Camera} = Lucide;
 
 async function callGroq(messages, localKey){
-  try{
-    let res = await fetch('/api/quantum',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages})});
-    if(!res.ok) res = await fetch('/.netlify/functions/quantum',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages})});
-    if(res.ok){const d=await res.json(); if(d.choices?.[0]?.message) return {text:d.choices[0].message.content};}
-  }catch(e){}
-  if(!localKey) throw new Error('ENV_NOT_SET');
-  const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${localKey}`},body:JSON.stringify({model:'llama-3.1-70b-versatile',messages})});
-  const d=await r.json(); return {text:d.choices[0].message.content};
+ try{
+  let res=await fetch('/api/quantum',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages})});
+  if(!res.ok) res=await fetch('/.netlify/functions/quantum',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages})});
+  if(res.ok){const d=await res.json(); if(d.choices&&d.choices[0]&&d.choices[0].message) return {text:d.choices[0].message.content};}
+ }catch(e){}
+ if(!localKey) throw new Error('ENV_NOT_SET');
+ const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+localKey},body:JSON.stringify({model:'llama-3.1-70b-versatile',messages})});
+ const d=await r.json(); return {text:d.choices[0].message.content};
 }
-function genImgUrl(p){return `https://image.pollinations.ai/prompt/${encodeURIComponent(p)}?width=512&height=512&seed=${Date.now()}&nologo=true`;}
+function genImgUrl(p){return 'https://image.pollinations.ai/prompt/'+encodeURIComponent(p)+'?width=512&height=512&seed='+Date.now()+'&nologo=true';}
 
 function App(){
-  const [theme,setTheme]=useState(()=>localStorage.getItem('cs_theme_v2')||'dark');
-  const [user,setUser]=useState(()=>{try{const s=localStorage.getItem('cs_user');return s?JSON.parse(s):null}catch{return null}});
-  const [onboarding,setOnboarding]=useState(()=>{try{return !localStorage.getItem('cs_user')}catch{return true}});
-  const [step,setStep]=useState(1);
-  const [form,setForm]=useState({name:'',username:'',phone:'',avatar:'',code:'',enteredCode:''});
-  const [genCode,setGenCode]=useState('');
-  const [showCode,setShowCode]=useState(false);
-  const [contacts,setContacts]=useState(()=>{try{const s=localStorage.getItem('cs_contacts_v3');return s?JSON.parse(s):[{id:'c1',name:'Emmanuel (Real Contact)',phone:'+234 801 234 5678',username:'emmanuel_real',hasApp:true,avatar:''},{id:'c2',name:'Sarah (Real)',phone:'+234 802 345 6789',username:'sarah_real',hasApp:true},{id:'c3',name:'John No App',phone:'+234 803 456 7890',username:'john_noapp',hasApp:false}]}catch{return []}});
-  const [friends,setFriends]=useState(()=>{try{const s=localStorage.getItem('cs_friends_v3');return s?JSON.parse(s):[]}catch{return []}});
-  const [chats,setChats]=useState(()=>{try{const s=localStorage.getItem('cs_chats_v3');return s?JSON.parse(s):[]}catch{return []}});
-  const [selectedId,setSelectedId]=useState(null);
-  const [showAdd,setShowAdd]=useState(false);
-  const [search,setSearch]=useState('');
-  const [showInvite,setShowInvite]=useState(false);
-  const [showSettings,setShowSettings]=useState(false);
-  const [showQuantum,setShowQuantum]=useState(false);
-  const [input,setInput]=useState('');
-  const [toast,setToast]=useState(null);
-  const [groqKey,setGroqKey]=useState(()=>localStorage.getItem('groq_api_key')||'');
-  const [quantumMsgs,setQuantumMsgs]=useState(()=>{try{const s=localStorage.getItem('cs_quantum_v3');return s?JSON.parse(s):[{id:'q0',from:'them',text:"🔵 Quantum Mind • Blue Secure Core\n\nHey! I'm your AI - now floating at the edge with glowing edges! 🌈\n\n• I glow blue + purple + yellow + cyan\n• Tap my orb at the edge anytime\n• Try /image cat in space\n• Real friends only - no random names!\n\nBuilt secure by Abraham Emmanuel 🔒",time:new Date().toLocaleTimeString(),type:'text'}]}catch{return []}});
-  const [thinking,setThinking]=useState(false);
-  const [deferredPrompt,setDeferredPrompt]=useState(null);
-  const [showInstall,setShowInstall]=useState(()=>localStorage.getItem('cs_install_dismissed')!=='true');
-  const [isInstalled,setIsInstalled]=useState(()=>window.matchMedia('(display-mode: standalone)').matches||localStorage.getItem('cs_installed')==='true');
-  const avatarRef=useRef(null);
+ const [theme,setTheme]=useState(()=>{try{return localStorage.getItem('cs_theme_final')||'dark';}catch{return 'dark';}});
+ const [user,setUser]=useState(()=>{try{const s=localStorage.getItem('cs_user');return s?JSON.parse(s):null;}catch{return null;}});
+ const [onboarding,setOnboarding]=useState(()=>{try{return !localStorage.getItem('cs_user');}catch{return true;}});
+ const [step,setStep]=useState(1);
+ const [form,setForm]=useState({name:'',username:'',phone:'',avatar:'',enteredCode:''});
+ const [genCode,setGenCode]=useState('');
+ const [contacts,setContacts]=useState(()=>{try{const s=localStorage.getItem('cs_contacts_final');return s?JSON.parse(s):[{id:'c1',name:'Emmanuel (Real)',phone:'+234 801 234 5678',username:'emmanuel_real',hasApp:true},{id:'c2',name:'Sarah Real',phone:'+234 802 345 6789',username:'sarah_real',hasApp:true},{id:'c3',name:'John No App',phone:'+234 803 456 7890',username:'john_noapp',hasApp:false}];}catch{return [];}});
+ const [friends,setFriends]=useState(()=>{try{const s=localStorage.getItem('cs_friends_final');return s?JSON.parse(s):[];}catch{return [];}});
+ const [chats,setChats]=useState(()=>{try{const s=localStorage.getItem('cs_chats_final');return s?JSON.parse(s):[];}catch{return [];}});
+ const [selectedId,setSelectedId]=useState(null);
+ const [showAdd,setShowAdd]=useState(false);
+ const [search,setSearch]=useState('');
+ const [showInvite,setShowInvite]=useState(false);
+ const [showSettings,setShowSettings]=useState(false);
+ const [showQuantum,setShowQuantum]=useState(false);
+ const [input,setInput]=useState('');
+ const [toast,setToast]=useState(null);
+ const [groqKey,setGroqKey]=useState(()=>{try{return localStorage.getItem('groq_api_key')||'';}catch{return '';}});
+ const [quantumMsgs,setQuantumMsgs]=useState(()=>{try{const s=localStorage.getItem('cs_quantum_final');return s?JSON.parse(s):[{id:'q0',from:'them',text:'Blue Quantum Mind - Glowing edges! I am now at edge orb. Real only - no random names!',time:new Date().toLocaleTimeString(),type:'text'}];}catch{return [];}});
+ const [thinking,setThinking]=useState(false);
+ const [deferredPrompt,setDeferredPrompt]=useState(null);
+ const [showInstall,setShowInstall]=useState(()=>{try{return localStorage.getItem('cs_install_dismissed')!=='true';}catch{return true;}});
+ const [isInstalled,setIsInstalled]=useState(()=>{try{return window.matchMedia('(display-mode: standalone)').matches||localStorage.getItem('cs_installed')==='true';}catch{return false;}});
+ const avatarRef=useRef(null);
 
-  const selectedChat=chats.find(c=>c.id===selectedId)||null;
-  const isDark=theme==='dark';
-  const bgMain=isDark?'#0A0F2C':'#FFFFFF';
-  const bgSide=isDark?'#141A3A':'#F6F7F9';
-  const bgCard=isDark?'#1E264E':'#E9EDEF';
-  const border=isDark?'#1E264E':'#E5E7EB';
-  const textMuted=isDark?'#9CA3AF':'#667781';
-  const textMain=isDark?'white':'#111B21';
+ const selectedChat=chats.find(function(c){return c.id===selectedId;})||null;
+ const isDark=theme==='dark';
+ const bgMain=isDark?'#0A0F2C':'#FFFFFF';
+ const bgSide=isDark?'#141A3A':'#F6F7F9';
+ const bgCard=isDark?'#1E264E':'#E9EDEF';
+ const border=isDark?'#1E264E':'#E5E7EB';
+ const textMuted=isDark?'#9CA3AF':'#667781';
+ const textMain=isDark?'white':'#111B21';
 
-  useEffect(()=>{localStorage.setItem('cs_theme_v2',theme)},[theme]);
-  useEffect(()=>{if(user) localStorage.setItem('cs_user',JSON.stringify(user))},[user]);
-  useEffect(()=>{localStorage.setItem('cs_contacts_v3',JSON.stringify(contacts))},[contacts]);
-  useEffect(()=>{localStorage.setItem('cs_friends_v3',JSON.stringify(friends))},[friends]);
-  useEffect(()=>{localStorage.setItem('cs_chats_v3',JSON.stringify(chats))},[chats]);
-  useEffect(()=>{localStorage.setItem('cs_quantum_v3',JSON.stringify(quantumMsgs))},[quantumMsgs]);
-  useEffect(()=>{if(groqKey) localStorage.setItem('groq_api_key',groqKey)},[groqKey]);
-  useEffect(()=>{
-    const before=e=>{e.preventDefault();setDeferredPrompt(e);setShowInstall(true);};
-    const installed=()=>{setIsInstalled(true);setShowInstall(false);localStorage.setItem('cs_installed','true');toastMsg('✅ Installed!');};
-    window.addEventListener('beforeinstallprompt',before);
-    window.addEventListener('appinstalled',installed);
-    if(window.matchMedia('(display-mode: standalone)').matches) setIsInstalled(true);
-    return()=>{window.removeEventListener('beforeinstallprompt',before);window.removeEventListener('appinstalled',installed);};
-  },[]);
+ useEffect(function(){try{localStorage.setItem('cs_theme_final',theme);}catch{}},[theme]);
+ useEffect(function(){if(user) try{localStorage.setItem('cs_user',JSON.stringify(user));}catch{}},[user]);
+ useEffect(function(){try{localStorage.setItem('cs_contacts_final',JSON.stringify(contacts));}catch{}},[contacts]);
+ useEffect(function(){try{localStorage.setItem('cs_friends_final',JSON.stringify(friends));}catch{}},[friends]);
+ useEffect(function(){try{localStorage.setItem('cs_chats_final',JSON.stringify(chats));}catch{}},[chats]);
+ useEffect(function(){try{localStorage.setItem('cs_quantum_final',JSON.stringify(quantumMsgs));}catch{}},[quantumMsgs]);
+ useEffect(function(){try{if(groqKey) localStorage.setItem('groq_api_key',groqKey);}catch{}},[groqKey]);
 
-  function toastMsg(m){setToast(m);setTimeout(()=>setToast(null),3500);}
+ useEffect(function(){
+  function before(e){e.preventDefault();setDeferredPrompt(e);setShowInstall(true);}
+  function installed(){setIsInstalled(true);setShowInstall(false);try{localStorage.setItem('cs_installed','true');}catch{} toastMsg('Installed!');}
+  window.addEventListener('beforeinstallprompt',before);
+  window.addEventListener('appinstalled',installed);
+  try{if(window.matchMedia('(display-mode: standalone)').matches) setIsInstalled(true);}catch{}
+  return function(){window.removeEventListener('beforeinstallprompt',before);window.removeEventListener('appinstalled',installed);};
+ },[]);
 
-  async function handleAvatar(file){
-    const reader=new FileReader();
-    reader.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=300;c.height=300;const ctx=c.getContext('2d');const s=Math.max(300/img.width,300/img.height);const w=img.width*s;const h=img.height*s;ctx.fillStyle='#fff';ctx.fillRect(0,0,300,300);ctx.drawImage(img,(300-w)/2,(300-h)/2,w,h);setForm(f=>({...f,avatar:c.toDataURL('image/jpeg',0.85)}));};img.src=reader.result;};reader.readAsDataURL(file);
-  }
+ function toastMsg(m){setToast(m);setTimeout(function(){setToast(null);},3000);}
 
-  function genCodeFunc(){
-    if(!form.name.trim()||form.name.trim().length<2){toastMsg('Enter real full name (min 2 chars)');return;}
-    if(!form.username.trim()||form.username.trim().length<3){toastMsg('Username min 3 chars - real');return;}
-    if(!form.phone.trim()||form.phone.replace(/\D/g,'').length<10){toastMsg('Enter real phone (+234...)');return;}
-    const code=Math.floor(100000+Math.random()*900000).toString();
-    setGenCode(code);setStep(2);toastMsg('Secure code generated 🔐 '+code);
-  }
-  function verify(){
-    if(form.enteredCode.trim()!==genCode){toastMsg('❌ Wrong secure code! Code is '+genCode);return;}
-    const u={name:form.name.trim(),username:form.username.trim().toLowerCase(),phone:form.phone.trim(),avatar:form.avatar};
-    setUser(u);setOnboarding(false);toastMsg('🔒 Secure login success! No fake data.');
-  }
+ function handleAvatar(file){
+  const reader=new FileReader();
+  reader.onload=function(){
+   const img=new Image();
+   img.onload=function(){
+    const c=document.createElement('canvas');c.width=200;c.height=200;
+    const ctx=c.getContext('2d');const s=Math.max(200/img.width,200/img.height);
+    const w=img.width*s;const h=img.height*s;
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,200,200);
+    ctx.drawImage(img,(200-w)/2,(200-h)/2,w,h);
+    setForm(function(f){return {...f,avatar:c.toDataURL('image/jpeg',0.8)};});
+   };
+   img.src=reader.result;
+  };
+  reader.readAsDataURL(file);
+ }
 
-  async function pickRealContacts(){
-    if('contacts' in navigator && 'ContactsManager' in window){
-      try{
-        const props=['name','tel']; const opts={multiple:true}; const cs=await navigator.contacts.select(props,opts);
-        const real=cs.map((c,i)=>({id:'rc-'+Date.now()+'-'+i,name:c.name?.[0]||'Unknown',phone:c.tel?.[0]||'',username:(c.name?.[0]||'user').toLowerCase().replace(/\s+/g,'')+Math.floor(Math.random()*100),hasApp:Math.random()>0.3,avatar:''}));
-        if(real.length>0){setContacts(prev=>[...real,...prev]); toastMsg(`Found ${real.length} real contacts from phone!`); return;}
-      }catch(e){console.log(e);}
+ function genCodeFunc(){
+  if(!form.name.trim()||form.name.trim().length<2){toastMsg('Enter real name min 2');return;}
+  if(!form.username.trim()||form.username.trim().length<3){toastMsg('Username min 3 real');return;}
+  if(!form.phone.trim()||form.phone.replace(/\D/g,'').length<10){toastMsg('Enter real phone +234...');return;}
+  const code=Math.floor(100000+Math.random()*900000).toString();
+  setGenCode(code);setStep(2);toastMsg('Secure code: '+code);
+ }
+ function verify(){
+  if(form.enteredCode.trim()!==genCode){toastMsg('Wrong code! Is '+genCode);return;}
+  const u={name:form.name.trim(),username:form.username.trim().toLowerCase(),phone:form.phone.trim(),avatar:form.avatar};
+  setUser(u);setOnboarding(false);toastMsg('Secure login! No fake');
+ }
+
+ function addRealFriend(c){
+  if(!c.hasApp){setShowInvite(true);setShowAdd(false);toastMsg(c.name+' not on ChatSpark - invite with real link!');return;}
+  if(friends.find(function(f){return f.id===c.id;})){toastMsg('Already real friend');return;}
+  setFriends(function(f){return [c].concat(f);});
+  const nc={id:'chat-'+c.id+'-'+Date.now(),friendId:c.id,name:c.name,username:c.username,avatar:c.avatar||'',messages:[{id:'m0',from:'them',text:'Verified real contact! No random names.',time:new Date().toLocaleTimeString()}],lastMessage:'Verified real',lastTime:new Date().toLocaleTimeString()};
+  setChats(function(ch){return [nc].concat(ch);});setSelectedId(nc.id);setShowAdd(false);toastMsg('Added '+c.name+' verified!');
+ }
+
+ function send(){
+  if(!input.trim()) return;
+  if(showQuantum){sendQuantum();return;}
+  if(!selectedChat) return;
+  const msg={id:Date.now().toString(),from:'me',text:input.trim(),time:new Date().toLocaleTimeString()};
+  setChats(chats.map(function(c){if(c.id===selectedChat.id){return {...c,messages:c.messages.concat([msg]),lastMessage:msg.text,lastTime:msg.time};}return c;}));
+  setInput('');
+  setTimeout(function(){const rep={id:(Date.now()+1).toString(),from:'them',text:'Real reply!',time:new Date().toLocaleTimeString()};setChats(function(prev){return prev.map(function(c){if(c.id===selectedChat.id){return {...c,messages:c.messages.concat([rep]),lastMessage:rep.text,lastTime:rep.time};}return c;});});},700);
+ }
+
+ function sendQuantum(){
+  const text=input.trim();if(!text) return;
+  const uMsg={id:Date.now().toString(),from:'me',text:text,time:new Date().toLocaleTimeString(),type:'text'};
+  setQuantumMsgs(function(m){return m.concat([uMsg]);});setInput('');setThinking(true);
+  (async function(){
+   try{
+    if(text.toLowerCase().indexOf('/image')!==-1){
+     let prompt=text.replace(/\/image/gi,'').trim()||'blue orb';
+     const url=genImgUrl(prompt);
+     setTimeout(function(){setQuantumMsgs(function(m){return m.concat([{id:(Date.now()+1).toString(),from:'them',text:'Blue generated: '+prompt,time:new Date().toLocaleTimeString(),type:'image',imageUrl:url}]);});setThinking(false);},1000);return;
     }
-    toastMsg('Phone contacts API not available - use real contacts list below');
-  }
+    const msgs=[{role:'system',content:'You are Quantum Mind blue glowing edges in ChatSpark by Abraham Emmanuel. Real only.'}].concat(quantumMsgs.slice(-6).map(function(m){return {role:m.from==='me'?'user':'assistant',content:m.text};})).concat([{role:'user',content:text}]);
+    const res=await callGroq(msgs,groqKey);
+    setQuantumMsgs(function(m){return m.concat([{id:(Date.now()+1).toString(),from:'them',text:res.text,time:new Date().toLocaleTimeString(),type:'text'}]);});
+   }catch(e){setQuantumMsgs(function(m){return m.concat([{id:(Date.now()+1).toString(),from:'them',text:e.message==='ENV_NOT_SET'?'Set GROQ_API_KEY in Vercel':e.message,time:new Date().toLocaleTimeString(),type:'text'}]);});}
+   setThinking(false);
+  })();
+ }
 
-  function addRealFriend(c){
-    if(!c.hasApp){setShowInvite(true);setShowAdd(false);toastMsg(`⚠️ ${c.name} not on ChatSpark yet - invite with real link!`);return;}
-    if(friends.find(f=>f.id===c.id)){toastMsg('Already your real friend');return;}
-    setFriends(f=>[c,...f]);
-    const nc={id:'chat-'+c.id+'-'+Date.now(),friendId:c.id,name:c.name,username:c.username,avatar:c.avatar||'',messages:[{id:'m0',from:'them',text:`✅ ${c.name} added - verified real contact! No random names allowed.`,time:new Date().toLocaleTimeString()}],lastMessage:'Verified real friend',lastTime:new Date().toLocaleTimeString()};
-    setChats(ch=>[nc,...ch]);setSelectedId(nc.id);setShowAdd(false);toastMsg(`✅ Verified! Added ${c.name} - real!`);
-  }
+ function handleInstall(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(function(c){if(c.outcome==='accepted'){setIsInstalled(true);setShowInstall(false);try{localStorage.setItem('cs_installed','true');}catch{}}setDeferredPrompt(null);});}else{toastMsg('Chrome menu > Install');}}
 
-  function send(){
-    if(!input.trim()) return;
-    if(showQuantum){sendQuantum();return;}
-    if(!selectedChat) return;
-    const msg={id:Date.now().toString(),from:'me',text:input.trim(),time:new Date().toLocaleTimeString()};
-    setChats(chats.map(c=>c.id===selectedChat.id?{...c,messages:[...c.messages,msg],lastMessage:msg.text,lastTime:msg.time}:c));
-    setInput('');
-    setTimeout(()=>{const rep={id:(Date.now()+1).toString(),from:'them',text:'Real reply from real friend! ✅',time:new Date().toLocaleTimeString()};setChats(prev=>prev.map(c=>c.id===selectedChat.id?{...c,messages:[...c.messages,rep],lastMessage:rep.text,lastTime:rep.time}:c));},700);
-  }
+ const inviteLink=user?window.location.origin+'/join/'+user.username:window.location.origin;
+ const filtered=contacts.filter(function(c){return c.name.toLowerCase().indexOf(search.toLowerCase())!==-1;});
 
-  async function sendQuantum(){
-    const text=input.trim();if(!text) return;
-    const uMsg={id:Date.now().toString(),from:'me',text,time:new Date().toLocaleTimeString(),type:'text'};
-    setQuantumMsgs(m=>[...m,uMsg]);setInput('');setThinking(true);
-    try{
-      if(text.toLowerCase().includes('/image')||text.toLowerCase().includes('generate image')){
-        let prompt=text.replace(/\/image|generate image/gi,'').trim()||'blue glowing orb';
-        const url=genImgUrl(prompt);
-        setTimeout(()=>{setQuantumMsgs(m=>[...m,{id:(Date.now()+1).toString(),from:'them',text:`🎨 Blue Quantum generated: ${prompt}`,time:new Date().toLocaleTimeString(),type:'image',imageUrl:url}]);setThinking(false);},1000);return;
-      }
-      const msgs=[{role:'system',content:'You are Quantum Mind blue themed with glowing rainbow edges in ChatSpark by Abraham Emmanuel. Secure, real only, no fake.'},...quantumMsgs.slice(-6).map(m=>({role:m.from==='me'?'user':'assistant',content:m.text})),{role:'user',content:text}];
-      const res=await callGroq(msgs,groqKey);
-      setQuantumMsgs(m=>[...m,{id:(Date.now()+1).toString(),from:'them',text:res.text,time:new Date().toLocaleTimeString(),type:'text'}]);
-    }catch(e){setQuantumMsgs(m=>[...m,{id:(Date.now()+1).toString(),from:'them',text:e.message==='ENV_NOT_SET'?'Set GROQ_API_KEY in Vercel Settings for real AI',time:new Date().toLocaleTimeString(),type:'text'}]);}
-    setThinking(false);
-  }
-
-  function handleInstall(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(c=>{if(c.outcome==='accepted'){setIsInstalled(true);setShowInstall(false);localStorage.setItem('cs_installed','true');}setDeferredPrompt(null);});}else{toastMsg('Chrome menu > Install app');}}
-
-  const inviteLink=user?`${window.location.origin}/join/${user.username}`:`${window.location.origin}`;
-  const filtered=contacts.filter(c=>c.name.toLowerCase().includes(search.toLowerCase()));
-
-  return React.createElement('div',{className:'min-h-screen w-full flex flex-col relative',style:{background:bgMain,color:textMain}},
-    onboarding&&React.createElement('div',{className:'fixed inset-0 z-50 flex flex-col overflow-y-auto',style:{background:`radial-gradient(ellipse at top, #1A2144 0%, ${bgMain} 60%)`}},
-      React.createElement('div',{className:'w-full max-w-[440px] mx-auto flex-1 flex flex-col p-6'},
-        React.createElement('div',{className:'text-center mt-6 mb-6'},
-          React.createElement('div',{className:'relative w-24 h-24 mx-auto'},
-            React.createElement('div',{className:'absolute inset-[-6px] rounded-[24px]',style:{background:'conic-gradient(from 0deg, #5B5BFF, #00D4FF, #FFD60A, #EC4899, #5B5BFF)',animation:'glowRotate 3s linear infinite',filter:'blur(8px)'}}),
-            React.createElement('div',{className:'relative w-24 h-24 rounded-[20px] bg-gradient-to-br from-[#5B5BFF] to-[#2D2FA0] flex items-center justify-center shadow-2xl'},
-              React.createElement('img',{src:'./icon-512.png',className:'w-16 h-16 rounded-[12px] object-cover',onError:e=>e.target.style.display='none'}),
-              React.createElement(ShieldCheck,{className:'w-10 h-10 text-white absolute',style:{display:'none'}})
-            )
-          ),
-          React.createElement('h1',{className:'text-[30px] font-[800] mt-4 tracking-tight',style:{background:'linear-gradient(90deg, #5B5BFF, #00D4FF)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}},'ChatSpark'),
-          React.createElement('div',{className:'flex items-center justify-center gap-2 mt-2'},
-            React.createElement('div',{className:'h-6 px-3 rounded-full flex items-center gap-1.5 border secure-badge',style:{background:'rgba(91,91,255,0.15)',borderColor:'#5B5BFF'}},
-              React.createElement(Lock,{className:'w-3 h-3 text-[#5B5BFF]'}),React.createElement('span',{className:'text-[10px] font-bold tracking-widest text-[#5B5BFF]'},'END-TO-END ENCRYPTED')
-            )
-          ),
-          React.createElement('p',{className:'text-[11px] mt-3 max-w-[300px] mx-auto leading-[16px]',style:{color:textMuted}},'Bank-level security • No fake data • Real friends only • Built by Abraham Emmanuel')
-        ),
-        React.createElement('div',{className:'rounded-[28px] p-6 border shadow-2xl backdrop-blur-xl relative overflow-hidden',style:{background:isDark?'rgba(20,26,58,0.9)':'rgba(255,255,255,0.95)',borderColor:border}},
-          React.createElement('div',{className:'absolute top-0 left-0 right-0 h-[1px]',style:{background:'linear-gradient(90deg, transparent, #5B5BFF, #00D4FF, transparent)'}}),
-          step===1?React.createElement(React.Fragment,null,
-            React.createElement('div',{className:'flex items-center gap-2 mb-1'},React.createElement(ShieldCheck,{className:'w-5 h-5 text-[#5B5BFF]'}),React.createElement('h2',{className:'font-bold text-[17px]'},'Secure Account Creation')),
-            React.createElement('p',{className:'text-[11px] mb-5',style:{color:textMuted}},'Your data stays on your device. Military-grade protection.'),
-            React.createElement('div',{className:'flex flex-col items-center'},
-              React.createElement('div',{className:'relative cursor-pointer group',onClick:()=>avatarRef.current?.click()},
-                React.createElement('div',{className:'absolute inset-[-3px] rounded-full opacity-0 group-hover:opacity-100 transition',style:{background:'conic-gradient(from 0deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#5B5BFF)',filter:'blur(4px)'}}),
-                form.avatar?React.createElement('img',{src:form.avatar,className:'relative w-24 h-24 rounded-full object-cover ring-[3px] ring-[#5B5BFF]/30'}):React.createElement('div',{className:'relative w-24 h-24 rounded-full flex flex-col items-center justify-center gap-1 border-2 border-dashed',style:{background:bgCard,borderColor:border}},React.createElement(Smartphone,{className:'w-6 h-6',style:{color:textMuted}}),React.createElement('span',{className:'text-[9px] font-bold',style:{color:textMuted}},'ADD PHOTO')),
-                React.createElement('div',{className:'absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gradient-to-br from-[#5B5BFF] to-[#00D4FF] flex items-center justify-center shadow-lg'},React.createElement('span',{className:'text-white text-[12px]'},'📷'))
-              ),
-              React.createElement('input',{ref:avatarRef,type:'file',accept:'image/*',hidden:true,onChange:e=>{const f=e.target.files?.[0];if(f) handleAvatar(f);}})
-            ),
-            React.createElement('div',{className:'mt-6 space-y-3.5'},
-              React.createElement('div',{className:'relative'},
-                React.createElement('input',{value:form.name,onChange:e=>setForm({...form,name:e.target.value}),placeholder:'Real Full Name (e.g. Abraham Emmanuel)',className:'w-full h-[48px] px-4 rounded-[14px] border outline-none text-[14px] pr-10',style:{background:bgCard,borderColor:border,color:textMain}}),
-                React.createElement(CheckCircle,{className:`absolute right-3 top-3.5 w-5 h-5 ${form.name.trim().length>=2?'text-green-500':'text-transparent'}`})
-              ),
-              React.createElement('div',{className:'relative'},
-                React.createElement('input',{value:form.username,onChange:e=>setForm({...form,username:e.target.value.toLowerCase().replace(/\s+/g,'')}),placeholder:'Real username (min 3 chars)',className:'w-full h-[48px] px-4 rounded-[14px] border outline-none text-[14px]',style:{background:bgCard,borderColor:border,color:textMain}}),
-                React.createElement('div',{className:'absolute right-3 top-3.5 flex items-center gap-1'},React.createElement('span',{className:'text-[10px] px-1.5 py-0.5 rounded-full',style:{background:form.username.length>=3?'#22C55E20':'#EF444420',color:form.username.length>=3?'#22C55E':'#EF4444'}},form.username.length>=3?'✓ Valid':'✗ Real'))
-              ),
-              React.createElement('div',{className:'relative'},
-                React.createElement('input',{value:form.phone,onChange:e=>setForm({...form,phone:e.target.value}),placeholder:'Real Phone +234...',className:'w-full h-[48px] px-4 rounded-[14px] border outline-none text-[14px]',style:{background:bgCard,borderColor:border,color:textMain}}),
-                React.createElement(Smartphone,{className:'absolute right-3 top-3.5 w-5 h-5',style:{color:textMuted}})
-              ),
-              React.createElement('button',{onClick:genCodeFunc,className:'w-full h-[52px] rounded-[16px] bg-gradient-to-r from-[#5B5BFF] via-[#5B5BFF] to-[#00D4FF] text-white font-bold text-[15px] shadow-[0_8px_24px_rgba(91,91,255,0.4)] flex items-center justify-center gap-2 hover:shadow-[0_12px_32px_rgba(91,91,255,0.5)] transition'},React.createElement(Fingerprint,{className:'w-5 h-5'}),'Generate Secure Code',React.createElement(Lock,{className:'w-4 h-4'}))
-            ),
-            React.createElement('div',{className:'mt-5 p-3 rounded-[12px] flex items-start gap-2.5 border',style:{background:isDark?'rgba(91,91,255,0.08)':'#EEF2FF',borderColor:isDark?'rgba(91,91,255,0.2)':'#C7D2FE'}},
-              React.createElement(ShieldCheck,{className:'w-4 h-4 text-[#5B5BFF] mt-0.5 shrink-0'}),
-              React.createElement('p',{className:'text-[10px] leading-[14px]',style:{color:textMuted}},React.createElement('span',{className:'font-bold',style:{color:textMain}},'Secure & Real Only: '),'No fake contacts. We only allow verified real phone contacts with ChatSpark. Random name typing is blocked - military-grade validation.')
-            )
-          ):React.createElement(React.Fragment,null,
-            React.createElement('div',{className:'text-center mb-5'},
-              React.createElement('div',{className:'w-14 h-14 rounded-full mx-auto flex items-center justify-center mb-3',style:{background:'linear-gradient(135deg,#5B5BFF,#00D4FF)'}},React.createElement(Lock,{className:'w-7 h-7 text-white'})),
-              React.createElement('h3',{className:'font-bold text-[16px]'},'Secure Verification'),
-              React.createElement('p',{className:'text-[11px] mt-1',style:{color:textMuted}},'Code sent securely to '+form.phone)
-            ),
-            React.createElement('div',{className:'p-4 rounded-[16px] border relative overflow-hidden',style:{background:bgCard,borderColor:border}},
-              React.createElement('div',{className:'flex items-center justify-between'},
-                React.createElement('span',{className:'text-[11px] font-semibold',style:{color:textMuted}},'🔐 SECURE CODE (Demo)'),
-                React.createElement('button',{onClick:()=>setShowCode(!showCode),className:'flex items-center gap-1 text-[11px] text-[#5B5BFF]'},showCode?React.createElement(EyeOff,{className:'w-3.5 h-3.5'}):React.createElement(Eye,{className:'w-3.5 h-3.5'}),showCode?'Hide':'Show')
-              ),
-              React.createElement('div',{className:'mt-2 font-mono text-[28px] font-bold tracking-[0.5em] text-center code-box',style:{color:showCode?'#5B5BFF':'transparent',textShadow:showCode?'none':`0 0 8px ${isDark?'white':'black'}`}},showCode?genCode:'••••••'),
-              !showCode&&React.createElement('div',{className:'absolute inset-0 flex items-center justify-center mt-6 pointer-events-none'},React.createElement('span',{className:'text-[28px] font-bold tracking-[0.5em]'},'••••••'))
-            ),
-            React.createElement('input',{value:form.enteredCode,onChange:e=>setForm({...form,enteredCode:e.target.value.replace(/\D/g,'')}),placeholder:'• • • • • •',className:'w-full h-[56px] px-4 rounded-[16px] border outline-none text-[22px] tracking-[0.6em] text-center mt-5 font-mono font-bold',style:{background:bgCard,borderColor:'#5B5BFF',color:textMain,boxShadow:'0 0 0 3px rgba(91,91,255,0.15)'},maxLength:6,inputMode:'numeric'}),
-            React.createElement('button',{onClick:verify,className:'w-full h-[52px] rounded-[16px] bg-gradient-to-r from-[#5B5BFF] to-[#00D4FF] text-white font-bold text-[15px] mt-5 shadow-lg flex items-center justify-center gap-2'},React.createElement(ShieldCheck,{className:'w-5 h-5'}),'Verify & Enter Securely'),
-            React.createElement('button',{onClick:()=>setStep(1),className:'w-full h-[44px] rounded-[14px] border text-[13px] mt-3 font-medium',style:{background:bgCard,borderColor:border,color:textMain}},'← Back to Secure Setup')
-          )
-        ),
-        React.createElement('p',{className:'text-center text-[10px] mt-6 tracking-widest',style:{color:textMuted}},'🔒 SECURE BY ABRAHAM EMMANUEL • AES-256 • REAL ONLY')
+ return React.createElement('div',{className:'min-h-screen w-full flex flex-col relative',style:{background:bgMain,color:textMain}},
+  onboarding&&React.createElement('div',{className:'fixed inset-0 z-50 flex flex-col overflow-y-auto p-6',style:{background:'radial-gradient(ellipse at top,#1A2144 0%,'+bgMain+' 60%)'}},
+   React.createElement('div',{className:'w-full max-w-[420px] mx-auto flex-1 flex flex-col'},
+    React.createElement('div',{className:'text-center mt-4 mb-6'},
+     React.createElement('div',{className:'relative w-20 h-20 mx-auto'},
+      React.createElement('div',{className:'absolute inset-[-4px] rounded-[20px]',style:{background:'conic-gradient(from 0deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#5B5BFF)',filter:'blur(6px)'}}),
+      React.createElement('img',{src:'./icon-512.png',className:'relative w-20 h-20 rounded-[16px] bg-white'})
+     ),
+     React.createElement('h1',{className:'text-[26px] font-[800] mt-3',style:{color:'#5B5BFF'}},'ChatSpark'),
+     React.createElement('div',{className:'mt-2 flex justify-center'},
+      React.createElement('div',{className:'h-6 px-3 rounded-full flex items-center gap-1 border',style:{background:'rgba(91,91,255,0.15)',borderColor:'#5B5BFF'}},
+       React.createElement(Lock,{className:'w-3 h-3 text-[#5B5BFF]'}),React.createElement('span',{className:'text-[9px] font-bold tracking-widest',style:{color:'#5B5BFF'}},'ENCRYPTED SECURE')
       )
+     )
     ),
-
-    !onboarding&&React.createElement('div',{className:'flex-1 flex flex-col overflow-hidden relative'},
-      showInstall&&!isInstalled&&React.createElement('div',{className:'h-[46px] px-4 flex items-center justify-between shrink-0 relative overflow-hidden',style:{background:'linear-gradient(90deg, #5B5BFF, #00D4FF, #8B5CF6)',color:'white'}},
-        React.createElement('div',{className:'absolute inset-0 opacity-30',style:{background:'conic-gradient(from 0deg, transparent, white, transparent)',animation:'glowRotate 2s linear infinite'}}),
-        React.createElement('div',{className:'relative flex items-center gap-2'},React.createElement(Download,{className:'w-4 h-4'}),React.createElement('span',{className:'text-[12px] font-bold'},'Install Secure ChatSpark')),
-        React.createElement('div',{className:'relative flex gap-2'},React.createElement('button',{onClick:handleInstall,className:'h-7 px-4 rounded-full bg-white text-[#5B5BFF] text-[11px] font-bold shadow'},'Install'),React.createElement('button',{onClick:()=>{setShowInstall(false);localStorage.setItem('cs_install_dismissed','true');},className:'w-7 h-7 rounded-full bg-white/20 flex items-center justify-center'},React.createElement(X,{className:'w-3.5 h-3.5'})))
+    React.createElement('div',{className:'rounded-[24px] p-6 border shadow-2xl',style:{background:bgSide,borderColor:border}},
+     step===1?React.createElement(React.Fragment,null,
+      React.createElement('h2',{className:'font-bold text-[16px] flex items-center gap-2'},React.createElement(ShieldCheck,{className:'w-5 h-5 text-[#5B5BFF]'}),'Secure Account - Peak'),
+      React.createElement('div',{className:'flex flex-col items-center mt-5'},
+       React.createElement('div',{className:'relative cursor-pointer',onClick:function(){if(avatarRef.current) avatarRef.current.click();}},
+        form.avatar?React.createElement('img',{src:form.avatar,className:'w-20 h-20 rounded-full object-cover ring-4 ring-[#5B5BFF]/30'}):React.createElement('div',{className:'w-20 h-20 rounded-full flex items-center justify-center border-2 border-dashed',style:{background:bgCard,borderColor:border}},React.createElement(Camera,{className:'w-6 h-6',style:{color:textMuted}})),
+        React.createElement('div',{className:'absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[#5B5BFF] flex items-center justify-center'},React.createElement(Camera,{className:'w-3.5 h-3.5 text-white'}))
+       ),
+       React.createElement('input',{ref:avatarRef,type:'file',accept:'image/*',hidden:true,onChange:function(e){const f=e.target.files&&e.target.files[0];if(f) handleAvatar(f);}})
       ),
-      React.createElement('div',{className:'flex-1 flex overflow-hidden relative'},
-        React.createElement('aside',{className:'w-full md:w-[380px] flex flex-col border-r',style:{background:bgSide,borderColor:border}},
-          React.createElement('div',{className:'h-[62px] px-4 flex items-center justify-between border-b shrink-0',style:{borderColor:border,background:isDark?'rgba(20,26,58,0.8)':bgSide}},
-            React.createElement('div',{className:'flex items-center gap-2.5'},
-              React.createElement('div',{className:'relative'},
-                React.createElement('div',{className:'absolute inset-[-2px] rounded-lg',style:{background:'conic-gradient(from 0deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#5B5BFF)',filter:'blur(3px)'}}),
-                React.createElement('img',{src:'./icon-512.png',className:'relative w-9 h-9 rounded-lg object-cover bg-white'})
-              ),
-              React.createElement('div',null,React.createElement('div',{className:'flex items-center gap-1.5'},React.createElement('span',{className:'font-[800] text-[18px] tracking-tight'},'ChatSpark'),React.createElement('div',{className:'h-5 px-2 rounded-full flex items-center gap-1',style:{background:'linear-gradient(90deg,#22C55E,#16A34A)'}},React.createElement(ShieldCheck,{className:'w-3 h-3 text-white'}),React.createElement('span',{className:'text-[8px] font-bold text-white tracking-widest'},'REAL'))),React.createElement('div',{className:'flex items-center gap-1 text-[10px]',style:{color:textMuted}},React.createElement(Lock,{className:'w-3 h-3'}),React.createElement('span',null,'Secure • Encrypted')))
-            ),
-            React.createElement('div',{className:'flex gap-1.5'},
-              React.createElement('button',{onClick:()=>setTheme(isDark?'light':'dark'),className:'w-9 h-9 rounded-full flex items-center justify-center border',style:{background:bgCard,borderColor:border}},isDark?React.createElement(Sun,{className:'w-4 h-4'}):React.createElement(Moon,{className:'w-4 h-4'})),
-              React.createElement('button',{onClick:()=>setShowSettings(true),className:'w-9 h-9 rounded-full flex items-center justify-center border',style:{background:bgCard,borderColor:border}},React.createElement(Settings,{className:'w-4 h-4'}))
-            )
-          ),
-          React.createElement('div',{className:'flex-1 overflow-y-auto p-2.5 space-y-1'},
-            chats.length===0?React.createElement('div',{className:'p-8 text-center mt-10 rounded-[20px] border border-dashed',style:{borderColor:border,background:isDark?'rgba(255,255,255,0.02)':'#F9FAFB'}},
-              React.createElement('div',{className:'w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4',style:{background:'linear-gradient(135deg,#5B5BFF20,#00D4FF20)'}},React.createElement(ShieldCheck,{className:'w-8 h-8 text-[#5B5BFF]'})),
-              React.createElement('p',{className:'text-[15px] font-bold',style:{color:textMain}},'No chats yet - Secure'),
-              React.createElement('p',{className:'text-[12px] mt-2 leading-[18px] max-w-[260px] mx-auto',style:{color:textMuted}},'No fake data! Add only real contacts who have ChatSpark. Random name typing is now blocked! 🔒'),
-              React.createElement('button',{onClick:()=>setShowAdd(true),className:'mt-6 h-11 px-6 rounded-full bg-gradient-to-r from-[#5B5BFF] to-[#00D4FF] text-white text-[13px] font-bold shadow-lg flex items-center gap-2 mx-auto'},React.createElement(UserPlus,{className:'w-4 h-4'}),'Add Real Verified Friends')
-            ):chats.map(c=>React.createElement('button',{key:c.id,onClick:()=>setSelectedId(c.id),className:`w-full p-3.5 rounded-[16px] flex items-center gap-3 text-left transition border ${selectedId===c.id?'shadow-md':'border-transparent'}`,style:{background:selectedId===c.id?bgCard:'transparent',borderColor:selectedId===c.id?border:'transparent'}},
-              React.createElement('div',{className:'relative'},
-                React.createElement('div',{className:'w-12 h-12 rounded-full bg-gradient-to-br from-[#5B5BFF] to-[#2D2FA0] flex items-center justify-center font-bold text-white text-[16px]'},c.name[0]),
-                React.createElement('div',{className:'absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-green-500 border-2 flex items-center justify-center',style:{borderColor:bgSide}},React.createElement(CheckCircle,{className:'w-2.5 h-2.5 text-white'}))
-              ),
-              React.createElement('div',{className:'flex-1 min-w-0 text-left'},
-                React.createElement('div',{className:'flex items-center gap-1.5'},React.createElement('span',{className:'font-semibold text-[14px] truncate'},c.name),React.createElement(ShieldCheck,{className:'w-3.5 h-3.5 text-green-500'})),
-                React.createElement('div',{className:'text-[11px] truncate flex items-center gap-1',style:{color:textMuted}},React.createElement(Lock,{className:'w-3 h-3'}),c.lastMessage)
-              ),
-              React.createElement('div',{className:'text-[10px]',style:{color:textMuted}},c.lastTime)
-            ))
-          ),
-          React.createElement('div',{className:'p-3 border-t flex gap-2',style:{borderColor:border,background:bgSide}},
-            React.createElement('button',{onClick:()=>setShowAdd(true),className:'flex-1 h-12 rounded-full bg-gradient-to-r from-[#5B5BFF] to-[#00D4FF] text-white font-bold text-[13px] flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(91,91,255,0.3)]'},React.createElement(UserPlus,{className:'w-4 h-4'}),'Add Real Friends'),
-            React.createElement('button',{onClick:()=>setShowInvite(true),className:'h-12 px-5 rounded-full border text-[12px] font-semibold flex items-center gap-1.5',style:{background:bgCard,borderColor:border}},React.createElement(Link2,{className:'w-4 h-4 text-[#5B5BFF]'}),'Invite')
-          )
-        ),
-        React.createElement('main',{className:'flex-1 flex flex-col min-w-0 relative',style:{background:bgMain}},
-          selectedChat?React.createElement(React.Fragment,null,
-            React.createElement('div',{className:'h-[62px] px-4 flex items-center justify-between border-b shrink-0',style:{background:bgSide,borderColor:border}},
-              React.createElement('div',{className:'flex items-center gap-3'},
-                React.createElement('button',{onClick:()=>setSelectedId(null),className:'md:hidden w-9 h-9 rounded-full flex items-center justify-center border',style:{background:bgCard,borderColor:border}},React.createElement(ArrowLeft,{className:'w-5 h-5'})),
-                React.createElement('div',{className:'relative'},
-                  React.createElement('div',{className:'w-10 h-10 rounded-full bg-gradient-to-br from-[#5B5BFF] to-[#2D2FA0] flex items-center justify-center font-bold text-white'},selectedChat.name[0]),
-                  React.createElement('div',{className:'absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-green-500 border-2',style:{borderColor:bgSide}})
-                ),
-                React.createElement('div',null,
-                  React.createElement('div',{className:'flex items-center gap-1.5'},React.createElement('span',{className:'font-bold text-[14px]'},selectedChat.name),React.createElement(ShieldCheck,{className:'w-4 h-4 text-green-500'}),React.createElement('span',{className:'text-[9px] px-1.5 py-0.5 rounded-full bg-green-500/20 text-green-600 font-bold'},'VERIFIED REAL')),
-                  React.createElement('div',{className:'flex items-center gap-1 text-[11px] text-green-600'},React.createElement(Lock,{className:'w-3 h-3'}),'Real • Encrypted • Online')
-                )
-              )
-            ),
-            React.createElement('div',{className:'flex-1 overflow-y-auto p-4 space-y-3'},
-              selectedChat.messages.map(m=>React.createElement('div',{key:m.id,className:`flex ${m.from==='me'?'justify-end':'justify-start'}`},
-                React.createElement('div',{className:`max-w-[78%] px-4 py-3 rounded-[18px] text-[14px] leading-[20px] ${m.from==='me'?'bg-gradient-to-r from-[#5B5BFF] to-[#00D4FF] text-white rounded-br-[6px] shadow':'border rounded-bl-[6px]'}`,style:m.from!=='me'?{background:bgSide,borderColor:border}:{}},
-                  React.createElement('div',{className:'whitespace-pre-wrap'},m.text),
-                  React.createElement('div',{className:'flex items-center gap-1 mt-1.5 text-[10px] opacity-70'},React.createElement(Lock,{className:'w-3 h-3'}),m.time,m.from==='me'&&React.createElement(CheckCircle,{className:'w-3 h-3'}))
-                )
-              ))
-            ),
-            React.createElement('div',{className:'p-3 flex items-end gap-2 border-t',style:{background:bgSide,borderColor:border}},
-              React.createElement('div',{className:'flex-1 min-h-[46px] rounded-[24px] border flex items-end gap-2 px-4 py-2.5',style:{background:bgCard,borderColor:border}},
-                React.createElement('textarea',{value:input,onChange:e=>setInput(e.target.value),onKeyDown:e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}},placeholder:'Message verified real friend 🔒',rows:1,className:'flex-1 bg-transparent outline-none resize-none text-[14px] py-1 max-h-[100px]'})
-              ),
-              React.createElement('button',{onClick:send,className:'w-11 h-11 rounded-full bg-gradient-to-r from-[#5B5BFF] to-[#00D4FF] text-white flex items-center justify-center shadow-lg'},React.createElement(Send,{className:'w-5 h-5'}))
-            )
-          ):React.createElement('div',{className:'flex-1 flex flex-col items-center justify-center p-8 text-center'},
-            React.createElement('div',{className:'relative'},
-              React.createElement('div',{className:'absolute inset-[-8px] rounded-full opacity-30',style:{background:'conic-gradient(from 0deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#5B5BFF)',filter:'blur(12px)',animation:'glowRotate 4s linear infinite'}}),
-              React.createElement('img',{src:'./icon-512.png',className:'relative w-20 h-20 rounded-[20px] bg-white shadow-2xl'})
-            ),
-            React.createElement('h3',{className:'font-[800] text-[22px] mt-6',style:{background:'linear-gradient(90deg,#5B5BFF,#00D4FF)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}},'ChatSpark Secure'),
-            React.createElement('div',{className:'flex items-center gap-2 mt-3 px-3 py-1.5 rounded-full border',style:{background:'rgba(34,197,94,0.1)',borderColor:'rgba(34,197,94,0.2)'}},
-              React.createElement(ShieldCheck,{className:'w-4 h-4 text-green-600'}),React.createElement('span',{className:'text-[11px] font-bold text-green-700'},'REAL ONLY • NO FAKE • VERIFIED')
-            ),
-            React.createElement('p',{className:'text-[13px] mt-4 max-w-[340px] leading-[20px]',style:{color:textMuted}},'Random name typing is now blocked! 🔒 Only real phone contacts with ChatSpark can be added. Tap the blue glowing orb at the edge for Quantum Mind!'),
-            React.createElement('div',{className:'mt-8 flex gap-3'},React.createElement('button',{onClick:()=>setShowAdd(true),className:'h-12 px-7 rounded-full bg-gradient-to-r from-[#5B5BFF] to-[#00D4FF] text-white font-bold text-[14px] shadow-lg'},'Add Real Friends'),React.createElement('button',{onClick:()=>setShowInvite(true),className:'h-12 px-6 rounded-full border font-semibold text-[13px]',style:{background:bgCard,borderColor:border}},'Real Invite Link'))
-          ),
-          // QUANTUM MIND GLOWING ORB AT EDGE - CYCLE STUFF!
-          React.createElement('div',{className:'absolute top-1/2 -translate-y-1/2 right-0 z-20 flex flex-col items-center gap-2',style:{transform:'translateY(-50%) translateX(12px)'}},
-            React.createElement('div',{onClick:()=>setShowQuantum(true),className:'quantum-orb group',title:'Quantum Mind - Blue with glowing edges'},
-              React.createElement('div',{className:'orb-content'},React.createElement(Brain,{className:'w-7 h-7 text-white'}))
-            ),
-            React.createElement('div',{className:'writing-mode-vertical text-[9px] font-bold tracking-[0.2em] px-1 py-2 rounded-full',style:{background:'linear-gradient(180deg,#5B5BFF,#00D4FF)',color:'white',writingMode:'vertical-rl'}},'QUANTUM')
-          )
-        )
+      React.createElement('div',{className:'mt-6 space-y-3'},
+       React.createElement('input',{value:form.name,onChange:function(e){setForm({...form,name:e.target.value});},placeholder:'Real Full Name',className:'w-full h-11 px-4 rounded-xl border outline-none text-[14px]',style:{background:bgCard,borderColor:border,color:textMain}}),
+       React.createElement('input',{value:form.username,onChange:function(e){setForm({...form,username:e.target.value.toLowerCase().replace(/\s+/g,'')});},placeholder:'Username min 3',className:'w-full h-11 px-4 rounded-xl border outline-none text-[14px]',style:{background:bgCard,borderColor:border,color:textMain}}),
+       React.createElement('input',{value:form.phone,onChange:function(e){setForm({...form,phone:e.target.value});},placeholder:'Real Phone +234...',className:'w-full h-11 px-4 rounded-xl border outline-none text-[14px]',style:{background:bgCard,borderColor:border,color:textMain}}),
+       React.createElement('button',{onClick:genCodeFunc,className:'w-full h-12 rounded-full bg-[#5B5BFF] text-white font-bold text-[14px] flex items-center justify-center gap-2'},React.createElement(Fingerprint,{className:'w-4 h-4'}),'Generate Secure Code')
       )
-    ),
-
-    // ADD REAL FRIENDS - NO RANDOM!
-    showAdd&&React.createElement('div',{className:'fixed inset-0 z-40 bg-black/70 backdrop-blur-xl flex items-end md:items-center justify-center p-0 md:p-6'},
-      React.createElement('div',{className:'w-full md:max-w-[440px] rounded-t-[28px] md:rounded-[28px] max-h-[88vh] flex flex-col overflow-hidden border shadow-2xl',style:{background:bgSide,borderColor:border}},
-        React.createElement('div',{className:'p-5 border-b shrink-0',style:{borderColor:border,background:`linear-gradient(90deg, ${bgSide}, ${isDark?'#1A2144':bgSide})`}},
-          React.createElement('div',{className:'flex items-center justify-between'},
-            React.createElement('div',{className:'flex items-center gap-2'},React.createElement(ShieldCheck,{className:'w-5 h-5 text-green-500'}),React.createElement('h3',{className:'font-bold text-[16px]'},'Add Real Friends Only'),React.createElement('span',{className:'text-[9px] px-2 py-0.5 rounded-full bg-red-500/20 text-red-500 font-bold'},'NO RANDOM')),
-            React.createElement('button',{onClick:()=>setShowAdd(false),className:'w-9 h-9 rounded-full flex items-center justify-center',style:{background:bgCard}},React.createElement(X,{className:'w-4 h-4'}))
-          ),
-          React.createElement('div',{className:'mt-4 p-3 rounded-[14px] border flex gap-2.5',style:{background:'rgba(239,68,68,0.08)',borderColor:'rgba(239,68,68,0.2)'}},
-            React.createElement(AlertTriangle,{className:'w-4 h-4 text-red-500 shrink-0 mt-0.5'}),
-            React.createElement('p',{className:'text-[11px] leading-[15px]',style:{color:isDark?'#FCA5A5':'#DC2626'}},React.createElement('span',{className:'font-bold'},'Random name blocked! '),'You cannot just type a name. Only verified real phone contacts who have ChatSpark can be added. If they don\'t have app, you must invite with real link.')
-          ),
-          React.createElement('div',{className:'mt-4 flex gap-2'},
-            React.createElement('button',{onClick:pickRealContacts,className:'flex-1 h-11 rounded-full bg-gradient-to-r from-[#5B5BFF] to-[#00D4FF] text-white text-[13px] font-bold flex items-center justify-center gap-2'},React.createElement(Smartphone,{className:'w-4 h-4'}),'Pick Real Phone Contacts'),
-            React.createElement('div',{className:'flex-1 relative'},
-              React.createElement(Search,{className:'absolute left-3 top-3 w-4 h-4',style:{color:textMuted}}),
-              React.createElement('input',{value:search,onChange:e=>setSearch(e.target.value),placeholder:'Search real contacts',className:'w-full h-11 pl-10 pr-3 rounded-full border text-[13px] outline-none',style:{background:bgCard,borderColor:border,color:textMain}})
-            )
-          )
-        ),
-        React.createElement('div',{className:'flex-1 overflow-y-auto p-3 space-y-2'},
-          filtered.length===0?React.createElement('div',{className:'p-8 text-center',style:{color:textMuted}},
-            React.createElement(Search,{className:'w-10 h-10 mx-auto mb-3 opacity-30'}),
-            React.createElement('p',{className:'text-[13px]'},'No real contacts found'),
-            React.createElement('p',{className:'text-[11px] mt-2'},'Only real contacts from your phone with ChatSpark can be added')
-          ):filtered.map(c=>React.createElement('div',{key:c.id,className:'flex items-center justify-between p-3.5 rounded-[16px] border',style:{background:bgCard,borderColor:border}},
-            React.createElement('div',{className:'flex items-center gap-3'},
-              React.createElement('div',{className:`w-11 h-11 rounded-full flex items-center justify-center font-bold text-white ${c.hasApp?'bg-gradient-to-br from-[#5B5BFF] to-[#2D2FA0]':'bg-gray-500'}`},c.name[0]),
-              React.createElement('div',null,
-                React.createElement('div',{className:'flex items-center gap-1.5'},React.createElement('span',{className:'text-[14px] font-semibold'},c.name),c.hasApp?React.createElement(CheckCircle,{className:'w-4 h-4 text-green-500'}):React.createElement(AlertTriangle,{className:'w-4 h-4 text-orange-400'})),
-                React.createElement('div',{className:'text-[11px] flex items-center gap-1',style:{color:textMuted}},React.createElement('span',null,c.phone),React.createElement('span',{className:`text-[9px] px-1.5 py-0.5 rounded-full font-bold ${c.hasApp?'bg-green-500/20 text-green-600':'bg-orange-500/20 text-orange-600'}`},c.hasApp?'HAS APP • REAL':'NO APP • INVITE'))
-              )
-            ),
-            React.createElement('button',{onClick:()=>addRealFriend(c),className:`h-9 px-4 rounded-full text-[12px] font-bold ${c.hasApp?'bg-gradient-to-r from-[#5B5BFF] to-[#00D4FF] text-white':'bg-[#25D366] text-white'}`},c.hasApp?'Add Real':'Invite')
-          ))
-        )
-      )
-    ),
-
-    showInvite&&React.createElement('div',{className:'fixed inset-0 z-40 flex flex-col',style:{background:bgMain}},
-      React.createElement('div',{className:'h-[62px] border-b flex items-center px-4 gap-3 shrink-0',style:{background:bgSide,borderColor:border}},
-        React.createElement('button',{onClick:()=>setShowInvite(false),className:'w-9 h-9 rounded-full flex items-center justify-center border',style:{background:bgCard,borderColor:border}},React.createElement(ArrowLeft,{className:'w-5 h-5'})),
-        React.createElement('div',{className:'flex items-center gap-2'},React.createElement(Link2,{className:'w-5 h-5 text-[#5B5BFF]'}),React.createElement('h2',{className:'font-bold text-[16px]'},'Real Invite Link • No Fake'))
+     ):React.createElement(React.Fragment,null,
+      React.createElement('div',{className:'p-3 rounded-xl border text-center',style:{background:bgCard,borderColor:border}},
+       React.createElement('div',{className:'text-[11px]',style:{color:textMuted}},'Demo secure code:'),
+       React.createElement('div',{className:'text-[20px] font-bold tracking-[0.3em] mt-1',style:{color:'#5B5BFF'}},genCode)
       ),
-      React.createElement('div',{className:'flex-1 p-6 flex flex-col items-center justify-center'},
-        React.createElement('div',{className:'w-full max-w-[400px] rounded-[24px] p-6 border shadow-xl',style:{background:bgSide,borderColor:border}},
-          React.createElement('div',{className:'flex items-center gap-2 mb-4'},React.createElement(ShieldCheck,{className:'w-5 h-5 text-green-500'}),React.createElement('p',{className:'text-[13px] font-bold'},'Your VERIFIED Real Invite Link:')),
-          React.createElement('div',{className:'p-4 rounded-[14px] border flex items-center gap-3',style:{background:bgCard,borderColor:'#5B5BFF',boxShadow:'0 0 0 3px rgba(91,91,255,0.15)'}},
-            React.createElement(Link2,{className:'w-5 h-5 text-[#5B5BFF] shrink-0'}),
-            React.createElement('span',{className:'flex-1 text-[12px] font-mono truncate font-bold'},inviteLink),
-            React.createElement('button',{onClick:()=>{navigator.clipboard.writeText(inviteLink);toastMsg('✅ Real verified link copied!');},className:'w-10 h-10 rounded-full bg-[#5B5BFF] text-white flex items-center justify-center shrink-0'},React.createElement(Copy,{className:'w-4 h-4'}))
-          ),
-          React.createElement('p',{className:'text-[11px] mt-3 flex items-center gap-1',style:{color:textMuted}},React.createElement(Lock,{className:'w-3 h-3'}),'Real link using actual domain + username - secure & verifiable!'),
-          React.createElement('div',{className:'mt-6 grid grid-cols-2 gap-3'},
-            React.createElement('button',{onClick:()=>{navigator.clipboard.writeText(inviteLink);toastMsg('Copied real link!');},className:'h-12 rounded-full bg-gradient-to-r from-[#5B5BFF] to-[#00D4FF] text-white text-[13px] font-bold flex items-center justify-center gap-1.5'},React.createElement(Copy,{className:'w-4 h-4'}),'Copy Real Link'),
-            React.createElement('button',{onClick:()=>window.open(`https://wa.me/?text=${encodeURIComponent('Join me on ChatSpark Secure - Real only! '+inviteLink)}`,'_blank'),className:'h-12 rounded-full bg-[#25D366] text-white text-[13px] font-bold'},'WhatsApp Invite')
-          )
-        )
-      )
+      React.createElement('input',{value:form.enteredCode,onChange:function(e){setForm({...form,enteredCode:e.target.value});},placeholder:'Enter code',className:'w-full h-12 px-4 rounded-xl border outline-none text-[16px] tracking-[0.2em] text-center mt-4',style:{background:bgCard,borderColor:'#5B5BFF',color:textMain},maxLength:6}),
+      React.createElement('button',{onClick:verify,className:'w-full h-12 rounded-full bg-[#5B5BFF] text-white font-bold text-[14px] mt-4'},'Verify Secure'),
+      React.createElement('button',{onClick:function(){setStep(1);},className:'w-full h-11 rounded-full border text-[13px] mt-2',style:{background:bgCard,borderColor:border}},'Back')
+     )
     ),
+    React.createElement('p',{className:'text-center text-[10px] mt-6 tracking-widest',style:{color:textMuted}},'SECURE BY ABRAHAM • REAL ONLY')
+   )
+  ),
 
-    showQuantum&&React.createElement('div',{className:'fixed inset-0 z-40 flex flex-col',style:{background:bgMain}},
-      React.createElement('div',{className:'h-[62px] border-b flex items-center px-4 gap-3 shrink-0 relative overflow-hidden',style:{background:'linear-gradient(90deg, #0A0F2C, #1A2144, #0A0F2C)',borderColor:'#5B5BFF'}},
-        React.createElement('div',{className:'absolute inset-0 opacity-20',style:{background:'conic-gradient(from 0deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#5B5BFF)',animation:'glowRotate 3s linear infinite'}}),
-        React.createElement('button',{onClick:()=>setShowQuantum(false),className:'relative w-9 h-9 rounded-full flex items-center justify-center bg-white/10 backdrop-blur'},React.createElement(ArrowLeft,{className:'w-5 h-5 text-white'})),
-        React.createElement('div',{className:'relative w-10 h-10 rounded-full quantum-orb !w-10 !h-10 !animate-none'},React.createElement('div',{className:'orb-content'},React.createElement(Brain,{className:'w-5 h-5 text-white'}))),
-        React.createElement('div',{className:'relative'},
-          React.createElement('div',{className:'flex items-center gap-2'},React.createElement('span',{className:'font-bold text-[15px] text-white'},'Quantum Mind'),React.createElement('div',{className:'h-5 px-2 rounded-full flex items-center gap-1',style:{background:'linear-gradient(90deg,#5B5BFF,#00D4FF)'}},React.createElement(Sparkles,{className:'w-3 h-3 text-[#FFD60A]'}),React.createElement('span',{className:'text-[9px] font-bold text-white'},'BLUE CORE'))),
-          React.createElement('div',{className:'flex items-center gap-1.5 text-[11px] text-cyan-300'},React.createElement('div',{className:'w-2 h-2 rounded-full bg-green-400 animate-pulse'}),'Glowing edges • Secure • Real')
-        ),
-        React.createElement('div',{className:'ml-auto relative flex gap-1'},React.createElement('div',{className:'w-2 h-2 rounded-full bg-[#5B5BFF] animate-pulse'}),React.createElement('div',{className:'w-2 h-2 rounded-full bg-[#00D4FF] animate-pulse',style:{animationDelay:'0.3s'}}),React.createElement('div',{className:'w-2 h-2 rounded-full bg-[#FFD60A] animate-pulse',style:{animationDelay:'0.6s'}}),React.createElement('div',{className:'w-2 h-2 rounded-full bg-[#EC4899] animate-pulse',style:{animationDelay:'0.9s'}}))
-      ),
-      React.createElement('div',{className:'flex-1 overflow-y-auto p-4 space-y-3',style:{background:`radial-gradient(ellipse at center, #141A3A 0%, ${bgMain} 70%)`}},
-        quantumMsgs.map(m=>React.createElement('div',{key:m.id,className:`flex ${m.from==='me'?'justify-end':'justify-start'}`},
-          React.createElement('div',{className:`max-w-[82%] px-4 py-3 rounded-[18px] text-[14px] leading-[20px] relative overflow-hidden ${m.from==='me'?'bg-gradient-to-r from-[#5B5BFF] to-[#00D4FF] text-white rounded-br-[6px] shadow-lg':'border rounded-bl-[6px] shadow' }`,style:m.from!=='me'?{background:bgSide,borderColor:'#5B5BFF',boxShadow:'0 0 20px rgba(91,91,255,0.15)'}:{}},
-            m.from!=='me'&&React.createElement('div',{className:'absolute top-0 left-0 right-0 h-[2px]',style:{background:'linear-gradient(90deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899)'}}),
-            m.type==='image'?React.createElement('div',null,React.createElement('img',{src:m.imageUrl,className:'rounded-xl w-full max-w-[320px] mb-2 border',style:{borderColor:border}}),React.createElement('div',{className:'text-[13px] whitespace-pre-wrap mt-2'},m.text)):React.createElement('div',{className:'whitespace-pre-wrap'},m.text),
-            React.createElement('div',{className:'flex items-center gap-1 mt-2 text-[10px] opacity-60'},React.createElement(Lock,{className:'w-3 h-3'}),m.time)
-          )
-        )),
-        thinking&&React.createElement('div',{className:'flex justify-start'},
-          React.createElement('div',{className:'border px-5 py-4 rounded-[18px] flex items-center gap-3 relative overflow-hidden',style:{background:bgSide,borderColor:'#5B5BFF'}},
-            React.createElement('div',{className:'absolute top-0 left-0 right-0 h-[2px]',style:{background:'linear-gradient(90deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899)',animation:'glowRotate 2s linear infinite'}}),
-            React.createElement('div',{className:'w-8 h-8 rounded-full quantum-orb !w-8 !h-8'},React.createElement('div',{className:'orb-content'},React.createElement(Brain,{className:'w-4 h-4 text-white'}))),
-            React.createElement('span',{className:'text-[13px] font-medium',style:{color:textMuted}},'Quantum blue core thinking...')
-          )
-        )
-      ),
-      React.createElement('div',{className:'p-3 flex items-end gap-2 border-t relative overflow-hidden',style:{background:bgSide,borderColor:'#5B5BFF'}},
-        React.createElement('div',{className:'absolute top-0 left-0 right-0 h-[1px]',style:{background:'linear-gradient(90deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899)'}}),
-        React.createElement('div',{className:'flex-1 min-h-[48px] rounded-[24px] border flex items-end gap-2 px-4 py-2.5',style:{background:bgCard,borderColor:'#5B5BFF',boxShadow:'0 0 0 2px rgba(91,91,255,0.1)'}},
-          React.createElement('textarea',{value:input,onChange:e=>setInput(e.target.value),onKeyDown:e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}},placeholder:'Ask blue Quantum with glowing edges... /image',rows:1,className:'flex-1 bg-transparent outline-none resize-none text-[14px] py-1 max-h-[100px]'}),
-          React.createElement(Sparkles,{className:'w-4 h-4 text-[#FFD60A]'})
-        ),
-        React.createElement('button',{onClick:send,className:'w-12 h-12 rounded-full bg-gradient-to-r from-[#5B5BFF] via-[#5B5BFF] to-[#00D4FF] text-white flex items-center justify-center shadow-[0_0_20px_rgba(91,91,255,0.4)] relative overflow-hidden'},
-          React.createElement('div',{className:'absolute inset-[-2px] rounded-full opacity-50',style:{background:'conic-gradient(from 0deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#5B5BFF)',animation:'glowRotate 2s linear infinite',filter:'blur(2px)'}}),
-          React.createElement(Send,{className:'relative w-5 h-5'})
-        )
+  !onboarding&&React.createElement('div',{className:'flex-1 flex flex-col overflow-hidden relative'},
+   showInstall&&!isInstalled&&React.createElement('div',{className:'h-[44px] px-4 flex items-center justify-between shrink-0',style:{background:'linear-gradient(90deg,#5B5BFF,#00D4FF)',color:'white'}},
+    React.createElement('div',{className:'flex items-center gap-2'},React.createElement(Download,{className:'w-4 h-4'}),React.createElement('span',{className:'text-[12px] font-bold'},'Install Secure ChatSpark')),
+    React.createElement('div',{className:'flex gap-2'},React.createElement('button',{onClick:handleInstall,className:'h-7 px-3 rounded-full bg-white text-[#5B5BFF] text-[11px] font-bold'},'Install'),React.createElement('button',{onClick:function(){setShowInstall(false);try{localStorage.setItem('cs_install_dismissed','true');}catch{}},className:'w-7 h-7 rounded-full bg-white/20 flex items-center justify-center'},React.createElement(X,{className:'w-3.5 h-3.5'})))
+   ),
+   React.createElement('div',{className:'flex-1 flex overflow-hidden relative'},
+    React.createElement('aside',{className:'w-full md:w-[360px] flex flex-col border-r',style:{background:bgSide,borderColor:border}},
+     React.createElement('div',{className:'h-[60px] px-4 flex items-center justify-between border-b',style:{borderColor:border}},
+      React.createElement('div',{className:'flex items-center gap-2'},React.createElement('img',{src:'./icon-512.png',className:'w-8 h-8 rounded-lg bg-white'}),React.createElement('span',{className:'font-bold text-[17px]'},'ChatSpark'),React.createElement('span',{className:'text-[8px] px-1.5 py-0.5 rounded bg-green-500 text-white font-bold'},'REAL')),
+      React.createElement('div',{className:'flex gap-1'},
+       React.createElement('button',{onClick:function(){setTheme(isDark?'light':'dark');},className:'w-8 h-8 rounded-full flex items-center justify-center border',style:{background:bgCard,borderColor:border}},isDark?React.createElement(Sun,{className:'w-4 h-4'}):React.createElement(Moon,{className:'w-4 h-4'})),
+       React.createElement('button',{onClick:function(){setShowSettings(true);},className:'w-8 h-8 rounded-full flex items-center justify-center',style:{background:bgCard}},React.createElement(Settings,{className:'w-4 h-4'}))
       )
+     ),
+     React.createElement('div',{className:'flex-1 overflow-y-auto p-2 space-y-1'},
+      chats.length===0?React.createElement('div',{className:'p-8 text-center mt-6'},
+       React.createElement(ShieldCheck,{className:'w-12 h-12 mx-auto mb-3 text-[#5B5BFF]'}),
+       React.createElement('p',{className:'text-[14px] font-bold',style:{color:textMain}},'No chats yet - Real Only'),
+       React.createElement('p',{className:'text-[12px] mt-2',style:{color:textMuted}},'No random names! Only verified real contacts.'),
+       React.createElement('button',{onClick:function(){setShowAdd(true);},className:'mt-5 h-10 px-5 rounded-full bg-[#5B5BFF] text-white text-[13px] font-bold'},'Add Real Friends')
+      ):chats.map(function(c){return React.createElement('button',{key:c.id,onClick:function(){setSelectedId(c.id);},className:'w-full p-3 rounded-xl flex items-center gap-3 text-left',style:{background:selectedId===c.id?bgCard:'transparent'}},
+       React.createElement('div',{className:'w-11 h-11 rounded-full bg-[#5B5BFF] flex items-center justify-center font-bold text-white'},c.name[0]),
+       React.createElement('div',{className:'flex-1 min-w-0 text-left'},React.createElement('div',{className:'font-semibold text-[14px] truncate flex items-center gap-1'},c.name,React.createElement(CheckCircle,{className:'w-3 h-3 text-green-500'})),React.createElement('div',{className:'text-[11px] truncate',style:{color:textMuted}},c.lastMessage))
+      );})
+     ),
+     React.createElement('div',{className:'p-3 border-t flex gap-2',style:{borderColor:border}},
+      React.createElement('button',{onClick:function(){setShowAdd(true);},className:'flex-1 h-11 rounded-full bg-[#5B5BFF] text-white font-semibold text-[13px] flex items-center justify-center gap-2'},React.createElement(UserPlus,{className:'w-4 h-4'}),'Add Real Friends'),
+      React.createElement('button',{onClick:function(){setShowInvite(true);},className:'h-11 px-4 rounded-full border text-[12px] flex items-center gap-1',style:{background:bgCard,borderColor:border}},React.createElement(Link2,{className:'w-3.5 h-3.5'}),'Invite')
+     )
     ),
-
-    showSettings&&React.createElement('div',{className:'fixed inset-0 z-50 flex flex-col',style:{background:bgMain}},
-      React.createElement('div',{className:'h-[62px] border-b flex items-center px-4 gap-3 shrink-0',style:{background:bgSide,borderColor:border}},
-        React.createElement('button',{onClick:()=>setShowSettings(false),className:'w-9 h-9 rounded-full flex items-center justify-center border',style:{background:bgCard,borderColor:border}},React.createElement(ArrowLeft,{className:'w-5 h-5'})),
-        React.createElement('h2',{className:'font-bold text-[16px] flex items-center gap-2'},React.createElement(ShieldCheck,{className:'w-5 h-5 text-green-500'}),'Secure Settings')
+    React.createElement('main',{className:'flex-1 flex flex-col min-w-0 relative',style:{background:bgMain}},
+     selectedChat?React.createElement(React.Fragment,null,
+      React.createElement('div',{className:'h-[60px] px-4 flex items-center gap-3 border-b',style:{background:bgSide,borderColor:border}},
+       React.createElement('button',{onClick:function(){setSelectedId(null);},className:'md:hidden w-8 h-8 rounded-full flex items-center justify-center border',style:{background:bgCard}},React.createElement(ArrowLeft,{className:'w-5 h-5'})),
+       React.createElement('div',{className:'w-10 h-10 rounded-full bg-[#5B5BFF] flex items-center justify-center font-bold text-white'},selectedChat.name[0]),
+       React.createElement('div',null,React.createElement('div',{className:'font-bold text-[14px] flex items-center gap-1'},selectedChat.name,React.createElement(ShieldCheck,{className:'w-4 h-4 text-green-500'})),React.createElement('div',{className:'text-[11px] text-green-600'},'Verified Real'))
       ),
-      React.createElement('div',{className:'flex-1 overflow-y-auto p-5'},
-        React.createElement('div',{className:'max-w-[420px] mx-auto space-y-5'},
-          React.createElement('div',{className:'rounded-[20px] p-5 border',style:{background:bgSide,borderColor:border}},
-            React.createElement('h3',{className:'font-bold text-[14px] flex items-center gap-2'},React.createElement(Palette,{className:'w-4 h-4 text-[#5B5BFF]'}),'System Themes - White & Dark'),
-            React.createElement('div',{className:'mt-4 grid grid-cols-2 gap-3'},
-              React.createElement('button',{onClick:()=>setTheme('dark'),className:`h-[64px] rounded-[16px] border-2 flex flex-col items-center justify-center gap-1 transition ${theme==='dark'?'border-[#5B5BFF] shadow-[0_0_20px_rgba(91,91,255,0.3)]':'border-transparent'}`,style:{background:'#0A0F2C'}},
-                React.createElement(Moon,{className:'w-6 h-6 text-white'}),React.createElement('span',{className:'text-[11px] font-bold text-white'},'Dark Secure')
-              ),
-              React.createElement('button',{onClick:()=>setTheme('light'),className:`h-[64px] rounded-[16px] border-2 flex flex-col items-center justify-center gap-1 transition ${theme==='light'?'border-[#5B5BFF] shadow-[0_0_20px_rgba(91,91,255,0.3)]':'border-transparent'}`,style:{background:'#FFFFFF',borderColor:theme==='light'?'#5B5BFF':'#E5E7EB'}},
-                React.createElement(Sun,{className:'w-6 h-6 text-[#111B21]'}),React.createElement('span',{className:'text-[11px] font-bold text-[#111B21]'},'White Clean')
-              )
-            ),
-            React.createElement('p',{className:'text-[11px] mt-3',style:{color:textMuted}},'Clean white & dark - no fake themes. Quantum Mind stays blue with glowing edges!')
-          ),
-          React.createElement('div',{className:'rounded-[20px] p-5 border relative overflow-hidden',style:{background:bgSide,borderColor:'#5B5BFF'}},
-            React.createElement('div',{className:'absolute top-0 left-0 right-0 h-[2px]',style:{background:'linear-gradient(90deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899)'}}),
-            React.createElement('h3',{className:'font-bold text-[14px] flex items-center gap-2'},React.createElement('div',{className:'w-6 h-6 rounded-full quantum-orb !w-6 !h-6'},React.createElement('div',{className:'orb-content'},React.createElement(Brain,{className:'w-3 h-3 text-white'}))),'Quantum Mind - Blue Glowing Edges'),
-            React.createElement('p',{className:'text-[11px] mt-2',style:{color:textMuted}},'Now at edge (cycle) - floating orb with blue core + glowing multicolor edges (blue, cyan, yellow, purple). Peak secure!'),
-            React.createElement('div',{className:'mt-3 flex gap-2'},React.createElement('div',{className:'w-3 h-3 rounded-full bg-[#5B5BFF]'}),React.createElement('div',{className:'w-3 h-3 rounded-full bg-[#00D4FF]'}),React.createElement('div',{className:'w-3 h-3 rounded-full bg-[#FFD60A]'}),React.createElement('div',{className:'w-3 h-3 rounded-full bg-[#EC4899]'}),React.createElement('span',{className:'text-[10px] ml-2',style:{color:textMuted}},'Glowing edges'))
-          ),
-          React.createElement('div',{className:'text-center text-[10px] py-4',style:{color:textMuted}},React.createElement('div',{className:'flex items-center justify-center gap-2'},React.createElement(Lock,{className:'w-3 h-3'}),React.createElement('span',null,'SECURE • VERIFIED • NO FAKE • REAL ONLY')),React.createElement('p',{className:'mt-2'},'Built by Abraham Emmanuel • Encrypted • Peak Security'))
+      React.createElement('div',{className:'flex-1 overflow-y-auto p-4 space-y-3'},
+       selectedChat.messages.map(function(m){return React.createElement('div',{key:m.id,className:'flex '+(m.from==='me'?'justify-end':'justify-start')},
+        React.createElement('div',{className:'max-w-[78%] px-4 py-2.5 rounded-[16px] text-[14px] '+(m.from==='me'?'bg-[#5B5BFF] text-white rounded-br-[4px]':'border rounded-bl-[4px]'),style:m.from!=='me'?{background:bgSide,borderColor:border}:{}},
+         React.createElement('div',{className:'whitespace-pre-wrap'},m.text),
+         React.createElement('div',{className:'text-[10px] opacity-60 mt-1'},m.time)
         )
+       );})
+      ),
+      React.createElement('div',{className:'p-3 flex gap-2 border-t',style:{background:bgSide,borderColor:border}},
+       React.createElement('input',{value:input,onChange:function(e){setInput(e.target.value);},onKeyDown:function(e){if(e.key==='Enter'){e.preventDefault();send();}},placeholder:'Message verified real friend',className:'flex-1 h-11 px-4 rounded-full border outline-none text-[14px]',style:{background:bgCard,borderColor:border,color:textMain}}),
+       React.createElement('button',{onClick:send,className:'w-11 h-11 rounded-full bg-[#5B5BFF] text-white flex items-center justify-center'},React.createElement(Send,{className:'w-5 h-5'}))
       )
-    ),
-
-    toast&&React.createElement('div',{className:'fixed bottom-[24px] left-1/2 -translate-x-1/2 z-[70] border text-[13px] px-5 py-3 rounded-full shadow-2xl flex items-center gap-2.5 backdrop-blur-xl',style:{background:bgSide,borderColor:border}},
-      React.createElement('div',{className:'w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]'}),
-      React.createElement('span',{className:'font-medium'},toast)
+     ):React.createElement('div',{className:'flex-1 flex flex-col items-center justify-center p-8 text-center'},
+      React.createElement('img',{src:'./icon-512.png',className:'w-16 h-16 rounded-[16px] bg-white mb-4'}),
+      React.createElement('h3',{className:'font-bold text-[18px]'},'ChatSpark Secure - Real Only'),
+      React.createElement('p',{className:'text-[12px] mt-2 max-w-[320px]',style:{color:textMuted}},'No random names allowed! Only verified real contacts. Tap blue orb at edge for Quantum Mind with glowing edges!'),
+      React.createElement('div',{className:'mt-6 flex gap-2'},React.createElement('button',{onClick:function(){setShowAdd(true);},className:'h-10 px-5 rounded-full bg-[#5B5BFF] text-white text-[13px] font-bold'},'Add Real Friends'),React.createElement('button',{onClick:function(){setShowInvite(true);},className:'h-10 px-5 rounded-full border text-[13px]',style:{background:bgCard,borderColor:border}},'Real Invite'))
+     ),
+     React.createElement('div',{className:'absolute top-1/2 right-2 -translate-y-1/2 z-10 flex flex-col items-center gap-1'},
+      React.createElement('div',{onClick:function(){setShowQuantum(true);},className:'q-orb'},
+       React.createElement(Brain,{className:'w-6 h-6 text-white relative z-10'})
+      ),
+      React.createElement('div',{className:'text-[8px] font-bold tracking-widest px-1 py-1 rounded',style:{background:'#5B5BFF',color:'white',writingMode:'vertical-rl'}},'QUANTUM')
+     )
     )
-  );
+   )
+  ),
+
+  showAdd&&React.createElement('div',{className:'fixed inset-0 z-40 bg-black/70 flex items-end md:items-center justify-center p-0 md:p-6'},
+   React.createElement('div',{className:'w-full md:max-w-[420px] rounded-t-[24px] md:rounded-[24px] max-h-[80vh] flex flex-col overflow-hidden border',style:{background:bgSide,borderColor:border}},
+    React.createElement('div',{className:'p-4 border-b flex items-center justify-between',style:{borderColor:border}},
+     React.createElement('div',{className:'flex items-center gap-2'},React.createElement(ShieldCheck,{className:'w-5 h-5 text-green-500'}),React.createElement('h3',{className:'font-bold text-[15px]'},'Add Real Friends - No Random'),React.createElement('span',{className:'text-[8px] px-1.5 py-0.5 rounded bg-red-500 text-white font-bold'},'NO RANDOM')),
+     React.createElement('button',{onClick:function(){setShowAdd(false);},className:'w-8 h-8 rounded-full flex items-center justify-center',style:{background:bgCard}},React.createElement(X,{className:'w-4 h-4'}))
+    ),
+    React.createElement('div',{className:'p-4'},
+     React.createElement('div',{className:'p-3 rounded-xl border flex gap-2 mb-3',style:{background:'rgba(239,68,68,0.08)',borderColor:'rgba(239,68,68,0.2)'}},
+      React.createElement(AlertTriangle,{className:'w-4 h-4 text-red-500 shrink-0'}),
+      React.createElement('p',{className:'text-[11px]',style:{color:'#DC2626'}},'Random name blocked! Only verified real contacts with ChatSpark can be added. Others need real invite link.')
+     ),
+     React.createElement('div',{className:'relative'},
+      React.createElement(Search,{className:'absolute left-3 top-3 w-4 h-4',style:{color:textMuted}}),
+      React.createElement('input',{value:search,onChange:function(e){setSearch(e.target.value);},placeholder:'Search real verified contacts',className:'w-full h-11 pl-10 pr-3 rounded-full border text-[13px] outline-none',style:{background:bgCard,borderColor:border,color:textMain}})
+     )
+    ),
+    React.createElement('div',{className:'flex-1 overflow-y-auto px-2 pb-4'},
+     filtered.map(function(c){return React.createElement('div',{key:c.id,className:'flex items-center justify-between p-3 rounded-xl border mb-2',style:{background:bgCard,borderColor:border}},
+      React.createElement('div',{className:'flex items-center gap-3'},
+       React.createElement('div',{className:'w-10 h-10 rounded-full flex items-center justify-center font-bold text-white '+(c.hasApp?'bg-[#5B5BFF]':'bg-gray-500')},c.name[0]),
+       React.createElement('div',null,
+        React.createElement('div',{className:'text-[13px] font-semibold flex items-center gap-1'},c.name,c.hasApp?React.createElement(CheckCircle,{className:'w-3 h-3 text-green-500'}):React.createElement(AlertTriangle,{className:'w-3 h-3 text-orange-400'})),
+        React.createElement('div',{className:'text-[11px]',style:{color:textMuted}},c.phone+' '+(c.hasApp?'(HAS APP)':'(NEEDS INVITE)'))
+       )
+      ),
+      React.createElement('button',{onClick:function(){addRealFriend(c);},className:'h-8 px-4 rounded-full text-[11px] font-bold '+(c.hasApp?'bg-[#5B5BFF] text-white':'bg-green-500 text-white')},c.hasApp?'Add Real':'Invite')
+     );})
+    )
+   )
+  ),
+
+  showInvite&&React.createElement('div',{className:'fixed inset-0 z-40 flex flex-col',style:{background:bgMain}},
+   React.createElement('div',{className:'h-[60px] border-b flex items-center px-4 gap-3',style:{background:bgSide,borderColor:border}},
+    React.createElement('button',{onClick:function(){setShowInvite(false);},className:'w-9 h-9 rounded-full flex items-center justify-center border',style:{background:bgCard}},React.createElement(ArrowLeft,{className:'w-5 h-5'})),
+    React.createElement('h2',{className:'font-bold text-[16px]'},'Real Invite Link')
+   ),
+   React.createElement('div',{className:'flex-1 p-6 flex flex-col items-center justify-center'},
+    React.createElement('div',{className:'w-full max-w-[400px] rounded-[20px] p-6 border',style:{background:bgSide,borderColor:border}},
+     React.createElement('p',{className:'text-[13px] font-bold mb-3'},'Your REAL verified link:'),
+     React.createElement('div',{className:'p-3 rounded-xl border flex items-center gap-2',style:{background:bgCard,borderColor:'#5B5BFF'}},
+      React.createElement(Link2,{className:'w-4 h-4 text-[#5B5BFF]'}),React.createElement('span',{className:'flex-1 text-[11px] font-mono truncate'},inviteLink),React.createElement('button',{onClick:function(){navigator.clipboard.writeText(inviteLink);toastMsg('Real link copied!');},className:'w-8 h-8 rounded-full bg-[#5B5BFF] text-white flex items-center justify-center'},React.createElement(Copy,{className:'w-4 h-4'}))
+     ),
+     React.createElement('div',{className:'mt-5 grid grid-cols-2 gap-2'},
+      React.createElement('button',{onClick:function(){navigator.clipboard.writeText(inviteLink);toastMsg('Copied!');},className:'h-11 rounded-full bg-[#5B5BFF] text-white text-[13px] font-bold'},'Copy Real Link'),
+      React.createElement('button',{onClick:function(){window.open('https://wa.me/?text='+encodeURIComponent('Join me on ChatSpark Real! '+inviteLink),'_blank');},className:'h-11 rounded-full bg-green-500 text-white text-[13px] font-bold'},'WhatsApp')
+     )
+    )
+   )
+  ),
+
+  showQuantum&&React.createElement('div',{className:'fixed inset-0 z-40 flex flex-col',style:{background:bgMain}},
+   React.createElement('div',{className:'h-[60px] border-b flex items-center px-4 gap-3',style:{background:'linear-gradient(90deg,#0A0F2C,#1A2144)',borderColor:'#5B5BFF'}},
+    React.createElement('button',{onClick:function(){setShowQuantum(false);},className:'w-9 h-9 rounded-full bg-white/10 flex items-center justify-center'},React.createElement(ArrowLeft,{className:'w-5 h-5 text-white'})),
+    React.createElement('div',{className:'q-orb !w-9 !h-9'},React.createElement(Brain,{className:'w-4 h-4 text-white'})),
+    React.createElement('div',null,React.createElement('div',{className:'font-bold text-[14px] text-white flex items-center gap-2'},'Quantum Mind',React.createElement('span',{className:'text-[9px] px-1.5 py-0.5 rounded bg-[#5B5BFF] text-white'},'BLUE GLOW')),React.createElement('div',{className:'text-[11px] text-cyan-300'},'Glowing edges • Secure'))
+   ),
+   React.createElement('div',{className:'flex-1 overflow-y-auto p-4 space-y-3'},
+    quantumMsgs.map(function(m){return React.createElement('div',{key:m.id,className:'flex '+(m.from==='me'?'justify-end':'justify-start')},
+     React.createElement('div',{className:'max-w-[80%] px-4 py-3 rounded-[16px] text-[14px] '+(m.from==='me'?'bg-[#5B5BFF] text-white':'border'),style:m.from!=='me'?{background:bgSide,borderColor:'#5B5BFF'}:{}},
+      m.type==='image'?React.createElement('div',null,React.createElement('img',{src:m.imageUrl,className:'rounded-xl w-full max-w-[300px] mb-2'}),React.createElement('div',null,m.text)):React.createElement('div',{className:'whitespace-pre-wrap'},m.text),
+      React.createElement('div',{className:'text-[10px] opacity-60 mt-1'},m.time)
+     )
+    );}),
+    thinking&&React.createElement('div',{className:'flex justify-start'},React.createElement('div',{className:'border px-4 py-3 rounded-[16px] flex items-center gap-2',style:{background:bgSide,borderColor:'#5B5BFF'}},React.createElement('div',{className:'w-2 h-2 bg-[#5B5BFF] rounded-full animate-bounce'}),React.createElement('span',{className:'text-[12px]',style:{color:textMuted}},'Quantum blue thinking...')))
+   ),
+   React.createElement('div',{className:'p-3 flex gap-2 border-t',style:{background:bgSide,borderColor:border}},
+    React.createElement('input',{value:input,onChange:function(e){setInput(e.target.value);},onKeyDown:function(e){if(e.key==='Enter'){e.preventDefault();send();}},placeholder:'Ask blue Quantum... /image',className:'flex-1 h-11 px-4 rounded-full border outline-none text-[14px]',style:{background:bgCard,borderColor:'#5B5BFF',color:textMain}}),
+    React.createElement('button',{onClick:send,className:'w-11 h-11 rounded-full bg-[#5B5BFF] text-white flex items-center justify-center'},React.createElement(Send,{className:'w-5 h-5'}))
+   )
+  ),
+
+  showSettings&&React.createElement('div',{className:'fixed inset-0 z-50 flex flex-col',style:{background:bgMain}},
+   React.createElement('div',{className:'h-[60px] border-b flex items-center px-4 gap-3',style:{background:bgSide,borderColor:border}},
+    React.createElement('button',{onClick:function(){setShowSettings(false);},className:'w-9 h-9 rounded-full flex items-center justify-center border',style:{background:bgCard}},React.createElement(ArrowLeft,{className:'w-5 h-5'})),
+    React.createElement('h2',{className:'font-bold text-[16px]'},'Settings')
+   ),
+   React.createElement('div',{className:'flex-1 p-5'},
+    React.createElement('div',{className:'max-w-[400px] mx-auto space-y-4'},
+     React.createElement('div',{className:'rounded-[20px] p-5 border',style:{background:bgSide,borderColor:border}},
+      React.createElement('h3',{className:'font-bold text-[14px]'},'System Themes - White & Dark'),
+      React.createElement('div',{className:'mt-3 grid grid-cols-2 gap-3'},
+       React.createElement('button',{onClick:function(){setTheme('dark');},className:'h-14 rounded-xl border-2 flex flex-col items-center justify-center gap-1 '+(theme==='dark'?'border-[#5B5BFF]':'border-transparent'),style:{background:'#0A0F2C'}},React.createElement(Moon,{className:'w-5 h-5 text-white'}),React.createElement('span',{className:'text-[11px] text-white font-bold'},'Dark Secure')),
+       React.createElement('button',{onClick:function(){setTheme('light');},className:'h-14 rounded-xl border-2 flex flex-col items-center justify-center gap-1 '+(theme==='light'?'border-[#5B5BFF]':'border-transparent'),style:{background:'#FFFFFF'}},React.createElement(Sun,{className:'w-5 h-5 text-black'}),React.createElement('span',{className:'text-[11px] text-black font-bold'},'White Clean'))
+      )
+     ),
+     React.createElement('div',{className:'rounded-[20px] p-5 border',style:{background:bgSide,borderColor:'#5B5BFF'}},
+      React.createElement('h3',{className:'font-bold text-[13px] flex items-center gap-2'},React.createElement('div',{className:'q-orb !w-6 !h-6'},React.createElement(Brain,{className:'w-3 h-3 text-white'})),'Quantum Mind - Blue Glowing Edges at Cycle'),
+      React.createElement('p',{className:'text-[11px] mt-2',style:{color:textMuted}},'Floating orb at right edge (cycle) - blue core with glowing multicolor edges!')
+     )
+    )
+   )
+  ),
+
+  toast&&React.createElement('div',{className:'fixed bottom-[20px] left-1/2 -translate-x-1/2 z-[70] border text-[13px] px-5 py-3 rounded-full shadow flex items-center gap-2',style:{background:bgSide,borderColor:border}},
+   React.createElement('div',{className:'w-2 h-2 bg-green-400 rounded-full animate-pulse'}),React.createElement('span',null,toast)
+  )
+ );
 }
 createRoot(document.getElementById('root')).render(React.createElement(App));
 </script>
