@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>CHATSPARK - Real Contacts Only</title>
 <link rel="icon" href="./icon-512.png">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -19,6 +19,8 @@
 .quantum-header-glow::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#8B5CF6,#5B5BFF);background-size:200% 100%;animation:rotateGlow 3s linear infinite;filter:blur(0.5px)}
 .quantum-msg-glow{position:relative;overflow:hidden}
 .quantum-msg-glow::before{content:'';position:absolute;inset:-1px;border-radius:18px;background:linear-gradient(45deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899);opacity:0.3;z-index:-1;filter:blur(4px)}
+html,body{touch-action: manipulation; overscroll-behavior: none; -webkit-text-size-adjust:100%;}
+*{-webkit-tap-highlight-color:transparent;}
 </style>
 </head>
 <body class="bg-[#0A0F2C] text-white m-0 overflow-hidden">
