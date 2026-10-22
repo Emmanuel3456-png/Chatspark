@@ -13,37 +13,19 @@
 @keyframes glowPulse{0%{box-shadow:0 0 15px #5B5BFF,0 0 30px #00D4FF,0 0 45px #FFD60A,0 0 60px #EC4899,0 0 80px rgba(91,91,255,0.4)}25%{box-shadow:0 0 25px #FFD60A,0 0 40px #EC4899,0 0 60px #5B5BFF,0 0 75px #00D4FF,0 0 90px rgba(255,214,10,0.3)}50%{box-shadow:0 0 30px #EC4899,0 0 50px #8B5CF6,0 0 70px #00D4FF,0 0 85px #5B5BFF,0 0 100px rgba(236,72,153,0.3)}75%{box-shadow:0 0 25px #00D4FF,0 0 45px #FFD60A,0 0 65px #EC4899,0 0 80px #5B5BFF,0 0 95px rgba(0,212,255,0.3)}100%{box-shadow:0 0 15px #5B5BFF,0 0 30px #00D4FF,0 0 45px #FFD60A,0 0 60px #EC4899,0 0 80px rgba(91,91,255,0.4)}}
 @keyframes sendGlow{0%{transform:scale(1);box-shadow:0 0 20px #5B5BFF,0 0 40px #00D4FF,0 0 60px rgba(91,91,255,0.5)}50%{transform:scale(1.08);box-shadow:0 0 35px #FFD60A,0 0 55px #EC4899,0 0 75px rgba(255,214,10,0.6)}100%{transform:scale(1);box-shadow:0 0 20px #5B5BFF,0 0 40px #00D4FF,0 0 60px rgba(91,91,255,0.5)}}
 @keyframes edgeRainbow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-.qorb{width:70px;height:70px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;background:radial-gradient(circle at 30% 30%,#AAB8FF,#5B5BFF 35%,#2D2FA0 75%,#1A1F6B);animation:glowPulse 1.5s infinite ease-in-out;filter:drop-shadow(0 0 15px #5B5BFF)}
-.qorb:before{content:'';position:absolute;inset:-12px;border-radius:50%;background:conic-gradient(from 0deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#8B5CF6,#00D4FF,#5B5BFF);animation:spinGlow 1.2s linear infinite;filter:blur(3px);z-index:-2;box-shadow:0 0 40px #5B5BFF,0 0 80px #00D4FF}
-.qorb:after{content:'';position:absolute;inset:-6px;border-radius:50%;background:conic-gradient(from 90deg,#FFD60A,#EC4899,#5B5BFF,#00D4FF,#FFD60A);animation:spinGlow 0.8s linear infinite reverse;z-index:-1;opacity:1;filter:blur(1px)}
+.qorb{width:72px;height:72px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;background:radial-gradient(circle at 30% 30%,#FFD60A 0%,#FF8A00 15%,#EC4899 30%,#8B5CF6 50%,#5B5BFF 70%,#00D4FF 85%,#22C55E 100%);animation:glowPulse 1.2s infinite ease-in-out;filter:drop-shadow(0 0 20px #5B5BFF) drop-shadow(0 0 40px #00D4FF)}
+.qorb:before{content:'';position:absolute;inset:-14px;border-radius:50%;background:conic-gradient(from 0deg,#EF4444,#F97316,#FFD60A,#22C55E,#00D4FF,#5B5BFF,#8B5CF6,#EC4899,#EF4444);animation:spinGlow 1s linear infinite;filter:blur(4px);z-index:-2;box-shadow:0 0 50px #5B5BFF,0 0 100px #00D4FF,0 0 150px #EC4899}
+.qorb:after{content:'';position:absolute;inset:-7px;border-radius:50%;background:conic-gradient(from 180deg,#FFD60A,#22C55E,#00D4FF,#5B5BFF,#EC4899,#F97316,#FFD60A);animation:spinGlow 0.7s linear infinite reverse;z-index:-1;opacity:1;filter:blur(1.5px)}
+.qorb-inner{position:absolute;inset:8px;border-radius:50%;background:conic-gradient(from 90deg,#5B5BFF,#00D4FF,#22C55E,#FFD60A,#F97316,#EC4899,#8B5CF6,#5B5BFF);animation:spinGlow 2s linear infinite;opacity:0.6;filter:blur(0.5px)}
 .glow-input{border:2.5px solid #5B5BFF!important;box-shadow:0 0 20px rgba(91,91,255,0.5),0 0 40px rgba(0,212,255,0.25),inset 0 0 10px rgba(91,91,255,0.1)!important;animation:glowPulse 3s infinite!important;background:linear-gradient(90deg,rgba(91,91,255,0.05),rgba(255,255,255,0.9),rgba(0,212,255,0.05))!important}
 .glow-send{position:relative;animation:sendGlow 1.5s infinite ease-in-out!important;border:2px solid white!important}
 .glow-send:before{content:'';position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(from 0deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#5B5BFF);animation:spinGlow 1s linear infinite;z-index:-1;filter:blur(6px);opacity:0.9}
 .glow-edge{position:relative}
-.glow-edge:after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:3px;background:linear-gradient(90deg,#5B5BFF,#00D4FF,#FFD60A,#EC4899,#8B5CF6,#5B5BFF);background-size:200% 100%;animation:edgeRainbow 2s linear infinite;filter:blur(0.5px);box-shadow:0 0 10px #5B5BFF,0 0 20px #00D4FF}
+.glow-edge:after{content:'';position:absolute;bottom:-3px;left:0;right:0;height:4px;background:linear-gradient(90deg,#EF4444,#F97316,#FFD60A,#22C55E,#00D4FF,#5B5BFF,#8B5CF6,#EC4899,#EF4444);background-size:300% 100%;animation:edgeRainbow 1.5s linear infinite;filter:blur(0.5px);box-shadow:0 0 15px #5B5BFF,0 0 30px #00D4FF,0 0 45px #EC4899}
 .profile-glow{box-shadow:0 0 25px rgba(91,91,255,0.6),0 0 50px rgba(0,212,255,0.3),0 0 75px rgba(255,214,10,0.15)!important;border:3px solid #5B5BFF!important;animation:glowPulse 3s infinite!important}
+.quantum-header{position:relative;overflow:hidden}
+.quantum-header:before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#EF4444,#F97316,#FFD60A,#22C55E,#00D4FF,#5B5BFF,#8B5CF6,#EC4899);opacity:0.15;animation:edgeRainbow 3s linear infinite;background-size:300% 100%}
 
-.qin{width:100%;height:100%;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 30%,#9AA8FF,#5B5BFF 50%,#1E2470 85%);box-shadow:inset 0 0 15px rgba(255,255,255,.3);position:relative;z-index:1}
-html,body{touch-action:manipulation;overscroll-behavior:none;margin:0;padding:0}
-.no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{scrollbar-width:none}
-</style>
-</head>
-<body>
-<div id="root"></div>
-<script type="importmap">
-{"imports":{"react":"https://esm.sh/react@18.2.0","react-dom/client":"https://esm.sh/react-dom@18.2.0/client","lucide-react":"https://esm.sh/lucide-react@0.344.0?external=react"}}
-</script>
-<script type="module">
-import React,{useState,useEffect,useRef} from 'react';
-import {createRoot} from 'react-dom/client';
-import {MessageCircle,Search,Phone,Settings,Brain,ShieldCheck,Lock,Camera,Sun,Moon,Download,X,Copy,Send,ArrowLeft,Sparkles,CheckCircle,Users,Plus,Compass,Hash,Contact,Link2,Share2,LogOut} from 'lucide-react';
-
-function Logo(){
- return React.createElement('div',{style:{width:36,height:36,borderRadius:12,background:'linear-gradient(135deg,#5B5BFF,#00D4FF)',display:'flex',alignItems:'center',justifyContent:'center',position:'relative',boxShadow:'0 0 20px rgba(91,91,255,0.6)'}},
-  React.createElement('div',{style:{width:20,height:14,borderRadius:8,background:'white',display:'flex',alignItems:'center',justifyContent:'center'}},React.createElement('div',{style:{width:6,height:6,borderRadius:99,background:'#5B5BFF'}})),
-  React.createElement('div',{style:{position:'absolute',bottom:-4,right:-4,width:18,height:18,borderRadius:99,background:'#FFD60A',display:'flex',alignItems:'center',justifyContent:'center',fontSize:10,boxShadow:'0 2px 6px rgba(0,0,0,0.2)'}},'⚡')
- );
-}
 function AtomBrain(){
  return React.createElement('div',{style:{width:28,height:28,position:'relative',display:'flex',alignItems:'center',justifyContent:'center'}},
   React.createElement('div',{style:{position:'absolute',width:24,height:24,borderRadius:'50%',border:'1.5px solid rgba(255,255,255,0.9)',transform:'rotate(0deg)'}}),
@@ -290,7 +272,7 @@ function App(){
       )
      ),
      React.createElement('div',{style:{position:'absolute',bottom:108,right:16,zIndex:20}},
-      React.createElement('div',{onClick:()=>setShowQuantum(true),className:'qorb'},React.createElement('div',{className:'qin'},React.createElement(AtomBrain,null)))
+      React.createElement('div',{onClick:()=>setShowQuantum(true),className:'qorb'},React.createElement('div',{className:'qorb-inner'}),React.createElement('div',{className:'qin'},React.createElement(AtomBrain,null)))
      )
     ),
     React.createElement('div',{style:{position:'absolute',bottom:0,left:0,right:0,height:72,borderTop:'1px solid '+border,display:'flex',alignItems:'center',justifyContent:'space-around',padding:'0 8px',background:bgSide,zIndex:30}},
@@ -353,9 +335,9 @@ function App(){
   ),
 
   showQuantum&&React.createElement('div',{style:{position:'fixed',inset:0,zIndex:40,display:'flex',flexDirection:'column',background:bgMain}},
-   React.createElement('div',{style:{height:60,borderBottom:'2px solid #5B5BFF',display:'flex',alignItems:'center',padding:'0 16px',gap:12,background:'linear-gradient(90deg,#0A0F2C,#1A2144)',boxShadow:'0 0 30px rgba(91,91,255,0.4)'}},
+   React.createElement('div',{className:'quantum-header',style:{height:62,borderBottom:'3px solid transparent',borderImage:'linear-gradient(90deg,#EF4444,#FFD60A,#22C55E,#00D4FF,#5B5BFF,#EC4899) 1',display:'flex',alignItems:'center',padding:'0 16px',gap:12,background:'linear-gradient(90deg,#0A0F2C,#1A2144)',boxShadow:'0 0 30px rgba(91,91,255,0.4)'}},
     React.createElement('button',{onClick:()=>setShowQuantum(false),style:{width:36,height:36,borderRadius:99,background:'rgba(255,255,255,0.1)',display:'flex',alignItems:'center',justifyContent:'center',border:'none'}},React.createElement(ArrowLeft,{style:{width:20,height:20,color:'white'}})),
-    React.createElement('div',{className:'qorb',style:{width:36,height:36}},React.createElement('div',{className:'qin'},React.createElement(AtomBrain,null))),
+    React.createElement('div',{className:'qorb',style:{width:36,height:36}},React.createElement('div',{className:'qorb-inner'}),React.createElement('div',{className:'qin'},React.createElement(AtomBrain,null))),
     React.createElement('div',null,React.createElement('div',{style:{fontWeight:800,fontSize:14,color:'white'}},'Quantum Mind - Super Glow'),React.createElement('div',{style:{fontSize:11,color:'#22D3EE'}},'Atom+Brain • Rainbow edges'))
    ),
    React.createElement('div',{style:{flex:1,overflowY:'auto',padding:16,display:'flex',flexDirection:'column',gap:12}},
