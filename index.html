@@ -374,25 +374,25 @@ function App(){
 
   showSettings&&React.createElement('div',{style:{position:'fixed',inset:0,zIndex:50,display:'flex',flexDirection:'column',background:bgMain}},
    React.createElement('div',{style:{height:60,borderBottom:'1px solid '+border,display:'flex',alignItems:'center',padding:'0 16px',gap:12,background:bgSide}},
-    React.createElement('button',{onClick:()=>setShowSettings(false),style:{width:32,height:32,borderRadius:99,display:'flex',alignItems:'center',justifyContent:'center',border:'1px solid '+border,background:bgCard}},React.createElement(ArrowLeft,{style:{width:20,height:20}})),
+    React.createElement('button',{onClick:()=>setShowSettings(false),style:{width:36,height:36,borderRadius:99,display:'flex',alignItems:'center',justifyContent:'center',border:'1px solid '+border,background:bgCard}},React.createElement(ArrowLeft,{style:{width:20,height:20}})),
     React.createElement('h2',{style:{fontWeight:800,fontSize:16}},'Settings - Profile Picture Glowing')
    ),
-   React.createElement('div',{style:{flex:1,padding:20,overflowY:'auto'}},
-    React.createElement('div',{style:{maxWidth:400,margin:'0 auto',display:'flex',flexDirection:'column',gap:20}},
+   React.createElement('div',{style:{flex:1,overflowY:'auto',padding:16,paddingBottom:120,WebkitOverflowScrolling:'touch',maxHeight:'calc(100vh - 60px)'}},
+    React.createElement('div',{style:{maxWidth:420,margin:'0 auto',display:'flex',flexDirection:'column',gap:20}},
      React.createElement('div',{style:{borderRadius:24,padding:24,border:'2px solid #5B5BFF',background:bgSide,textAlign:'center',boxShadow:'0 0 30px rgba(91,91,255,0.2)'}},
       React.createElement('h3',{style:{fontWeight:800,fontSize:14,marginBottom:16}},'Profile Picture - Real Upload'),
       React.createElement('div',{style:{position:'relative',width:112,height:112,margin:'0 auto',cursor:'pointer'},onClick:()=>settingsAvatarRef.current&&settingsAvatarRef.current.click()},
-       user&&user.avatar?React.createElement('img',{src:user.avatar,style:{width:112,height:112,borderRadius:999,objectFit:'cover',border:'4px solid #5B5BFF',boxShadow:'0 0 30px rgba(91,91,255,0.6),0 0 60px rgba(0,212,255,0.3)'}}):React.createElement('div',{style:{width:112,height:112,borderRadius:999,display:'flex',alignItems:'center',justifyContent:'center',fontSize:36,fontWeight:800,color:'white',background:'linear-gradient(135deg,#5B5BFF,#8B5CF6)',boxShadow:'0 0 30px rgba(91,91,255,0.5)'}},user?user.name[0].toUpperCase():'A'),
-       React.createElement('div',{style:{position:'absolute',bottom:-4,right:-4,width:32,height:32,borderRadius:99,background:'#5B5BFF',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 0 15px #5B5BFF',border:'2px solid white'}},React.createElement(Camera,{style:{width:16,height:16,color:'white'}}))
+       user&&user.avatar?React.createElement('img',{src:user.avatar,style:{width:112,height:112,borderRadius:999,objectFit:'cover',border:'4px solid #5B5BFF',boxShadow:'0 0 30px rgba(91,91,255,0.6)'}}):React.createElement('div',{style:{width:112,height:112,borderRadius:999,display:'flex',alignItems:'center',justifyContent:'center',fontSize:36,fontWeight:800,color:'white',background:'linear-gradient(135deg,#5B5BFF,#8B5CF6)',boxShadow:'0 0 30px rgba(91,91,255,0.5)'}},user?user.name[0].toUpperCase():'A'),
+       React.createElement('div',{style:{position:'absolute',bottom:-4,right:-4,width:36,height:36,borderRadius:99,background:'#5B5BFF',display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 0 15px #5B5BFF',border:'2px solid white'}},React.createElement(Camera,{style:{width:16,height:16,color:'white'}}))
       ),
       React.createElement('p',{style:{fontSize:13,fontWeight:800,marginTop:16,color:textMain}},user?user.name:'Your Name'),
       React.createElement('p',{style:{fontSize:11,marginTop:4,color:muted}},user?user.phone:'+234...'),
       React.createElement('div',{style:{marginTop:16,display:'flex',gap:8,justifyContent:'center'}},
-       React.createElement('button',{onClick:()=>settingsAvatarRef.current&&settingsAvatarRef.current.click(),style:{height:36,padding:'0 16px',borderRadius:99,background:'#5B5BFF',color:'white',fontSize:12,fontWeight:800,display:'flex',alignItems:'center',gap:6,border:'none',boxShadow:'0 0 20px rgba(91,91,255,0.4)'}},React.createElement(Camera,{style:{width:14,height:14}}),'Change Photo'),
-       user&&user.avatar?React.createElement('button',{onClick:()=>{const u={...user,avatar:''};setUser(u);toastMsg('Removed - Glowing off');},style:{height:36,padding:'0 16px',borderRadius:99,border:'1px solid '+border,background:bgCard,color:textMain,fontSize:12,fontWeight:700}},'Remove'):null
+       React.createElement('button',{onClick:()=>settingsAvatarRef.current&&settingsAvatarRef.current.click(),style:{height:36,padding:'0 16px',borderRadius:99,background:'#5B5BFF',color:'white',fontSize:12,fontWeight:800,display:'flex',alignItems:'center',gap:6,border:'none'}},React.createElement(Camera,{style:{width:14,height:14}}),'Change Photo'),
+       user&&user.avatar?React.createElement('button',{onClick:()=>{const u={...user,avatar:''};setUser(u);toastMsg('Removed');},style:{height:36,padding:'0 16px',borderRadius:99,border:'1px solid '+border,background:bgCard,color:textMain,fontSize:12,fontWeight:700}},'Remove'):null
       ),
-      React.createElement('p',{style:{fontSize:10,marginTop:12,color:muted}},'Tap picture to upload real photo • Glowing rainbow ring • Real only'),
-      React.createElement('input',{ref:settingsAvatarRef,type:'file',accept:'image/*',style:{display:'none'},onChange:e=>{const f=e.target.files&&e.target.files[0];if(f)compressAvatar(f,d=>{const u={...user,avatar:d};setUser(u);toastMsg('Profile pic updated! Super glowing!');});}})
+      React.createElement('p',{style:{fontSize:10,marginTop:12,color:muted}},'Tap picture to upload real photo • Glowing rainbow ring'),
+      React.createElement('input',{ref:settingsAvatarRef,type:'file',accept:'image/*',style:{display:'none'},onChange:e=>{const f=e.target.files&&e.target.files[0];if(f){const r=new FileReader(); r.onload=()=>{const img=new Image(); img.onload=()=>{const c=document.createElement('canvas');c.width=300;c.height=300;const ctx=c.getContext('2d');const s=Math.max(300/img.width,300/img.height);const w=img.width*s;const h=img.height*s;ctx.fillStyle='#fff';ctx.fillRect(0,0,300,300);ctx.drawImage(img,(300-w)/2,(300-h)/2,w,h);const d=c.toDataURL('image/jpeg',0.85);const u={...user,avatar:d};setUser(u);toastMsg('Profile updated! Glowing!');}; img.src=r.result;}; r.readAsDataURL(f);} }})
      ),
      React.createElement('div',{style:{borderRadius:20,padding:20,border:'1px solid '+border,background:bgSide}},
       React.createElement('h3',{style:{fontWeight:800,fontSize:14}},'White & Dark + Glow'),
@@ -401,11 +401,23 @@ function App(){
        React.createElement('button',{onClick:()=>setTheme('light'),style:{height:56,borderRadius:12,border:'2px solid '+(theme==='light'?'#5B5BFF':'transparent'),background:'#FFFFFF',color:'black',fontWeight:800,fontSize:11}},'White Glowing')
       )
      ),
+     React.createElement('div',{style:{borderRadius:20,padding:16,border:'2px solid #5B5BFF',background:'rgba(91,91,255,0.08)'}},
+      React.createElement('div',{style:{fontWeight:'bold',fontSize:14,marginBottom:10,display:'flex',alignItems:'center',gap:8}},
+       React.createElement('div',{style:{width:12,height:12,borderRadius:'50%',background:apiStatus==='ENV_OK'?'#22C55E':apiStatus==='ENV_MISSING'?'#EF4444':'#FFD60A',boxShadow:apiStatus==='ENV_OK'?'0 0 10px #22C55E':'0 0 10px #FFD60A'}}),
+       'Quantum Mind API: '+(apiStatus==='ENV_OK'?'ENV OK ✅':apiStatus==='ENV_MISSING'?'ENV MISSING 🔧':apiStatus==='API_ERROR'?'ERROR ❌':apiStatus)
+      ),
+      React.createElement('div',{style:{fontSize:11,opacity:0.7,marginBottom:8}}, 'Groq: '+(groqKey? 'Local key saved' : 'Using Vercel ENV variable')),
+      React.createElement('input',{type:'text',value:groqKey,onChange:e=>{const v=e.target.value; setGroqKey(v); try{localStorage.setItem('groq_api_key',v);}catch{}},placeholder:'gsk_... (optional if Vercel ENV set)',style:{width:'100%',padding:'10px 12px',borderRadius:10,border:'1.5px solid #5B5BFF',background:'white',color:'#111',marginBottom:8,outline:'none',fontSize:12}}),
+      React.createElement('div',{style:{display:'flex',gap:8}},
+       React.createElement('button',{onClick:async()=>{setApiStatus('Checking...'); try{const r=await fetch('/api/quantum',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'test hello',history:[]})}); const d=await r.json(); setApiStatus(d.status||'UNKNOWN'); toastMsg('Quantum: '+(d.reply||'').slice(0,80));}catch(e){setApiStatus('FETCH_ERROR'); toastMsg('Fetch error: '+e.message);}},style:{flex:1,padding:'10px',borderRadius:8,background:'#5B5BFF',color:'white',border:'none',fontWeight:'bold',cursor:'pointer',fontSize:12}},'Test Quantum API'),
+       React.createElement('button',{onClick:()=>{try{localStorage.removeItem('groq_api_key');}catch{}; setGroqKey(''); toastMsg('Cleared local key');},style:{padding:'10px 12px',borderRadius:8,background:'rgba(255,255,255,0.1)',color:textMain,border:'1px solid #5B5BFF',cursor:'pointer',fontSize:11}},'Clear')
+      ),
+      React.createElement('div',{style:{marginTop:10,fontSize:10,opacity:0.6,lineHeight:'1.4'}}, 'To fix fake replies: Vercel Dashboard → your-chatspark → Settings → Environment Variables → Add GROQ_API_KEY=gsk_... → Deployments → Redeploy WITHOUT cache. Get key: console.groq.com')
+     ),
      React.createElement('button',{onClick:()=>{if(confirm('Clear all real data?')){try{localStorage.clear();}catch{} location.reload();}},style:{width:'100%',height:44,borderRadius:99,border:'1px solid #EF4444',background:bgCard,color:'#EF4444',fontSize:12,fontWeight:800}},'Clear Real Data')
     )
    )
   ),
-
   toast&&React.createElement('div',{style:{position:'fixed',bottom:90,left:'50%',transform:'translateX(-50%)',zIndex:70,border:'2px solid #5B5BFF',fontSize:13,padding:'12px 20px',borderRadius:99,boxShadow:'0 0 30px rgba(91,91,255,0.5)',display:'flex',alignItems:'center',gap:8,background:bgSide,color:textMain}},
    React.createElement('div',{style:{width:10,height:10,borderRadius:99,background:'#22C55E',animation:'glowPulse 1s infinite'}}),React.createElement('span',{style:{fontWeight:600}},toast)
   )
