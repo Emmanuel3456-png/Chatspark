@@ -202,6 +202,26 @@ function init(){
   applyTheme(theme);
   if(!user){document.getElementById('onboard').classList.remove('hide'); return;}
   if(!friends.find(function(f){return f.id==='quantum'})){friends.unshift({id:'quantum',name:'Quantum Mind',phone:'AI',isAI:true}); chats['quantum']=chats['quantum']||[{id:1,from:'them',text:'Hi '+(user.name||'')+' I am Quantum Mind your real secure AI inside ChatSpark Ask me anything',time:new Date().toLocaleTimeString()}]; saveAll();}
+
+  // CLEANUP: Remove fake friends added by old bug (Debrorah Man etc not on ChatSpark)
+  var fakeNames = ['Debrorah Man','Debrorah','debrorah'];
+  var removed = 0;
+  var originalFriends = friends.slice();
+  friends = friends.filter(function(f){
+    if(f.id==='quantum') return true;
+    var lower = (f.name||'').toLowerCase();
+    if(fakeNames.some(function(fn){ return lower.includes(fn.toLowerCase()); })){
+      removed++;
+      delete chats[f.id];
+      return false;
+    }
+    return true;
+  });
+  if(removed>0){
+    saveAll();
+    setTimeout(function(){ alert('Cleaned '+removed+' fake contact(s) that were added even though not on ChatSpark secure. Now real only: invite via WhatsApp, they join via your link to appear.'); }, 500);
+  }
+
   updatePicUI();
   var txt=document.getElementById('realLinkText'); if(txt) txt.innerText='Secure real invite link: '+getLink(user.name)+' Only real contacts from phone If not on ChatSpark invite via WhatsApp secure E2E encrypted';
   document.getElementById('gkey').value=gkey;
