@@ -4,683 +4,476 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0A0F2C">
-<title>CHATSPARK - REAL Friends Only</title>
+<title>CHATSPARK REAL</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-*{font-family:Inter,sans-serif;box-sizing:border-box}
-body{margin:0;background:#0A0F2C;overflow:hidden;touch-action:manipulation}
-.no-scrollbar::-webkit-scrollbar{display:none}
-.glow-edge{box-shadow:0 0 0 2px #FF3B30,0 0 0 4px #FF8C00,0 0 0 6px #FFD60A,0 0 0 8px #00C853,0 0 12px rgba(91,91,255,0.5)}
-.glow-input:focus{box-shadow:0 0 0 2px #00F0FF,0 0 12px #5B5BFF}
-.orb-glow{animation:rainbow 3s linear infinite, float 3s ease-in-out infinite}
-@keyframes rainbow{0%{box-shadow:0 0 0 2px #FF3B30,0 0 20px #FF3B30}14%{box-shadow:0 0 0 2px #FF8C00,0 0 20px #FF8C00}28%{box-shadow:0 0 0 2px #FFD60A,0 0 20px #FFD60A}42%{box-shadow:0 0 0 2px #00C853,0 0 20px #00C853}56%{box-shadow:0 0 0 2px #00F0FF,0 0 20px #00F0FF}71%{box-shadow:0 0 0 2px #5B5BFF,0 0 20px #5B5BFF}85%{box-shadow:0 0 0 2px #9C27B0,0 0 20px #9C27B0}100%{box-shadow:0 0 0 2px #FF1493,0 0 20px #FF1493}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.top-glow{height:3px;background:linear-gradient(90deg,#FF3B30,#FF8C00,#FFD60A,#00C853,#00F0FF,#5B5BFF,#9C27B0,#FF1493);background-size:200% 100%;animation:slide 3s linear infinite}
-@keyframes slide{0%{background-position:0%}100%{background-position:200%}}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>*{font-family:Inter,sans-serif;box-sizing:border-box}body{margin:0;background:#0A0F2C;overflow:hidden} .top-glow{height:3px;background:linear-gradient(90deg,#FF3B30,#FF8C00,#FFD60A,#00C853,#00F0FF,#5B5BFF,#9C27B0,#FF1493);background-size:200% 100%;animation:sl 3s linear infinite} @keyframes sl{0%{background-position:0%}100%{background-position:200%}} .orb{animation:rb 3s linear infinite,fl 3s ease-in-out infinite} @keyframes rb{0%{box-shadow:0 0 0 2px #FF3B30,0 0 18px #FF3B30}25%{box-shadow:0 0 0 2px #FFD60A,0 0 18px #FFD60A}50%{box-shadow:0 0 0 2px #00F0FF,0 0 18px #00F0FF}75%{box-shadow:0 0 0 2px #5B5BFF,0 0 18px #5B5BFF}100%{box-shadow:0 0 0 2px #FF1493,0 0 18px #FF1493}} @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}</style>
 </head>
 <body>
 <div id="root"></div>
 <script>
-const {useState,useEffect,useRef}=React;
+var e=React.createElement;
+var useState=React.useState;
+var useEffect=React.useEffect;
+var useRef=React.useRef;
 
-function getInviteLink(myName){
-  const base = window.location.origin || 'https://your-chatspark.vercel.app';
-  const n = (myName||'friend').replace(/\s+/g,'');
-  return base+'/join/'+encodeURIComponent(n);
+function getLink(name){
+  var base=window.location.origin || "https://your-chatspark.vercel.app";
+  var n=(name||"friend").replace(/\s+/g,"");
+  return base+"/join/"+encodeURIComponent(n);
 }
-function openInvite(phone, myName){
-  const link=getInviteLink(myName);
-  const msg='Hey! Join me on ChatSpark - real friends only! '+link;
-  const clean=String(phone).replace(/[^0-9]/g,'');
-  if(!clean){ alert('No phone number. Link: '+link); return; }
-  const wa='https://wa.me/'+clean+'?text='+encodeURIComponent(msg);
-  window.open(wa,'_blank');
+function openWA(phone,name){
+  var link=getLink(name);
+  var msg="Hey! Join me on ChatSpark real friends only! "+link;
+  var clean=String(phone).replace(/[^0-9]/g,"");
+  if(!clean){ alert("Link: "+link); return; }
+  window.open("https://wa.me/"+clean+"?text="+encodeURIComponent(msg),"_blank");
 }
 
 function App(){
-  const [user,setUser]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_user')||'null')}catch{return null}});
-  const [userPic,setUserPic]=useState(()=>{try{return localStorage.getItem('cs_user_pic')||''}catch{return ''}});
-  const [view,setView]=useState('chats');
-  const [filter,setFilter]=useState('all');
-  const [friends,setFriends]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_friends')||'[]')}catch{return []}});
-  const [groups,setGroups]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_groups')||'[]')}catch{return []}});
-  const [channels,setChannels]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_channels')||'[]')}catch{return []}});
-  const [statuses,setStatuses]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_statuses')||'[]')}catch{return []}});
-  const [calls,setCalls]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_calls')||'[]')}catch{return []}});
-  const [chats,setChats]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_chats')||'{}')}catch{return {}}});
-  const [favs,setFavs]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_favs')||'[]')}catch{return []}});
-  const [showAdd,setShowAdd]=useState(false);
-  const [showGroup,setShowGroup]=useState(false);
-  const [showChannel,setShowChannel]=useState(false);
-  const [showStatus,setShowStatus]=useState(false);
-  const [showSettings,setShowSettings]=useState(false);
-  const [showCallsMenu,setShowCallsMenu]=useState(false);
-  const [showChatsMenu,setShowChatsMenu]=useState(false);
-  const [showUpdatesMenu,setShowUpdatesMenu]=useState(false);
-  const [showToolsMenu,setShowToolsMenu]=useState(false);
-  const [activeChat,setActiveChat]=useState(null);
-  const [msgInput,setMsgInput]=useState('');
-  const [search,setSearch]=useState('');
-  const [apiStatus,setApiStatus]=useState('Checking...');
-  const [groqKey,setGroqKey]=useState(()=>{try{return localStorage.getItem('groq_api_key')||''}catch{return ''}});
-  const [qOpen,setQOpen]=useState(false);
-  const [qMessages,setQMessages]=useState(()=>{try{return JSON.parse(localStorage.getItem('cs_qmsgs')||'[]')}catch{return []}});
-  const [qInput,setQInput]=useState('');
-  const [deferredPrompt,setDeferredPrompt]=useState(null);
-  const [isInstalled,setIsInstalled]=useState(false);
-  const fileInputRef=useRef(null);
-  const picInputRef=useRef(null);
-  const statusInputRef=useRef(null);
+  var _user=function(){try{return JSON.parse(localStorage.getItem("cs_user")||"null")}catch{return null}}();
+  var _pic=function(){try{return localStorage.getItem("cs_user_pic")||""}catch{return ""}}();
+  var _friends=function(){try{return JSON.parse(localStorage.getItem("cs_friends")||"[]")}catch{return []}}();
+  var _groups=function(){try{return JSON.parse(localStorage.getItem("cs_groups")||"[]")}catch{return []}}();
+  var _channels=function(){try{return JSON.parse(localStorage.getItem("cs_channels")||"[]")}catch{return []}}();
+  var _status=function(){try{return JSON.parse(localStorage.getItem("cs_statuses")||"[]")}catch{return []}}();
+  var _calls=function(){try{return JSON.parse(localStorage.getItem("cs_calls")||"[]")}catch{return []}}();
+  var _chats=function(){try{return JSON.parse(localStorage.getItem("cs_chats")||"{}")}catch{return {}}}();
+  var _favs=function(){try{return JSON.parse(localStorage.getItem("cs_favs")||"[]")}catch{return []}}();
 
-  // Persist
-  useEffect(()=>{try{localStorage.setItem('cs_friends',JSON.stringify(friends))}catch{}},[friends]);
-  useEffect(()=>{try{localStorage.setItem('cs_groups',JSON.stringify(groups))}catch{}},[groups]);
-  useEffect(()=>{try{localStorage.setItem('cs_channels',JSON.stringify(channels))}catch{}},[channels]);
-  useEffect(()=>{try{localStorage.setItem('cs_statuses',JSON.stringify(statuses))}catch{}},[statuses]);
-  useEffect(()=>{try{localStorage.setItem('cs_calls',JSON.stringify(calls))}catch{}},[calls]);
-  useEffect(()=>{try{localStorage.setItem('cs_chats',JSON.stringify(chats))}catch{}},[chats]);
-  useEffect(()=>{try{localStorage.setItem('cs_favs',JSON.stringify(favs))}catch{}},[favs]);
-  useEffect(()=>{try{localStorage.setItem('cs_qmsgs',JSON.stringify(qMessages))}catch{}},[qMessages]);
-  useEffect(()=>{try{if(user) localStorage.setItem('cs_user',JSON.stringify(user))}catch{}},[user]);
+  var _ref=useState(_user),user=_ref[0],setUser=_ref[1];
+  var _ref2=useState(_pic),userPic=_ref2[0],setUserPic=_ref2[1];
+  var _ref3=useState("chats"),view=_ref3[0],setView=_ref3[1];
+  var _ref4=useState("all"),filter=_ref4[0],setFilter=_ref4[1];
+  var _ref5=useState(_friends),friends=_ref5[0],setFriends=_ref5[1];
+  var _ref6=useState(_groups),groups=_ref6[0],setGroups=_ref6[1];
+  var _ref7=useState(_channels),channels=_ref7[0],setChannels=_ref7[1];
+  var _ref8=useState(_status),statuses=_ref8[0],setStatuses=_ref8[1];
+  var _ref9=useState(_calls),calls=_ref9[0],setCalls=_ref9[1];
+  var _ref10=useState(_chats),chats=_ref10[0],setChats=_ref10[1];
+  var _ref11=useState(_favs),favs=_ref11[0],setFavs=_ref11[1];
+  var _ref12=useState(false),showAdd=_ref12[0],setShowAdd=_ref12[1];
+  var _ref13=useState(false),showGroup=_ref13[0],setShowGroup=_ref13[1];
+  var _ref14=useState(false),showChannel=_ref14[0],setShowChannel=_ref14[1];
+  var _ref15=useState(false),showStatus=_ref15[0],setShowStatus=_ref15[1];
+  var _ref16=useState(false),showSettings=_ref16[0],setShowSettings=_ref16[1];
+  var _ref17=useState(null),active=_ref17[0],setActive=_ref17[1];
+  var _ref18=useState(""),input=_ref18[0],setInput=_ref18[1];
+  var _ref19=useState(""),search=_ref19[0],setSearch=_ref19[1];
+  var _ref20=useState("Checking"),apiStatus=_ref20[0],setApiStatus=_ref20[1];
+  var _ref21=useState(function(){try{return localStorage.getItem("groq_api_key")||""}catch{return ""}}()),gkey=_ref21[0],setGkey=_ref21[1];
+  var _ref22=useState(false),qOpen=_ref22[0],setQOpen=_ref22[1];
+  var picRef=useRef(null);
+  var statusRef=useRef(null);
 
-  // PWA install
-  useEffect(()=>{
-    const checkInstalled=()=>{if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone) setIsInstalled(true)};
-    checkInstalled();
-    window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();setDeferredPrompt(e)});
-    window.addEventListener('appinstalled',()=>{setIsInstalled(true);setDeferredPrompt(null)});
+  useEffect(function(){try{localStorage.setItem("cs_friends",JSON.stringify(friends))}catch{}},[friends]);
+  useEffect(function(){try{localStorage.setItem("cs_groups",JSON.stringify(groups))}catch{}},[groups]);
+  useEffect(function(){try{localStorage.setItem("cs_channels",JSON.stringify(channels))}catch{}},[channels]);
+  useEffect(function(){try{localStorage.setItem("cs_statuses",JSON.stringify(statuses))}catch{}},[statuses]);
+  useEffect(function(){try{localStorage.setItem("cs_calls",JSON.stringify(calls))}catch{}},[calls]);
+  useEffect(function(){try{localStorage.setItem("cs_chats",JSON.stringify(chats))}catch{}},[chats]);
+  useEffect(function(){try{localStorage.setItem("cs_favs",JSON.stringify(favs))}catch{}},[favs]);
+  useEffect(function(){try{if(user) localStorage.setItem("cs_user",JSON.stringify(user))}catch{}},[user]);
+
+  useEffect(function(){
+    fetch("/api/quantum",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:"ping",apiKey:gkey})}).then(function(r){return r.json()}).then(function(d){setApiStatus(d.status||"OK")}).catch(function(){setApiStatus("FETCH_ERROR")});
   },[]);
 
-  // API check
-  useEffect(()=>{
-    fetch('/api/quantum',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'ping',apiKey:groqKey})}).then(r=>r.json()).then(d=>setApiStatus(d.status||'OK')).catch(()=>setApiStatus('FETCH_ERROR'));
-  },[]);
-
-  // Real contacts picker
-  const pickRealContacts=async()=>{
-    try{
-      if('contacts' in navigator && 'ContactsManager' in window){
-        const props=['name','tel'];
-        const opts={multiple:true};
-        const contacts=await navigator.contacts.select(props,opts);
-        if(!contacts||!contacts.length){alert('No contacts selected');return;}
-        const list=contacts.map(c=>{
-          const name=c.name&&c.name[0]||'Unknown';
-          const phone=c.tel&&c.tel[0]||'';
-          return {id:'c_'+Date.now()+'_'+Math.random().toString(36).slice(2),name,phone,hasApp:false};
-        });
-        // Ask for each if on Chatspark
-        for(let ct of list){
-          const has=confirm(ct.name+' ('+ct.phone+')\nIs this person USING ChatSpark?\nOK = Yes (Add), Cancel = No (Invite)');
+  function pickContacts(){
+    if(navigator.contacts && window.ContactsManager){
+      navigator.contacts.select(["name","tel"],{multiple:true}).then(function(cs){
+        if(!cs||!cs.length){alert("No contacts");return;}
+        cs.forEach(function(c){
+          var name=c.name&&c.name[0]||"Unknown";
+          var phone=c.tel&&c.tel[0]||"";
+          var has=confirm(name+" ("+phone+")\nIs using ChatSpark? OK=Yes Add, Cancel=Invite");
           if(has){
-            const nf={id:ct.id,name:ct.name,phone:ct.phone};
-            if(!friends.find(f=>f.phone===ct.phone)){
-              setFriends(f=>[...f,nf]);
-              setChats(ch=>({...ch,[nf.id]:ch[nf.id]||[]}));
-              try{let reg=JSON.parse(localStorage.getItem('cs_chatspark_users')||'[]');reg.push(ct.phone);localStorage.setItem('cs_chatspark_users',JSON.stringify([...new Set(reg)]))}catch{}
+            if(!friends.some(function(f){return f.phone===phone})){
+              var nf={id:"c_"+Date.now()+"_"+Math.random().toString(36).slice(2),name:name,phone:phone};
+              setFriends(function(f){return f.concat([nf])});
+              setChats(function(ch){var n={}; n[nf.id]=[]; return Object.assign({},ch,n)});
             }
           }else{
-            if(confirm('Invite '+ct.name+' via WhatsApp with real link?')){
-              openInvite(ct.phone,user?.name||'friend');
-            }
+            if(confirm("Invite "+name+" via WhatsApp with real link?")) openWA(phone,user&&user.name||"friend");
           }
+        });
+        setShowAdd(false);
+      }).catch(function(err){alert("Contacts error: "+err.message)});
+    }else{
+      var name=prompt("Real contact name from phone:");
+      var phone=prompt("Phone number:");
+      if(!name||!phone) return;
+      var has2=confirm(name+" using ChatSpark? OK=Add Cancel=Invite");
+      if(has2){
+        if(!friends.some(function(f){return f.phone===phone})){
+          var nf2={id:"c_"+Date.now(),name:name,phone:phone};
+          setFriends(function(f){return f.concat([nf2])});
+          setChats(function(ch){var n={}; n[nf2.id]=[]; return Object.assign({},ch,n)});
         }
         setShowAdd(false);
       }else{
-        const name=prompt('Enter REAL contact name from your phone:');
-        const phone=prompt('Enter phone number (e.g. 080... or +234...):');
-        if(!name||!phone) return;
-        const has=confirm(name+'\nIs this person USING ChatSpark? OK=Yes Add, Cancel=Invite');
-        if(has){
-          const nf={id:'c_'+Date.now(),name,phone};
-          if(!friends.find(f=>f.phone===phone)){
-            setFriends(f=>[...f,nf]);
-            setChats(ch=>({...ch,[nf.id]:[]}));
-          }
-          setShowAdd(false);
-        }else{
-          if(confirm('Invite '+name+' via WhatsApp?')) openInvite(phone,user?.name||'friend');
-        }
+        openWA(phone,user&&user.name||"friend");
       }
-    }catch(e){alert('Contacts error: '+e.message+'\nTry manual add.');}
-  };
-
-  const sendMessage=()=>{
-    if(!msgInput.trim()||!activeChat) return;
-    const isGroup=activeChat.startsWith('g_');
-    const isChannel=activeChat.startsWith('ch_');
-    const newMsg={id:Date.now(),from:'me',text:msgInput,time:new Date().toLocaleTimeString(),read:false};
-    setChats(prev=>{
-      const arr=prev[activeChat]||[];
-      return {...prev,[activeChat]:[...arr,newMsg]};
-    });
-    setMsgInput('');
-    // Add call log for demo? no
-    // Simulate reply only if Quantum Mind (special contact)
-    if(activeChat==='quantum'){
-      (async()=>{
-        try{
-          const res=await fetch('/api/quantum',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:newMsg.text,history:qMessages,apiKey:groqKey})});
-          const data=await res.json();
-          setApiStatus(data.status||'');
-          const reply={id:Date.now()+1,from:'them',text:data.reply||'No reply',time:new Date().toLocaleTimeString(),read:false};
-          setChats(p=>({...p,[activeChat]:[...(p[activeChat]||[]),reply]}));
-        }catch(e){
-          const reply={id:Date.now()+1,from:'them',text:'API Error: '+e.message+' Fix: Vercel Env GROQ_API_KEY',time:new Date().toLocaleTimeString()};
-          setChats(p=>({...p,[activeChat]:[...(p[activeChat]||[]),reply]}));
-        }
-      })();
     }
-  };
+  }
 
-  const toggleFav=(id)=>{
-    setFavs(f=> f.includes(id)? f.filter(x=>x!==id): [...f,id]);
-  };
+  function sendMsg(){
+    if(!input.trim()||!active) return;
+    var nm={id:Date.now(),from:"me",text:input,time:new Date().toLocaleTimeString(),read:false};
+    setChats(function(prev){var arr=prev[active]||[]; var n={}; n[active]=arr.concat([nm]); return Object.assign({},prev,n)});
+    setInput("");
+    if(active==="quantum"){
+      (function(txt){
+        fetch("/api/quantum",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:txt,apiKey:gkey})}).then(function(r){return r.json()}).then(function(d){
+          setApiStatus(d.status||"");
+          var rp={id:Date.now()+1,from:"them",text:d.reply||"No reply",time:new Date().toLocaleTimeString()};
+          setChats(function(prev){var arr=prev[active]||[]; var n={}; n[active]=arr.concat([rp]); return Object.assign({},prev,n)});
+        }).catch(function(err){
+          var rp2={id:Date.now()+1,from:"them",text:"Error: "+err.message,time:new Date().toLocaleTimeString()};
+          setChats(function(prev){var arr=prev[active]||[]; var n={}; n[active]=arr.concat([rp2]); return Object.assign({},prev,n)});
+        });
+      })(nm.text);
+    }
+  }
 
-  const markAllRead=(id)=>{
-    setChats(prev=>{
-      const arr=(prev[id]||[]).map(m=>({...m,read:true}));
-      return {...prev,[id]:arr};
-    });
-  };
-
-  const createGroupReal=()=>{
-    const gName=prompt('Group name (real):');
-    if(!gName) return;
-    const selected=[];
-    friends.forEach(f=>{
-      if(confirm('Add '+f.name+' to group '+gName+'?')) selected.push(f.id);
-    });
-    if(selected.length===0){alert('Select at least 1 real friend');return;}
-    const gid='g_'+Date.now();
-    const ng={id:gid,name:gName,members:selected,created:new Date().toISOString()};
-    setGroups(g=>[...g,ng]);
-    setChats(c=>({...c,[gid]:[{id:Date.now(),from:'system',text:'Group '+gName+' created with '+selected.length+' members',time:new Date().toLocaleTimeString()}]}));
-    setShowGroup(false);
-    setActiveChat(gid);
-  };
-
-  const createChannelReal=()=>{
-    const name=prompt('Channel name (e.g. KGSB, Just Stickers):');
-    if(!name) return;
-    const desc=prompt('Channel description:')||'';
-    const cid='ch_'+Date.now();
-    const ch={id:cid,name,desc,created:new Date().toISOString(),followers:1};
-    setChannels(cs=>[...cs,ch]);
-    setChats(c=>({...c,[cid]:[{id:Date.now(),from:'system',text:'Channel '+name+' created! Invite real people via link: '+getInviteLink(user?.name),time:new Date().toLocaleTimeString()}]}));
+  function toggleFav(id){
+    setFavs(function(f){return f.includes(id)? f.filter(function(x){return x!==id}) : f.concat([id])});
+  }
+  function markRead(id){
+    setChats(function(prev){var arr=(prev[id]||[]).map(function(m){var o={}; for(var k in m) o[k]=m[k]; o.read=true; return o}); var n={}; n[id]=arr; return Object.assign({},prev,n)});
+  }
+  function createGroup(){
+    var gName=prompt("Group name (real):"); if(!gName) return;
+    var sel=[];
+    friends.forEach(function(f){if(confirm("Add "+f.name+" to "+gName+"?")) sel.push(f.id)});
+    if(!sel.length){alert("Select 1 friend");return;}
+    var gid="g_"+Date.now();
+    var ng={id:gid,name:gName,members:sel,created:new Date().toISOString()};
+    setGroups(function(g){return g.concat([ng])});
+    setChats(function(c){var n={}; n[gid]=[{id:Date.now(),from:"system",text:"Group "+gName+" created with "+sel.length+" members",time:new Date().toLocaleTimeString()}]; return Object.assign({},c,n)});
+    setShowGroup(false); setActive(gid);
+  }
+  function createChannel(){
+    var name=prompt("Channel name like KGSB:"); if(!name) return;
+    var desc=prompt("Description:")||"";
+    var cid="ch_"+Date.now();
+    var ch={id:cid,name:name,desc:desc,created:new Date().toISOString()};
+    setChannels(function(cs){return cs.concat([ch])});
+    setChats(function(c){var n={}; n[cid]=[{id:Date.now(),from:"system",text:"Channel "+name+" created! Invite link: "+getLink(user&&user.name),time:new Date().toLocaleTimeString()}]; return Object.assign({},c,n)});
     setShowChannel(false);
-  };
-
-  const addStatusReal=()=>{
-    const text=prompt('Status text (or leave empty for photo):')||'';
-    if(!text && !statusInputRef.current) return;
-    if(text){
-      const st={id:'s_'+Date.now(),text,name:user?.name||'Me',pic:userPic,time:new Date().toISOString(),views:0};
-      setStatuses(s=>[st,...s]);
-      setShowStatus(false);
-    }else{
-      statusInputRef.current?.click();
-    }
-  };
-
-  const handleStatusFile=(e)=>{
-    const file=e.target.files?.[0];
-    if(!file) return;
-    const reader=new FileReader();
-    reader.onload=()=>{
-      const st={id:'s_'+Date.now(),text:'',image:reader.result,name:user?.name||'Me',pic:userPic,time:new Date().toISOString(),views:0};
-      setStatuses(s=>[st,...s]);
-      setShowStatus(false);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handlePicUpload=(e)=>{
-    const file=e.target.files?.[0];
-    if(!file) return;
-    const reader=new FileReader();
-    reader.onload=()=>{
-      const img=reader.result;
-      // Crop to square 300x300 via canvas
-      const c=document.createElement('canvas');
-      c.width=300;c.height=300;
-      const ctx=c.getContext('2d');
-      const im=new Image();
-      im.onload=()=>{
-        const size=Math.min(im.width,im.height);
-        const sx=(im.width-size)/2, sy=(im.height-size)/2;
-        ctx.drawImage(im,sx,sy,size,size,0,0,300,300);
-        const out=c.toDataURL('image/jpeg',0.9);
-        setUserPic(out);
-        try{localStorage.setItem('cs_user_pic',out)}catch{}
-      };
+  }
+  function addTextStatus(){
+    var txt=prompt("Status text:"); if(!txt) return;
+    var st={id:"s_"+Date.now(),text:txt,name:user&&user.name||"Me",pic:userPic,time:new Date().toISOString()};
+    setStatuses(function(s){return [st].concat(s)}); setShowStatus(false);
+  }
+  function handlePic(e){
+    var file=e.target.files&&e.target.files[0]; if(!file) return;
+    var reader=new FileReader();
+    reader.onload=function(){
+      var img=reader.result;
+      var c=document.createElement("canvas"); c.width=300; c.height=300;
+      var ctx=c.getContext("2d"); var im=new Image();
+      im.onload=function(){var size=Math.min(im.width,im.height); var sx=(im.width-size)/2, sy=(im.height-size)/2; ctx.drawImage(im,sx,sy,size,size,0,0,300,300); var out=c.toDataURL("image/jpeg",0.85); setUserPic(out); try{localStorage.setItem("cs_user_pic",out)}catch{}};
       im.src=img;
     };
     reader.readAsDataURL(file);
-  };
+  }
+  function handleStatusPic(e){
+    var file=e.target.files&&e.target.files[0]; if(!file) return;
+    var reader=new FileReader();
+    reader.onload=function(){var st={id:"s_"+Date.now(),text:"",image:reader.result,name:user&&user.name||"Me",pic:userPic,time:new Date().toISOString()}; setStatuses(function(s){return [st].concat(s)}); setShowStatus(false)};
+    reader.readAsDataURL(file);
+  }
 
-  // Derived lists
-  const filteredFriends=()=>{
-    let list=friends;
-    if(filter==='favourite') list=list.filter(f=>favs.includes(f.id));
-    if(filter==='unread') list=list.filter(f=>{
-      const msgs=chats[f.id]||[];
-      return msgs.some(m=>m.from!=='me'&&!m.read);
-    });
-    if(search) list=list.filter(f=>f.name.toLowerCase().includes(search.toLowerCase()));
+  function unreadCount(){
+    var n=0; for(var k in chats){ (chats[k]||[]).forEach(function(m){if(m.from!=="me"&&!m.read) n++}); } return n;
+  }
+  function filteredFriends(){
+    var list=friends;
+    if(filter==="favourite") list=list.filter(function(f){return favs.includes(f.id)});
+    if(filter==="unread") list=list.filter(function(f){var ms=chats[f.id]||[]; return ms.some(function(m){return m.from!=="me"&&!m.read})});
+    if(search) list=list.filter(function(f){return f.name.toLowerCase().includes(search.toLowerCase())});
     return list;
-  };
+  }
 
-  const filteredGroups=()=>{
-    let list=groups;
-    if(search) list=list.filter(g=>g.name.toLowerCase().includes(search.toLowerCase()));
-    return list;
-  };
-
-  const totalUnread=()=>{
-    let n=0;
-    Object.keys(chats).forEach(id=>{
-      (chats[id]||[]).forEach(m=>{if(m.from!=='me'&&!m.read) n++});
-    });
-    return n;
-  };
-
-  // Onboarding
   if(!user){
-    return React.createElement('div',{style:{minHeight:'100vh',background:'#0A0F2C',display:'flex',alignItems:'center',justifyContent:'center',padding:20}},
-      React.createElement('div',{style:{width:'100%',maxWidth:360,background:'#111B21',borderRadius:16,padding:24,border:'2px solid #5B5BFF'}},
-        React.createElement('div',{style:{textAlign:'center',marginBottom:20}},
-          React.createElement('div',{style:{width:64,height:64,margin:'0 auto 12px',background:'linear-gradient(135deg,#5B5BFF,#00F0FF)',borderRadius:16,display:'flex',alignItems:'center',justifyContent:'center',fontSize:28}},'⚡'),
-          React.createElement('h1',{style:{color:'white',fontSize:22,fontWeight:800,margin:0}},'CHATSPARK'),
-          React.createElement('p',{style:{color:'#8696A0',fontSize:12,marginTop:4}},'REAL friends only - No fake data')
+    return e("div",{style:{minHeight:"100vh",background:"#0A0F2C",display:"flex",alignItems:"center",justifyContent:"center",padding:20}},
+      e("div",{style:{width:"100%",maxWidth:360,background:"#111B21",borderRadius:16,padding:24,border:"2px solid #5B5BFF"}},
+        e("div",{style:{textAlign:"center",marginBottom:16}},
+          e("div",{style:{width:64,height:64,margin:"0 auto 10px",background:"linear-gradient(135deg,#5B5BFF,#00F0FF)",borderRadius:16,display:"flex",alignItems:"center",justifyContent:"center",fontSize:28}},"⚡"),
+          e("div",{style:{color:"white",fontSize:20,fontWeight:800}},"CHATSPARK"),
+          e("div",{style:{color:"#8696A0",fontSize:11,marginTop:4}},"REAL friends only - No fake")
         ),
-        React.createElement('input',{id:'onName',placeholder:'Your real name',style:{width:'100%',padding:'12px',borderRadius:10,border:'1px solid #2A3942',background:'#202C33',color:'white',marginBottom:12}}),
-        React.createElement('input',{id:'onPhone',placeholder:'Your real phone (for invite link)',style:{width:'100%',padding:'12px',borderRadius:10,border:'1px solid #2A3942',background:'#202C33',color:'white',marginBottom:16}}),
-        React.createElement('button',{onClick:()=>{
-          const n=document.getElementById('onName').value.trim();
-          const p=document.getElementById('onPhone').value.trim();
-          if(!n){alert('Enter real name');return;}
-          const u={name:n,phone:p||''};
-          setUser(u);
-          try{localStorage.setItem('cs_user',JSON.stringify(u))}catch{}
-          // Auto add Quantum Mind as friend (real AI)
-          setFriends([{id:'quantum',name:'Quantum Mind',phone:'AI',isAI:true}]);
-          setChats({'quantum':[{id:1,from:'them',text:'Hi '+n+'! I am Quantum Mind - your real AI assistant. Ask me coding, business, anything! 🌈',time:new Date().toLocaleTimeString()}]});
-        },style:{width:'100%',padding:'12px',borderRadius:10,background:'#5B5BFF',color:'white',border:'none',fontWeight:700,fontSize:14}},'Start Chatting - REAL')
+        e("input",{id:"onName",placeholder:"Your real name",style:{width:"100%",padding:12,borderRadius:10,border:"1px solid #2A3942",background:"#202C33",color:"white",marginBottom:10}}),
+        e("input",{id:"onPhone",placeholder:"Your phone for invite link",style:{width:"100%",padding:12,borderRadius:10,border:"1px solid #2A3942",background:"#202C33",color:"white",marginBottom:14}}),
+        e("button",{onClick:function(){var n=document.getElementById("onName").value.trim(); var p=document.getElementById("onPhone").value.trim(); if(!n){alert("Enter name");return;} var u={name:n,phone:p}; setUser(u); try{localStorage.setItem("cs_user",JSON.stringify(u))}catch{}; setFriends([{id:"quantum",name:"Quantum Mind",phone:"AI",isAI:true}]); setChats({"quantum":[{id:1,from:"them",text:"Hi "+n+"! I am Quantum Mind real AI. Ask anything!",time:new Date().toLocaleTimeString()}]});},style:{width:"100%",padding:12,borderRadius:10,background:"#5B5BFF",color:"white",border:"none",fontWeight:700}},"Start REAL Chatting")
       )
     );
   }
 
-  // Main UI
-  return React.createElement('div',{style:{height:'100vh',display:'flex',flexDirection:'column',background:'#111B21',position:'relative'}},
-    React.createElement('div',{className:'top-glow'}),
-    // Top bar
-    React.createElement('div',{style:{height:60,background:'#202C33',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 12px',borderBottom:'1px solid #2A3942'}},
-      React.createElement('div',{style:{display:'flex',alignItems:'center',gap:10}},
-        React.createElement('div',{style:{width:36,height:36,borderRadius:10,background:'linear-gradient(135deg,#5B5BFF,#00F0FF)',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,color:'white'}},'⚡'),
-        React.createElement('div',{},
-          React.createElement('div',{style:{color:'white',fontWeight:800,fontSize:16,lineHeight:1}},'CHATSPARK'),
-          React.createElement('div',{style:{color:'#00A884',fontSize:10}},'REAL friends')
+  var mainContent=null;
+  if(view==="chats" && !active){
+    var ff=filteredFriends();
+    var fg=filter==="groups"||filter==="all" ? groups : [];
+    if(filter==="groups") ff=[];
+    mainContent=e("div",{},
+      ff.map(function(f){
+        var msgs=chats[f.id]||[]; var last=msgs[msgs.length-1]; var un=msgs.filter(function(m){return m.from!=="me"&&!m.read}).length; var isFav=favs.includes(f.id);
+        return e("div",{key:f.id,onClick:function(){setActive(f.id); markRead(f.id)},style:{display:"flex",alignItems:"center",gap:12,padding:12,borderBottom:"1px solid #202C33",background:un>0?"#1A2A33":"transparent",cursor:"pointer"}},
+          e("div",{style:{width:48,height:48,borderRadius:99,background:f.isAI?"linear-gradient(135deg,#5B5BFF,#00F0FF)":"#2A3942",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontWeight:700}}, f.isAI?"🧠":f.name.charAt(0).toUpperCase()),
+          e("div",{style:{flex:1,minWidth:0}},
+            e("div",{style:{display:"flex",justifyContent:"space-between"}},
+              e("div",{style:{color:"white",fontWeight:un>0?700:500,fontSize:15}}, f.name+(isFav?" ★":"")),
+              e("div",{style:{color:un>0?"#00A884":"#8696A0",fontSize:11}}, last?last.time:"")
+            ),
+            e("div",{style:{display:"flex",justifyContent:"space-between",marginTop:2}},
+              e("div",{style:{color:"#8696A0",fontSize:13,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:180}}, last? (last.from==="me"?"You: ":"")+last.text.slice(0,35) : "Real chat tap to start"),
+              un>0? e("div",{style:{background:"#00A884",color:"white",borderRadius:99,minWidth:20,height:20,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,padding:"0 6px"}}, un) : null
+            )
+          ),
+          e("button",{onClick:function(ev){ev.stopPropagation(); toggleFav(f.id)},style:{background:"transparent",border:"none",color:isFav?"#FFD60A":"#8696A0",fontSize:18}}, isFav?"★":"☆")
+        )
+      }),
+      fg.map(function(g){
+        var msgs=chats[g.id]||[]; var last=msgs[msgs.length-1];
+        return e("div",{key:g.id,onClick:function(){setActive(g.id); markRead(g.id)},style:{display:"flex",alignItems:"center",gap:12,padding:12,borderBottom:"1px solid #202C33",background:"#1B2A3A",cursor:"pointer"}},
+          e("div",{style:{width:48,height:48,borderRadius:99,background:"#5B5BFF",display:"flex",alignItems:"center",justifyContent:"center",color:"white"}},"👥"),
+          e("div",{style:{flex:1}},
+            e("div",{style:{color:"white",fontWeight:600}}, g.name+" ("+g.members.length+")"),
+            e("div",{style:{color:"#8696A0",fontSize:12}}, last?last.text.slice(0,30):"Group real members")
+          )
+        )
+      }),
+      ff.length===0 && fg.length===0 ? e("div",{style:{padding:40,textAlign:"center",color:"#8696A0"}}, e("div",{style:{fontSize:40}},"👥"), e("div",{style:{fontSize:13,marginTop:8}},"No real chats yet. Tap + to add REAL friends from phone"), e("button",{onClick:function(){setShowAdd(true)},style:{marginTop:12,padding:"10px 18px",borderRadius:20,background:"#00A884",color:"white",border:"none",fontWeight:700}},"Add REAL Friends")) : null
+    );
+  }else if(active){
+    var nameActive="Chat";
+    var fActive=friends.find(function(f){return f.id===active});
+    var gActive=groups.find(function(g){return g.id===active});
+    var cActive=channels.find(function(c){return c.id===active});
+    if(fActive) nameActive=fActive.name; else if(gActive) nameActive=gActive.name; else if(cActive) nameActive=cActive.name; else if(active==="quantum") nameActive="Quantum Mind";
+    mainContent=e("div",{style:{display:"flex",flexDirection:"column",height:"100%"}},
+      e("div",{style:{height:56,background:"#202C33",display:"flex",alignItems:"center",gap:10,padding:"0 12px"}},
+        e("button",{onClick:function(){setActive(null)},style:{background:"transparent",border:"none",color:"white",fontSize:20}},"←"),
+        e("div",{style:{width:36,height:36,borderRadius:99,background:"#2A3942",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontWeight:700}}, nameActive.charAt(0).toUpperCase()),
+        e("div",{style:{flex:1}},
+          e("div",{style:{color:"white",fontWeight:600,fontSize:14}}, nameActive),
+          e("div",{style:{color:"#00A884",fontSize:11}}, active==="quantum"?"Real AI Online":"Real contact")
         ),
-        !isInstalled && deferredPrompt ? React.createElement('button',{onClick:async()=>{try{deferredPrompt.prompt();const c=await deferredPrompt.userChoice; if(c.outcome==='accepted') setIsInstalled(true); setDeferredPrompt(null);}catch{}},style:{marginLeft:8,padding:'4px 8px',borderRadius:20,background:'#00A884',color:'white',fontSize:10,border:'none',fontWeight:700}},'Install') : null
+        e("button",{onClick:function(){if(active) toggleFav(active)},style:{background:"transparent",border:"none",color:"#FFD60A",fontSize:18}},"★")
       ),
-      React.createElement('div',{style:{display:'flex',alignItems:'center',gap:10}},
-        React.createElement('div',{onClick:()=>picInputRef.current?.click(),style:{width:32,height:32,borderRadius:99,background:userPic?`url(${userPic}) center/cover`:'#5B5BFF',border:'2px solid #00F0FF',cursor:'pointer'}}),
-        React.createElement('input',{type:'file',ref:picInputRef,accept:'image/*',style:{display:'none'},onChange:handlePicUpload}),
-        React.createElement('button',{onClick:()=>setShowSettings(true),style:{background:'transparent',border:'none',color:'white',fontSize:20}},'⋮')
+      e("div",{style:{flex:1,overflowY:"auto",padding:12,display:"flex",flexDirection:"column",gap:8}},
+        (chats[active]||[]).map(function(m){
+          return e("div",{key:m.id,style:{alignSelf:m.from==="me"?"flex-end":"flex-start",maxWidth:"78%",padding:"8px 12px",borderRadius:m.from==="me"?"12px 12px 0 12px":"12px 12px 12px 0",background:m.from==="me"?"#005C4B":m.from==="system"?"#182530":"#202C33",color:"white",fontSize:13}},
+            e("div",{}, m.text),
+            e("div",{style:{fontSize:10,color:m.from==="me"?"#A0E0D0":"#8696A0",marginTop:4,textAlign:"right"}}, m.time)
+          )
+        })
+      ),
+      e("div",{style:{padding:"8px 12px",background:"#202C33",display:"flex",gap:8,alignItems:"center"}},
+        e("input",{value:input,onChange:function(ev){setInput(ev.target.value)},onKeyDown:function(ev){if(ev.key==="Enter") sendMsg()},placeholder:"Message real friends... rainbow glow",style:{flex:1,padding:"10px 14px",borderRadius:24,border:"2px solid #2A3942",background:"#2A3942",color:"white",fontSize:13,outline:"none",paddingRight:70}}),
+        e("button",{onClick:sendMsg,style:{width:44,height:44,borderRadius:99,background:"#00A884",border:"none",color:"white",fontSize:18}},"➤")
+      )
+    );
+  }else if(view==="calls"){
+    mainContent=e("div",{style:{padding:12}},
+      e("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}},
+        e("h2",{style:{color:"white",fontSize:20,fontWeight:700,margin:0}},"Calls"),
+        e("button",{onClick:function(){if(confirm("Clear real call log?")) setCalls([])},style:{background:"#202C33",border:"none",color:"white",borderRadius:20,padding:"6px 12px",fontSize:12}},"Clear log")
+      ),
+      e("div",{style:{display:"flex",gap:8,marginBottom:16}},
+        [{i:"📞",l:"Call"},{i:"📅",l:"Schedule"},{i:"🔢",l:"Keypad"},{i:"❤️",l:"Favorites"}].map(function(b){
+          return e("div",{key:b.l,onClick:function(){if(b.l==="Favorites") setFilter("favourite"); else alert(b.l+" - Real friends: "+friends.length)},style:{flex:1,background:"#202C33",borderRadius:12,padding:10,textAlign:"center",cursor:"pointer"}},
+            e("div",{style:{width:40,height:40,borderRadius:99,background:"#2A3942",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 4px"}}, b.i),
+            e("div",{style:{color:"#8696A0",fontSize:11}}, b.l)
+          )
+        })
+      ),
+      e("div",{style:{color:"white",fontWeight:700,marginBottom:8}},"Recent"),
+      calls.length===0 ? e("div",{style:{textAlign:"center",padding:20,color:"#8696A0",fontSize:12}},"No recent calls. Real calls will show here") :
+      calls.map(function(c){
+        return e("div",{key:c.id,style:{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:"1px solid #202C33"}},
+          e("div",{style:{width:40,height:40,borderRadius:99,background:"#2A3942",display:"flex",alignItems:"center",justifyContent:"center",color:"white"}}, c.name.charAt(0)),
+          e("div",{style:{flex:1}},
+            e("div",{style:{color:c.missed?"#FF3B30":"white",fontSize:14}}, c.name),
+            e("div",{style:{color:"#8696A0",fontSize:12}}, (c.missed?"↙ ":"✓ ")+c.time)
+          ),
+          e("div",{style:{color:"#00A884"}},"📞")
+        )
+      }),
+      e("button",{onClick:function(){var nm=prompt("Call who? Real friend name:"); if(!nm) return; setCalls(function(cs){return [{id:Date.now(),name:nm,time:new Date().toLocaleString(),missed:false}].concat(cs)}); alert("Calling "+nm+" (web simulation) - Real contact log")},style:{position:"fixed",bottom:80,right:16,width:56,height:56,borderRadius:16,background:"white",border:"none",fontSize:22}},"📞+")
+    );
+  }else if(view==="updates"){
+    mainContent=e("div",{style:{padding:12}},
+      e("h2",{style:{color:"white",fontSize:18,fontWeight:700,margin:"0 0 10px 0"}},"Status"),
+      e("div",{style:{display:"flex",gap:10,overflowX:"auto",paddingBottom:8}},
+        e("div",{onClick:function(){setShowStatus(true)},style:{minWidth:80,height:120,background:"#202C33",borderRadius:16,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:6,border:"1px solid #2A3942",cursor:"pointer"}},
+          e("div",{style:{width:44,height:44,borderRadius:99,background:userPic?"#5B5BFF":"#2A3942",display:"flex",alignItems:"center",justifyContent:"center",color:"white"}}, userPic?e("img",{src:userPic,style:{width:44,height:44,borderRadius:99,objectFit:"cover"}}):"+"),
+          e("div",{style:{color:"white",fontSize:10,textAlign:"center"}},"Add status")
+        ),
+        statuses.map(function(s){
+          return e("div",{key:s.id,onClick:function(){alert("Status: "+(s.text||"Photo")+" by "+s.name)},style:{minWidth:80,height:120,borderRadius:16,background:s.image?"url("+s.image+") center/cover":"#1A3A2A",border:"3px solid #00A884",display:"flex",alignItems:"flex-end",padding:6,cursor:"pointer"}},
+            e("div",{style:{color:"white",fontSize:10,fontWeight:600,background:"rgba(0,0,0,0.5)",borderRadius:6,padding:"2px 4px"}}, s.name.slice(0,10))
+          )
+        })
+      ),
+      e("div",{style:{marginTop:12,padding:"10px",borderRadius:24,border:"1px solid #00A884",color:"#00A884",fontSize:12,textAlign:"center"},onClick:function(){alert("Boost status link: "+getLink(user&&user.name))},"📢 Boost status - Real link: "+getLink(user&&user.name).slice(0,30)+"..."),
+      e("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:18,marginBottom:8}},
+        e("h2",{style:{color:"white",fontSize:16,fontWeight:700,margin:0}},"Channels"),
+        e("button",{onClick:function(){setShowChannel(true)},style:{background:"#2A3942",border:"none",color:"white",borderRadius:16,padding:"6px 12px",fontSize:12}},"Create channel")
+      ),
+      channels.length===0 ? e("div",{style:{textAlign:"center",padding:16,color:"#8696A0",fontSize:12}},"No channels. Create like KGSB, Just Stickers etc. Real followers!") :
+      channels.map(function(ch){
+        var ms=chats[ch.id]||[]; var un=ms.filter(function(m){return m.from!=="me"&&!m.read}).length;
+        return e("div",{key:ch.id,onClick:function(){setActive(ch.id); markRead(ch.id)},style:{display:"flex",alignItems:"center",gap:12,padding:"10px 0",borderBottom:"1px solid #202C33",cursor:"pointer"}},
+          e("div",{style:{width:44,height:44,borderRadius:99,background:"#0A3D8F",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontWeight:800,fontSize:9}}, ch.name.slice(0,4)),
+          e("div",{style:{flex:1}},
+            e("div",{style:{display:"flex",justifyContent:"space-between"}},
+              e("div",{style:{color:"white",fontWeight:600,fontSize:13}}, ch.name),
+              e("div",{style:{color:"#00A884",fontSize:11}},"3:31 PM")
+            ),
+            e("div",{style:{display:"flex",justifyContent:"space-between"}},
+              e("div",{style:{color:"#8696A0",fontSize:11,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:160}}, ch.desc||"Real channel"),
+              un>0? e("div",{style:{background:"#00A884",color:"white",borderRadius:99,padding:"2px 8px",fontSize:10}}, un):null
+            )
+          )
+        )
+      })
+    );
+  }else if(view==="tools"){
+    mainContent=e("div",{style:{padding:12}},
+      e("h2",{style:{color:"white",fontSize:20,fontWeight:700,margin:"0 0 12px 0"}},"Tools"),
+      e("div",{style:{color:"white",fontSize:13,fontWeight:600,marginBottom:8}},"For you"),
+      e("div",{style:{background:"#202C33",borderRadius:12,padding:14,display:"flex",gap:12,marginBottom:16}},
+        e("div",{style:{width:44,height:44,borderRadius:10,background:"#1A3A3A",display:"flex",alignItems:"center",justifyContent:"center"}},"📢"),
+        e("div",{style:{flex:1}},
+          e("div",{style:{color:"white",fontWeight:600,fontSize:12}},"Create your first ad from NGN1,334.30/day"),
+          e("div",{style:{color:"#8696A0",fontSize:10,marginTop:4}},"Reach customers with real WhatsApp link"),
+          e("button",{onClick:function(){alert("Real ad link: "+getLink(user&&user.name))},style:{marginTop:8,padding:"6px 12px",borderRadius:20,background:"white",color:"black",border:"none",fontSize:11,fontWeight:600}},"Get started")
+        )
+      ),
+      e("div",{style:{color:"white",fontSize:13,fontWeight:600,marginBottom:8}},"Grow your business"),
+      [{t:"Meta One",d:"Unlock premium"},{t:"Catalog",d:"Show products"},{t:"Advertise",d:"Ads to WhatsApp"}].map(function(it){
+        return e("div",{key:it.t,style:{display:"flex",gap:10,padding:"10px 0",borderBottom:"1px solid #202C33"}},
+          e("div",{style:{width:32,height:32,borderRadius:99,background:"#202C33",display:"flex",alignItems:"center",justifyContent:"center",color:"#8696A0"}}, "•"),
+          e("div",{}, e("div",{style:{color:"white",fontSize:13}},it.t), e("div",{style:{color:"#8696A0",fontSize:11}},it.d))
+        )
+      }),
+      e("div",{style:{marginTop:12,padding:12,background:"#1A2A3A",borderRadius:12}},
+        e("div",{style:{color:"white",fontSize:12,fontWeight:600}},"Real Invite Link"),
+        e("div",{style:{color:"#00A884",fontSize:10,wordBreak:"break-all",marginTop:4}}, getLink(user&&user.name)),
+        e("button",{onClick:function(){try{navigator.clipboard.writeText(getLink(user&&user.name)); alert("Copied!")}catch{}},style:{marginTop:6,padding:"6px 12px",borderRadius:16,background:"#00A884",color:"white",border:"none",fontSize:11}},"Copy Link")
+      )
+    );
+  }
+
+  return e("div",{style:{height:"100vh",display:"flex",flexDirection:"column",background:"#111B21",position:"relative"}},
+    e("div",{className:"top-glow"}),
+    e("div",{style:{height:56,background:"#202C33",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 12px",borderBottom:"1px solid #2A3942"}},
+      e("div",{style:{display:"flex",alignItems:"center",gap:8}},
+        e("div",{style:{width:34,height:34,borderRadius:10,background:"linear-gradient(135deg,#5B5BFF,#00F0FF)",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontWeight:800}},"⚡"),
+        e("div",{}, e("div",{style:{color:"white",fontWeight:800,fontSize:14,lineHeight:1}},"CHATSPARK"), e("div",{style:{color:"#00A884",fontSize:9}}, "REAL"))
+      ),
+      e("div",{style:{display:"flex",alignItems:"center",gap:8}},
+        e("div",{onClick:function(){picRef.current&&picRef.current.click()},style:{width:30,height:30,borderRadius:99,background:userPic?"#5B5BFF":"#5B5BFF",overflow:"hidden",border:"2px solid #00F0FF",cursor:"pointer"}}, userPic? e("img",{src:userPic,style:{width:"100%",height:"100%",objectFit:"cover"}}):null),
+        e("input",{type:"file",ref:picRef,accept:"image/*",style:{display:"none"},onChange:handlePic}),
+        e("button",{onClick:function(){setShowSettings(true)},style:{background:"transparent",border:"none",color:"white",fontSize:18}},"⋮")
       )
     ),
-    // Filter bar (only for chats view)
-    view==='chats' ? React.createElement('div',{style:{background:'#111B21',padding:'8px 12px',display:'flex',gap:6,overflowX:'auto',borderBottom:'1px solid #202C33'}},
-      ['all','unread','favourite','groups'].map(f=>
-        React.createElement('button',{key:f,onClick:()=>setFilter(f),style:{padding:'6px 12px',borderRadius:20,border:'none',background:filter===f?'#00A884':'#202C33',color:'white',fontSize:12,fontWeight:filter===f?700:400,whiteSpace:'nowrap'}}, f==='favourite'?'Favourite':f.charAt(0).toUpperCase()+f.slice(1)+(f==='unread' && totalUnread()>0 ? ' ('+totalUnread()+')' : ''))
-      ),
-      React.createElement('div',{style:{flex:1}}),
-      React.createElement('button',{onClick:()=>setShowChatsMenu(v=>!v),style:{background:'#202C33',border:'none',color:'white',borderRadius:20,padding:'6px 10px',fontSize:12}},'☰')
+    view==="chats" ? e("div",{style:{background:"#111B21",padding:"6px 10px",display:"flex",gap:5,overflowX:"auto",borderBottom:"1px solid #202C33"}},
+      ["all","unread","favourite","groups"].map(function(f){
+        var lab=f==="favourite"?"Favourite":f.charAt(0).toUpperCase()+f.slice(1);
+        if(f==="unread"&&unreadCount()>0) lab+=" ("+unreadCount()+")";
+        return e("button",{key:f,onClick:function(){setFilter(f)},style:{padding:"5px 10px",borderRadius:20,border:"none",background:filter===f?"#00A884":"#202C33",color:"white",fontSize:11,fontWeight:filter===f?700:400,whiteSpace:"nowrap"}}, lab);
+      })
     ) : null,
-    // Search
-    React.createElement('div',{style:{background:'#111B21',padding:'8px 12px'}},
-      React.createElement('input',{value:search,onChange:e=>setSearch(e.target.value),placeholder:'Search real friends...',style:{width:'100%',padding:'10px 12px',borderRadius:10,border:'1px solid #2A3942',background:'#202C33',color:'white',fontSize:13}})
+    e("div",{style:{background:"#111B21",padding:"6px 10px"}},
+      e("input",{value:search,onChange:function(ev){setSearch(ev.target.value)},placeholder:"Search real friends...",style:{width:"100%",padding:"9px 12px",borderRadius:10,border:"1px solid #2A3942",background:"#202C33",color:"white",fontSize:12}})
     ),
-    // Menus
-    showChatsMenu ? React.createElement('div',{style:{position:'absolute',top:110,right:12,zIndex:50,background:'#202C33',borderRadius:12,padding:8,minWidth:200,boxShadow:'0 8px 24px rgba(0,0,0,0.5)'}},
-      React.createElement('button',{onClick:()=>{setShowChatsMenu(false);setShowGroup(true)},style:{display:'block',width:'100%',textAlign:'left',padding:'10px',background:'transparent',border:'none',color:'white',fontSize:13}},'New group'),
-      React.createElement('button',{onClick:()=>{setShowChatsMenu(false);alert('New broadcast: Select real friends to broadcast to')},style:{display:'block',width:'100%',textAlign:'left',padding:'10px',background:'transparent',border:'none',color:'white',fontSize:13}},'New broadcast'),
-      React.createElement('button',{onClick:()=>{setShowChatsMenu(false);setView('tools')},style:{display:'block',width:'100%',textAlign:'left',padding:'10px',background:'transparent',border:'none',color:'white',fontSize:13}},'Communities'),
-      React.createElement('button',{onClick:()=>{setShowChatsMenu(false);setFilter('favourite')},style:{display:'block',width:'100%',textAlign:'left',padding:'10px',background:'transparent',border:'none',color:'white',fontSize:13}},'Lists'),
-      React.createElement('button',{onClick:()=>{setShowChatsMenu(false);alert('Linked devices: This is web version')},style:{display:'block',width:'100%',textAlign:'left',padding:'10px',background:'transparent',border:'none',color:'white',fontSize:13}},'Linked devices'),
-      React.createElement('button',{onClick:()=>{setShowChatsMenu(false);setFilter('favourite')},style:{display:'block',width:'100%',textAlign:'left',padding:'10px',background:'transparent',border:'none',color:'white',fontSize:13}},'Starred'),
-      React.createElement('button',{onClick:()=>{setShowChatsMenu(false);setShowSettings(true)},style:{display:'block',width:'100%',textAlign:'left',padding:'10px',background:'transparent',border:'none',color:'white',fontSize:13}},'Settings •')
-    ) : null,
-
-    // Main content
-    React.createElement('div',{style:{flex:1,overflowY:'auto',WebkitOverflowScrolling:'touch',background:'#0B141A'}},
-      // CHATS VIEW
-      view==='chats' && !activeChat ? React.createElement('div',{},
-        filter!=='groups' ? filteredFriends().map(f=>{
-          const msgs=chats[f.id]||[];
-          const last=msgs[msgs.length-1];
-          const unread=msgs.filter(m=>m.from!=='me'&&!m.read).length;
-          const isFav=favs.includes(f.id);
-          return React.createElement('div',{key:f.id,onClick:()=>{setActiveChat(f.id);markAllRead(f.id)},style:{display:'flex',alignItems:'center',gap:12,padding:'12px',borderBottom:'1px solid #202C33',background:unread>0?'#1A2A33':'transparent',cursor:'pointer'}},
-            React.createElement('div',{style:{width:48,height:48,borderRadius:99,background:f.isAI?'linear-gradient(135deg,#5B5BFF,#00F0FF)':'#2A3942',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontWeight:700,fontSize:16}}, f.isAI?'🧠':f.name.charAt(0).toUpperCase()),
-            React.createElement('div',{style:{flex:1,minWidth:0}},
-              React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center'}},
-                React.createElement('div',{style:{color:'white',fontWeight:unread>0?700:500,fontSize:15,display:'flex',alignItems:'center',gap:6}}, f.name, isFav?React.createElement('span',{style:{color:'#FFD60A'}},'★'):null),
-                React.createElement('div',{style:{color:unread>0?'#00A884':'#8696A0',fontSize:11}}, last?last.time:'')
-              ),
-              React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:2}},
-                React.createElement('div',{style:{color:'#8696A0',fontSize:13,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',maxWidth:200}}, last? (last.from==='me'?'You: ':'')+last.text.slice(0,40): 'Real chat - Tap to start'),
-                unread>0 ? React.createElement('div',{style:{background:'#00A884',color:'white',borderRadius:99,minWidth:20,height:20,display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,padding:'0 6px'}}, unread) : null
-              )
-            ),
-            React.createElement('button',{onClick:e=>{e.stopPropagation();toggleFav(f.id)},style:{background:'transparent',border:'none',color:isFav?'#FFD60A':'#8696A0',fontSize:18}}, isFav?'★':'☆')
-          )
-        }) : null,
-        (filter==='groups'||filter==='all') ? filteredGroups().map(g=>{
-          const msgs=chats[g.id]||[];
-          const last=msgs[msgs.length-1];
-          return React.createElement('div',{key:g.id,onClick:()=>{setActiveChat(g.id);markAllRead(g.id)},style:{display:'flex',alignItems:'center',gap:12,padding:'12px',borderBottom:'1px solid #202C33',cursor:'pointer',background:'#1B2A3A'}},
-            React.createElement('div',{style:{width:48,height:48,borderRadius:99,background:'#5B5BFF',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontWeight:700}},'👥'),
-            React.createElement('div',{style:{flex:1}},
-              React.createElement('div',{style:{color:'white',fontWeight:600,fontSize:15}}, g.name+' ('+g.members.length+')'),
-              React.createElement('div',{style:{color:'#8696A0',fontSize:13}}, last?last.text.slice(0,40):'Group - Real members only')
-            )
-          )
-        }) : null,
-        filteredFriends().length===0 && filteredGroups().length===0 ? React.createElement('div',{style:{padding:40,textAlign:'center',color:'#8696A0'}},
-          React.createElement('div',{style:{fontSize:48,marginBottom:12}},'👥'),
-          React.createElement('div',{style:{fontSize:14}},'No real chats yet'),
-          React.createElement('div',{style:{fontSize:12,marginTop:6}},'Tap + to add REAL friends from your phone contacts'),
-          React.createElement('button',{onClick:()=>setShowAdd(true),style:{marginTop:16,padding:'10px 20px',borderRadius:20,background:'#00A884',color:'white',border:'none',fontWeight:700}},'Add REAL Friends')
-        ) : null
-      ) : null,
-
-      // Active chat view
-      activeChat ? React.createElement('div',{style:{display:'flex',flexDirection:'column',height:'100%'}},
-        React.createElement('div',{style:{height:56,background:'#202C33',display:'flex',alignItems:'center',gap:10,padding:'0 12px'}},
-          React.createElement('button',{onClick:()=>{setActiveChat(null)},style:{background:'transparent',border:'none',color:'white',fontSize:20}},'←'),
-          React.createElement('div',{style:{width:36,height:36,borderRadius:99,background:'#2A3942',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontWeight:700}}, (friends.find(f=>f.id===activeChat)?.name||groups.find(g=>g.id===activeChat)?.name||channels.find(c=>c.id===activeChat)?.name||'Q').charAt(0)),
-          React.createElement('div',{style:{flex:1}},
-            React.createElement('div',{style:{color:'white',fontWeight:600,fontSize:14}}, friends.find(f=>f.id===activeChat)?.name||groups.find(g=>g.id===activeChat)?.name||channels.find(c=>c.id===activeChat)?.name||'Quantum Mind'),
-            React.createElement('div',{style:{color:'#00A884',fontSize:11}}, activeChat==='quantum'?'Real AI • Online':'Real contact')
-          ),
-          React.createElement('button',{onClick:()=>{const id=activeChat; if(confirm('Add to favorites?')) toggleFav(id)},style:{background:'transparent',border:'none',color:'#FFD60A',fontSize:20}},'★')
-        ),
-        React.createElement('div',{style:{flex:1,overflowY:'auto',padding:12,display:'flex',flexDirection:'column',gap:8}},
-          (chats[activeChat]||[]).map(m=>
-            React.createElement('div',{key:m.id,style:{alignSelf:m.from==='me'?'flex-end':'flex-start',maxWidth:'80%',padding:'8px 12px',borderRadius:m.from==='me'?'12px 12px 0 12px':'12px 12px 12px 0',background:m.from==='me'?'#005C4B':m.from==='system'?'#182530':'#202C33',color:m.from==='system'?'#8696A0':'white',fontSize:13}},
-              React.createElement('div',{},m.text),
-              React.createElement('div',{style:{fontSize:10,color:m.from==='me'?'#A0E0D0':'#8696A0',marginTop:4,textAlign:'right'}}, m.time)
-            )
-          )
-        ),
-        React.createElement('div',{style:{padding:'8px 12px',background:'#202C33',display:'flex',alignItems:'center',gap:8}},
-          React.createElement('input',{value:msgInput,onChange:e=>setMsgInput(e.target.value),onKeyDown:e=>{if(e.key==='Enter') sendMessage()},placeholder:'Message real... glowing rainbow',style:{flex:1,padding:'10px 14px',borderRadius:24,border:'2px solid transparent',background:'#2A3942',color:'white',fontSize:13,outline:'none',paddingRight:80},className:'glow-input'}),
-          React.createElement('button',{onClick:sendMessage,style:{width:44,height:44,borderRadius:99,background:'#00A884',border:'none',color:'white',fontSize:18,display:'flex',alignItems:'center',justifyContent:'center'}},'➤')
+    e("div",{style:{flex:1,overflowY:"auto",background:"#0B141A"}}, mainContent),
+    !active ? e("div",{style:{height:60,background:"#202C33",display:"flex",borderTop:"1px solid #2A3942"}},
+      [{id:"chats",l:"Chats",i:"💬",b:unreadCount()},{id:"calls",l:"Calls",i:"📞",b:0},{id:"updates",l:"Updates",i:"⭕",b:statuses.length},{id:"tools",l:"Tools",i:"🏪",b:0}].map(function(tab){
+        return e("button",{key:tab.id,onClick:function(){setView(tab.id)},style:{flex:1,background:view===tab.id?"#2A3942":"transparent",border:"none",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2,position:"relative"}},
+          e("div",{style:{fontSize:16,position:"relative"}}, tab.i, tab.b>0? e("div",{style:{position:"absolute",top:-6,right:-8,background:"#00A884",color:"white",borderRadius:99,minWidth:14,height:14,fontSize:8,display:"flex",alignItems:"center",justifyContent:"center",padding:"0 3px"}}, tab.b>99?"99+":tab.b):null),
+          e("div",{style:{color:view===tab.id?"white":"#8696A0",fontSize:10}}, tab.l)
         )
-      ) : null,
-
-      // CALLS VIEW - like screenshot
-      view==='calls' && !activeChat ? React.createElement('div',{style:{padding:12}},
-        React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}},
-          React.createElement('h2',{style:{color:'white',fontSize:20,fontWeight:700,margin:0}},'Calls'),
-          React.createElement('div',{style:{display:'flex',gap:12}},
-            React.createElement('button',{onClick:()=>setShowCallsMenu(v=>!v),style:{background:'transparent',border:'none',color:'white',fontSize:20}},'⋮')
-          )
-        ),
-        showCallsMenu ? React.createElement('div',{style:{position:'absolute',right:12,top:110,zIndex:30,background:'#202C33',borderRadius:12,padding:8,minWidth:180}},
-          ['Advertise','Clear call log','Scheduled calls','Settings •'].map(t=> React.createElement('div',{key:t,onClick:()=>{setShowCallsMenu(false);if(t.includes('Clear')){if(confirm('Clear real call log?')) setCalls([])} else if(t.includes('Settings')) setShowSettings(true); else alert(t+' - Real feature')},style:{padding:'10px',color:'white',fontSize:13,cursor:'pointer'}}, t))
-        ) : null,
-        React.createElement('div',{style:{display:'flex',gap:12,marginBottom:20}},
-          [{icon:'📞',label:'Call'},{icon:'📅',label:'Schedule'},{icon:'🔢',label:'Keypad'},{icon:'❤️',label:'Favorites'}].map(b=>
-            React.createElement('div',{key:b.label,style:{flex:1,background:'#202C33',borderRadius:12,padding:'12px',textAlign:'center',cursor:'pointer'},onClick:()=>{if(b.label==='Favorites') setFilter('favourite'); else alert(b.label+' - Real calls to '+friends.length+' friends')}},
-              React.createElement('div',{style:{width:44,height:44,borderRadius:99,background:'#2A3942',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 6px',fontSize:18}}, b.icon),
-              React.createElement('div',{style:{color:'#8696A0',fontSize:11}}, b.label)
-            )
-          )
-        ),
-        React.createElement('h3',{style:{color:'white',fontSize:16,fontWeight:700,marginBottom:10}},'Recent'),
-        calls.length===0 ? React.createElement('div',{style:{textAlign:'center',padding:30,color:'#8696A0',fontSize:13}},'No recent calls - Real calls will appear here') : calls.map(c=>
-          React.createElement('div',{key:c.id,style:{display:'flex',alignItems:'center',gap:12,padding:'10px 0',borderBottom:'1px solid #202C33'}},
-            React.createElement('div',{style:{width:40,height:40,borderRadius:99,background:'#2A3942',display:'flex',alignItems:'center',justifyContent:'center',color:'white'}}, c.name.charAt(0)),
-            React.createElement('div',{style:{flex:1}},
-              React.createElement('div',{style:{color:c.missed?'#FF3B30':'white',fontSize:14,fontWeight:600}}, c.name+(c.count?' ('+c.count+')':'')),
-              React.createElement('div',{style:{color:'#8696A0',fontSize:12}}, (c.missed?'↙ ':'✓ ')+c.time)
-            ),
-            React.createElement('div',{style:{color:'#00A884',fontSize:18}},'📞')
-          )
-        ),
-        React.createElement('button',{onClick:()=>{const name=prompt('Call real friend name?'); if(!name) return; const f=friends.find(x=>x.name.toLowerCase().includes(name.toLowerCase())); const n=f?f.name:name; setCalls(cs=>[{id:Date.now(),name:n,time:new Date().toLocaleString(),missed:false},...cs]); alert('Calling '+n+' (Real contact: '+(f?f.phone:'not found')+') - Web call simulation')},style:{position:'fixed',bottom:80,right:16,width:56,height:56,borderRadius:16,background:'white',border:'none',fontSize:24}},'📞+')
-      ) : null,
-
-      // UPDATES VIEW - Status + Channels like screenshot
-      view==='updates' && !activeChat ? React.createElement('div',{style:{padding:12}},
-        React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}},
-          React.createElement('h2',{style:{color:'white',fontSize:20,fontWeight:700,margin:0}},'Updates'),
-          React.createElement('button',{onClick:()=>setShowUpdatesMenu(v=>!v),style:{background:'transparent',border:'none',color:'white',fontSize:20}},'⋮')
-        ),
-        showUpdatesMenu ? React.createElement('div',{style:{position:'absolute',right:12,top:110,zIndex:30,background:'#202C33',borderRadius:12,padding:8,minWidth:220}},
-          ['Advertise','Create channel','Status privacy','Starred','Status archive settings','Settings •'].map(t=> React.createElement('div',{key:t,onClick:()=>{setShowUpdatesMenu(false); if(t==='Create channel') setShowChannel(true); else if(t.includes('Settings')) setShowSettings(true); else alert(t)}},style:{padding:'10px',color:'white',fontSize:13,cursor:'pointer'}}, t))
-        ) : null,
-        React.createElement('h3',{style:{color:'white',fontSize:16,fontWeight:700,marginBottom:10}},'Status'),
-        React.createElement('div',{style:{display:'flex',gap:10,overflowX:'auto',paddingBottom:8}},
-          React.createElement('div',{onClick:()=>setShowStatus(true),style:{minWidth:90,height:130,background:'#202C33',borderRadius:16,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:8,border:'1px solid #2A3942',cursor:'pointer'}},
-            React.createElement('div',{style:{width:48,height:48,borderRadius:99,background:userPic?`url(${userPic}) center/cover`:'#2A3942',position:'relative'}},
-              React.createElement('div',{style:{position:'absolute',bottom:-4,right:-4,width:20,height:20,borderRadius:99,background:'#00A884',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontSize:12}},'+')
-            ),
-            React.createElement('div',{style:{color:'white',fontSize:11,textAlign:'center'}},'Add\nstatus')
-          ),
-          statuses.map(s=>
-            React.createElement('div',{key:s.id,onClick:()=>alert('Status: '+(s.text||'Photo')+'\nBy '+s.name+' at '+new Date(s.time).toLocaleString()),style:{minWidth:90,height:130,borderRadius:16,background:s.image?`url(${s.image}) center/cover`:'#1A3A2A',border:'3px solid #00A884',display:'flex',alignItems:'flex-end',padding:8,cursor:'pointer'}},
-              React.createElement('div',{style:{color:'white',fontSize:11,fontWeight:600}}, s.name.slice(0,10))
-            )
-          )
-        ),
-        React.createElement('div',{style:{marginTop:16,padding:'10px 16px',borderRadius:24,border:'1px solid #00A884',color:'#00A884',fontSize:13,display:'flex',alignItems:'center',gap:8,justifyContent:'center'},onClick:()=>alert('Boost status - Reach more real friends via '+getInviteLink(user?.name))},
-          '📢 Boost status'
-        ),
-        React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:20,marginBottom:10}},
-          React.createElement('h3',{style:{color:'white',fontSize:16,fontWeight:700,margin:0}},'Channels'),
-          React.createElement('button',{onClick:()=>setShowChannel(true),style:{background:'#2A3942',border:'none',color:'white',borderRadius:16,padding:'6px 12px',fontSize:12}},'Explore')
-        ),
-        channels.length===0 ? React.createElement('div',{style:{textAlign:'center',padding:20,color:'#8696A0',fontSize:13}},'No channels yet. Create one! Real channels, real followers.') : channels.map(ch=>{
-          const msgs=chats[ch.id]||[];
-          const unread=msgs.filter(m=>m.from!=='me'&&!m.read).length;
-          return React.createElement('div',{key:ch.id,onClick:()=>{setActiveChat(ch.id);markAllRead(ch.id)},style:{display:'flex',alignItems:'center',gap:12,padding:'10px 0',borderBottom:'1px solid #202C33',cursor:'pointer'}},
-            React.createElement('div',{style:{width:48,height:48,borderRadius:99,background:'#0A3D8F',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontWeight:800,fontSize:10}}, ch.name.slice(0,4)),
-            React.createElement('div',{style:{flex:1}},
-              React.createElement('div',{style:{display:'flex',justifyContent:'space-between'}},
-                React.createElement('div',{style:{color:'white',fontWeight:600,fontSize:14}}, ch.name),
-                React.createElement('div',{style:{color:'#00A884',fontSize:11}}, '3:31 PM')
-              ),
-              React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center'}},
-                React.createElement('div',{style:{color:'#8696A0',fontSize:12,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',maxWidth:180}}, ch.desc||'CASINO SIGNALS...'),
-                unread>0 ? React.createElement('div',{style:{background:'#00A884',color:'white',borderRadius:99,padding:'2px 8px',fontSize:11}}, unread||'101') : null
-              )
-            )
-          )
-        }),
-        React.createElement('button',{onClick:()=>setShowStatus(true),style:{position:'fixed',bottom:80,right:16,width:56,height:56,borderRadius:16,background:'white',border:'none',fontSize:20}},'📷+')
-      ) : null,
-
-      // TOOLS VIEW
-      view==='tools' && !activeChat ? React.createElement('div',{style:{padding:12}},
-        React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}},
-          React.createElement('h2',{style:{color:'white',fontSize:20,fontWeight:700,margin:0}},'Tools'),
-          React.createElement('button',{onClick:()=>setShowToolsMenu(v=>!v),style:{background:'transparent',border:'none',color:'white',fontSize:20}},'⋮')
-        ),
-        showToolsMenu ? React.createElement('div',{style:{position:'absolute',right:12,top:110,zIndex:30,background:'#202C33',borderRadius:12,padding:8,minWidth:180}},
-          ['Advertise','Short link','Settings •'].map(t=> React.createElement('div',{key:t,onClick:()=>{setShowToolsMenu(false);if(t.includes('Settings')) setShowSettings(true); else alert(t+' - Link: '+getInviteLink(user?.name))}},style:{padding:'10px',color:'white',fontSize:13,cursor:'pointer'}}, t))
-        ) : null,
-        React.createElement('h3',{style:{color:'white',fontSize:14,fontWeight:600,marginBottom:10}},'For you'),
-        React.createElement('div',{style:{background:'#202C33',borderRadius:12,padding:16,display:'flex',gap:12,alignItems:'center',marginBottom:20}},
-          React.createElement('div',{style:{width:48,height:48,borderRadius:10,background:'#1A3A3A',display:'flex',alignItems:'center',justifyContent:'center'}},'📢'),
-          React.createElement('div',{style:{flex:1}},
-            React.createElement('div',{style:{color:'white',fontWeight:600,fontSize:13}},'Create your first ad from NGN1,334.30/day'),
-            React.createElement('div',{style:{color:'#8696A0',fontSize:11,marginTop:4}},'Reach potential customers with an ad that starts WhatsApp chats.'),
-            React.createElement('button',{onClick:()=>alert('Ad: Share real link '+getInviteLink(user?.name)+' to get real customers!'),style:{marginTop:8,padding:'8px 16px',borderRadius:20,background:'white',color:'black',border:'none',fontSize:12,fontWeight:600}},'Get started')
-          )
-        ),
-        React.createElement('h3',{style:{color:'white',fontSize:14,fontWeight:600,marginBottom:10}},'Grow your business'),
-        [{icon:'①',title:'Meta One',desc:'Unlock premium features across Meta apps'},{icon:'▦',title:'Catalog',desc:'Show products and services'},{icon:'📢',title:'Advertise',desc:'Create ads that lead to WhatsApp'}].map(item=>
-          React.createElement('div',{key:item.title,style:{display:'flex',gap:12,padding:'12px 0',borderBottom:'1px solid #202C33'}},
-            React.createElement('div',{style:{width:36,height:36,borderRadius:99,background:'#202C33',display:'flex',alignItems:'center',justifyContent:'center',color:'#8696A0'}}, item.icon),
-            React.createElement('div',{style:{flex:1}},
-              React.createElement('div',{style:{color:'white',fontWeight:600,fontSize:14}}, item.title),
-              React.createElement('div',{style:{color:'#8696A0',fontSize:12,marginTop:2}}, item.desc)
-            )
-          )
-        ),
-        React.createElement('h3',{style:{color:'white',fontSize:14,fontWeight:600,margin:'16px 0 10px'}},'Organize your chats'),
-        React.createElement('div',{style:{display:'flex',gap:12,padding:'12px 0',cursor:'pointer'},onClick:()=>setFilter('favourite')},
-          React.createElement('div',{style:{width:36,height:36,borderRadius:99,background:'#202C33',display:'flex',alignItems:'center',justifyContent:'center',color:'#8696A0'}},'🗂️'),
-          React.createElement('div',{},
-            React.createElement('div',{style:{color:'white',fontWeight:600,fontSize:14}},'Lists'),
-            React.createElement('div',{style:{color:'#8696A0',fontSize:12}},'Manage people and groups - Real: '+friends.length+' friends, '+groups.length+' groups')
-          )
-        ),
-        React.createElement('div',{style:{marginTop:20,padding:12,background:'#1A2A3A',borderRadius:12}},
-          React.createElement('div',{style:{color:'white',fontWeight:600,fontSize:13}},'Real Invite Link'),
-          React.createElement('div',{style:{color:'#00A884',fontSize:11,marginTop:4,wordBreak:'break-all'}}, getInviteLink(user?.name)),
-          React.createElement('button',{onClick:()=>{navigator.clipboard?.writeText(getInviteLink(user?.name)); alert('Copied real link!')},style:{marginTop:8,padding:'6px 12px',borderRadius:16,background:'#00A884',color:'white',border:'none',fontSize:11}},'Copy Real Link')
-        )
-      ) : null
-    ),
-
-    // Bottom bar - like screenshots
-    !activeChat ? React.createElement('div',{style:{height:64,background:'#202C33',display:'flex',borderTop:'1px solid #2A3942'}},
-      [{id:'chats',label:'Chats',icon:'💬',badge:totalUnread()},{id:'calls',label:'Calls',icon:'📞',badge:0},{id:'updates',label:'Updates',icon:'⭕',badge:statuses.length},{id:'tools',label:'Tools',icon:'🏪',badge:0}].map(tab=>
-        React.createElement('button',{key:tab.id,onClick:()=>setView(tab.id),style:{flex:1,background:view===tab.id?'#2A3942':'transparent',border:'none',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:2,position:'relative'}},
-          React.createElement('div',{style:{fontSize:18,position:'relative'}}, tab.icon, tab.badge>0 ? React.createElement('div',{style:{position:'absolute',top:-6,right:-8,background:'#00A884',color:'white',borderRadius:99,minWidth:16,height:16,fontSize:9,display:'flex',alignItems:'center',justifyContent:'center',padding:'0 4px'}}, tab.badge>99?'99+':tab.badge) : null),
-          React.createElement('div',{style:{color:view===tab.id?'white':'#8696A0',fontSize:11,fontWeight:view===tab.id?700:400}}, tab.label)
-        )
-      )
+      })
     ) : null,
-
-    // Quantum Orb - NOT covering send, fixed to 135px
-    !activeChat ? React.createElement('div',{onClick:()=>setQOpen(v=>!v),style:{position:'fixed',bottom:135,right:16,width:52,height:52,borderRadius:99,background:'radial-gradient(circle at 30% 30%, #FFD60A, #FF8C00, #FF3B30, #9C27B0, #5B5BFF, #00F0FF)',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer',zIndex:20},className:'orb-glow'},
-      React.createElement('div',{style:{fontSize:20}},'🧠')
-    ) : null,
-
-    // Quantum Chat Modal
-    qOpen ? React.createElement('div',{style:{position:'fixed',inset:0,background:'rgba(0,0,0,0.8)',zIndex:100,display:'flex',flexDirection:'column'}},
-      React.createElement('div',{style:{height:56,background:'#202C33',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 12px'}},
-        React.createElement('div',{style:{display:'flex',alignItems:'center',gap:8}},
-          React.createElement('div',{style:{width:32,height:32,borderRadius:99,background:'linear-gradient(135deg,#5B5BFF,#00F0FF)',display:'flex',alignItems:'center',justifyContent:'center'}},'🧠'),
-          React.createElement('div',{},
-            React.createElement('div',{style:{color:'white',fontWeight:700,fontSize:13}},'Quantum Mind - REAL AI'),
-            React.createElement('div',{style:{color:apiStatus==='ENV_OK'?'#00A884':'#FF3B30',fontSize:10}}, apiStatus)
-          )
-        ),
-        React.createElement('button',{onClick:()=>setQOpen(false),style:{background:'transparent',border:'none',color:'white',fontSize:20}},'✕')
+    !active ? e("div",{onClick:function(){setQOpen(function(v){return !v})},style:{position:"fixed",bottom:135,right:14,width:52,height:52,borderRadius:99,background:"radial-gradient(circle at 30% 30%, #FFD60A, #FF8C00, #FF3B30, #9C27B0, #5B5BFF, #00F0FF)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",zIndex:20},className:"orb"},"🧠") : null,
+    qOpen ? e("div",{style:{position:"fixed",inset:0,background:"rgba(0,0,0,0.85)",zIndex:100,display:"flex",flexDirection:"column"}},
+      e("div",{style:{height:50,background:"#202C33",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 12px"}},
+        e("div",{style:{display:"flex",alignItems:"center",gap:8}}, e("div",{style:{width:30,height:30,borderRadius:99,background:"linear-gradient(135deg,#5B5BFF,#00F0FF)",display:"flex",alignItems:"center",justifyContent:"center"}},"🧠"), e("div",{}, e("div",{style:{color:"white",fontWeight:700,fontSize:12}},"Quantum Mind REAL AI"), e("div",{style:{color:apiStatus==="ENV_OK"?"#00A884":"#FF3B30",fontSize:9}}, apiStatus))),
+        e("button",{onClick:function(){setQOpen(false)},style:{background:"transparent",border:"none",color:"white",fontSize:18}},"✕")
       ),
-      React.createElement('div',{style:{flex:1,overflowY:'auto',padding:12,display:'flex',flexDirection:'column',gap:8}},
-        qMessages.map(m=> React.createElement('div',{key:m.id,style:{alignSelf:m.from==='me'?'flex-end':'flex-start',maxWidth:'80%',padding:'8px 12px',borderRadius:12,background:m.from==='me'?'#005C4B':'#202C33',color:'white',fontSize:13}}, m.text))
+      e("div",{style:{padding:12,textAlign:"center",color:"#8696A0",fontSize:11}}, "Tap Chats → Quantum Mind to chat, or ask here. Real Groq AI needs GROQ_API_KEY in Vercel ENV")
+    ) : null,
+    showAdd ? e("div",{style:{position:"fixed",inset:0,background:"rgba(0,0,0,0.8)",zIndex:90,display:"flex",alignItems:"center",justifyContent:"center",padding:20}},
+      e("div",{style:{width:"100%",maxWidth:340,background:"#202C33",borderRadius:14,padding:18}},
+        e("div",{style:{color:"white",fontWeight:700,marginBottom:6}},"Add REAL Friends Only"),
+        e("div",{style:{color:"#8696A0",fontSize:11,marginBottom:12}}, "Real contacts from phone. If they have ChatSpark, add. If not, invite with real link: "+getLink(user&&user.name)),
+        e("button",{onClick:pickContacts,style:{width:"100%",padding:12,borderRadius:10,background:"#00A884",color:"white",border:"none",fontWeight:700,marginBottom:8}},"📱 Pick Real Contacts"),
+        e("button",{onClick:function(){setShowAdd(false)},style:{width:"100%",padding:10,borderRadius:10,background:"transparent",color:"#8696A0",border:"none"}},"Cancel")
+      )
+    ) : null,
+    showGroup ? e("div",{style:{position:"fixed",inset:0,background:"rgba(0,0,0,0.8)",zIndex:90,display:"flex",alignItems:"center",justifyContent:"center",padding:20}},
+      e("div",{style:{width:"100%",maxWidth:340,background:"#202C33",borderRadius:14,padding:18}},
+        e("div",{style:{color:"white",fontWeight:700,marginBottom:10}},"New Group REAL"),
+        e("button",{onClick:createGroup,style:{width:"100%",padding:12,borderRadius:10,background:"#5B5BFF",color:"white",border:"none",fontWeight:700,marginBottom:8}},"👥 Create Group with Real Friends"),
+        e("button",{onClick:function(){setShowGroup(false)},style:{width:"100%",padding:10,background:"transparent",color:"#8696A0",border:"none"}},"Cancel")
+      )
+    ) : null,
+    showChannel ? e("div",{style:{position:"fixed",inset:0,background:"rgba(0,0,0,0.8)",zIndex:90,display:"flex",alignItems:"center",justifyContent:"center",padding:20}},
+      e("div",{style:{width:"100%",maxWidth:340,background:"#202C33",borderRadius:14,padding:18}},
+        e("div",{style:{color:"white",fontWeight:700,marginBottom:10}},"Create Channel"),
+        e("button",{onClick:createChannel,style:{width:"100%",padding:12,borderRadius:10,background:"#00A884",color:"white",border:"none",fontWeight:700,marginBottom:8}},"📢 Create Real Channel"),
+        e("button",{onClick:function(){setShowChannel(false)},style:{width:"100%",padding:10,background:"transparent",color:"#8696A0",border:"none"}},"Cancel")
+      )
+    ) : null,
+    showStatus ? e("div",{style:{position:"fixed",inset:0,background:"rgba(0,0,0,0.8)",zIndex:90,display:"flex",alignItems:"center",justifyContent:"center",padding:20}},
+      e("div",{style:{width:"100%",maxWidth:340,background:"#202C33",borderRadius:14,padding:18}},
+        e("div",{style:{color:"white",fontWeight:700,marginBottom:10}},"Add Status Real"),
+        e("button",{onClick:addTextStatus,style:{width:"100%",padding:12,borderRadius:10,background:"#00A884",color:"white",border:"none",fontWeight:700,marginBottom:8}},"✍️ Text Status"),
+        e("button",{onClick:function(){statusRef.current&&statusRef.current.click()},style:{width:"100%",padding:12,borderRadius:10,background:"#2A3942",color:"white",border:"1px solid #5B5BFF",marginBottom:8}},"📷 Photo Status"),
+        e("input",{type:"file",ref:statusRef,accept:"image/*",style:{display:"none"},onChange:handleStatusPic}),
+        e("button",{onClick:function(){setShowStatus(false)},style:{width:"100%",padding:10,background:"transparent",color:"#8696A0",border:"none"}},"Cancel")
+      )
+    ) : null,
+    showSettings ? e("div",{style:{position:"fixed",inset:0,background:"#111B21",zIndex:95,display:"flex",flexDirection:"column"}},
+      e("div",{style:{height:50,background:"#202C33",display:"flex",alignItems:"center",gap:10,padding:"0 12px"}},
+        e("button",{onClick:function(){setShowSettings(false)},style:{background:"transparent",border:"none",color:"white",fontSize:18}},"←"),
+        e("div",{style:{color:"white",fontWeight:700,fontSize:14}},"Settings REAL")
       ),
-      React.createElement('div',{style:{padding:12,background:'#202C33',display:'flex',gap:8}},
-        React.createElement('input',{value:qInput,onChange:e=>setQInput(e.target.value),onKeyDown:e=>{if(e.key==='Enter'){const txt=qInput; if(!txt.trim()) return; setQMessages(ms=>[...ms,{id:Date.now(),from:'me',text:txt}]); setQInput(''); (async()=>{try{const r=await fetch('/api/quantum',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:txt,history:qMessages,apiKey:groqKey})}); const d=await r.json(); setApiStatus(d.status||''); setQMessages(ms=>[...ms,{id:Date.now()+1,from:'them',text:d.reply||'No reply'}]);}catch(e){setQMessages(ms=>[...ms,{id:Date.now()+1,from:'them',text:'Error: '+e.message}])}})()}},placeholder:'Ask Quantum Mind anything real...',style:{flex:1,padding:'10px 14px',borderRadius:24,border:'1px solid #2A3942',background:'#2A3942',color:'white'}}),
-        React.createElement('button',{onClick:()=>{const txt=qInput; if(!txt.trim()) return; setQMessages(ms=>[...ms,{id:Date.now(),from:'me',text:txt}]); setQInput(''); (async()=>{try{const r=await fetch('/api/quantum',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:txt,history:qMessages,apiKey:groqKey})}); const d=await r.json(); setApiStatus(d.status||''); setQMessages(ms=>[...ms,{id:Date.now()+1,from:'them',text:d.reply||'No reply'}]);}catch(e){setQMessages(ms=>[...ms,{id:Date.now()+1,from:'them',text:'Error: '+e.message}])}})()},style:{width:40,height:40,borderRadius:99,background:'#5B5BFF',border:'none',color:'white'}},'➤')
-      )
-    ) : null,
-
-    // Add Real Friends Modal
-    showAdd ? React.createElement('div',{style:{position:'fixed',inset:0,background:'rgba(0,0,0,0.8)',zIndex:90,display:'flex',alignItems:'center',justifyContent:'center',padding:20}},
-      React.createElement('div',{style:{width:'100%',maxWidth:360,background:'#202C33',borderRadius:16,padding:20}},
-        React.createElement('h3',{style:{color:'white',fontWeight:700,marginBottom:8}},'Add REAL Friends Only'),
-        React.createElement('p',{style:{color:'#8696A0',fontSize:12,marginBottom:16}},'Only people from your phone contacts. If they have ChatSpark, add to chat. If not, invite with real link: '+getInviteLink(user?.name)),
-        React.createElement('button',{onClick:pickRealContacts,style:{width:'100%',padding:'12px',borderRadius:10,background:'#00A884',color:'white',border:'none',fontWeight:700,marginBottom:10}},'📱 Pick Real Contacts (Phone)'),
-        React.createElement('button',{onClick:()=>{const name=prompt('Real name:'); const phone=prompt('Phone:'); if(name&&phone){if(confirm(name+' using ChatSpark?')){setFriends(f=>[...f,{id:'c_'+Date.now(),name,phone}]); setShowAdd(false)} else {openInvite(phone,user?.name)}}},style:{width:'100%',padding:'12px',borderRadius:10,background:'#2A3942',color:'white',border:'1px solid #5B5BFF',marginBottom:10}},'✍️ Manual Add Real Contact'),
-        React.createElement('button',{onClick:()=>setShowAdd(false),style:{width:'100%',padding:'10px',borderRadius:10,background:'transparent',color:'#8696A0',border:'none'}},'Cancel')
-      )
-    ) : null,
-
-    // Group Modal
-    showGroup ? React.createElement('div',{style:{position:'fixed',inset:0,background:'rgba(0,0,0,0.8)',zIndex:90,display:'flex',alignItems:'center',justifyContent:'center',padding:20}},
-      React.createElement('div',{style:{width:'100%',maxWidth:360,background:'#202C33',borderRadius:16,padding:20}},
-        React.createElement('h3',{style:{color:'white',fontWeight:700,marginBottom:12}},'New Group - REAL friends'),
-        React.createElement('p',{style:{color:'#8696A0',fontSize:12,marginBottom:12}},'Select real friends from your contacts. Group with real members only.'),
-        React.createElement('button',{onClick:createGroupReal,style:{width:'100%',padding:'12px',borderRadius:10,background:'#5B5BFF',color:'white',border:'none',fontWeight:700,marginBottom:10}},'👥 Create Real Group'),
-        React.createElement('button',{onClick:()=>setShowGroup(false),style:{width:'100%',padding:'10px',background:'transparent',color:'#8696A0',border:'none'}},'Cancel')
-      )
-    ) : null,
-
-    // Channel Modal
-    showChannel ? React.createElement('div',{style:{position:'fixed',inset:0,background:'rgba(0,0,0,0.8)',zIndex:90,display:'flex',alignItems:'center',justifyContent:'center',padding:20}},
-      React.createElement('div',{style:{width:'100%',maxWidth:360,background:'#202C33',borderRadius:16,padding:20}},
-        React.createElement('h3',{style:{color:'white',fontWeight:700,marginBottom:12}},'Create Channel - Like WhatsApp'),
-        React.createElement('p',{style:{color:'#8696A0',fontSize:12,marginBottom:12}},'Real channel like KGSB, Just Stickers, WAEC. Real followers.'),
-        React.createElement('button',{onClick:createChannelReal,style:{width:'100%',padding:'12px',borderRadius:10,background:'#00A884',color:'white',border:'none',fontWeight:700,marginBottom:10}},'📢 Create Real Channel'),
-        React.createElement('button',{onClick:()=>setShowChannel(false),style:{width:'100%',padding:'10px',background:'transparent',color:'#8696A0',border:'none'}},'Cancel')
-      )
-    ) : null,
-
-    // Status Modal
-    showStatus ? React.createElement('div',{style:{position:'fixed',inset:0,background:'rgba(0,0,0,0.8)',zIndex:90,display:'flex',alignItems:'center',justifyContent:'center',padding:20}},
-      React.createElement('div',{style:{width:'100%',maxWidth:360,background:'#202C33',borderRadius:16,padding:20}},
-        React.createElement('h3',{style:{color:'white',fontWeight:700,marginBottom:12}},'Add Status - Real Update'),
-        React.createElement('button',{onClick:addStatusReal,style:{width:'100%',padding:'12px',borderRadius:10,background:'#00A884',color:'white',border:'none',fontWeight:700,marginBottom:10}},'✍️ Text Status'),
-        React.createElement('button',{onClick:()=>statusInputRef.current?.click(),style:{width:'100%',padding:'12px',borderRadius:10,background:'#2A3942',color:'white',border:'1px solid #5B5BFF',marginBottom:10}},'📷 Photo Status'),
-        React.createElement('input',{type:'file',ref:statusInputRef,accept:'image/*',style:{display:'none'},onChange:handleStatusFile}),
-        React.createElement('button',{onClick:()=>setShowStatus(false),style:{width:'100%',padding:'10px',background:'transparent',color:'#8696A0',border:'none'}},'Cancel')
-      )
-    ) : null,
-
-    // Settings - SCROLLABLE
-    showSettings ? React.createElement('div',{style:{position:'fixed',inset:0,background:'#111B21',zIndex:95,display:'flex',flexDirection:'column'}},
-      React.createElement('div',{style:{height:56,background:'#202C33',display:'flex',alignItems:'center',gap:10,padding:'0 12px'}},
-        React.createElement('button',{onClick:()=>setShowSettings(false),style:{background:'transparent',border:'none',color:'white',fontSize:20}},'←'),
-        React.createElement('div',{style:{color:'white',fontWeight:700}},'Settings - REAL')
-      ),
-      React.createElement('div',{style:{flex:1,overflowY:'auto',WebkitOverflowScrolling:'touch',padding:16,paddingBottom:140,maxHeight:'calc(100vh - 56px)'}},
-        React.createElement('div',{style:{background:'#202C33',borderRadius:12,padding:16,marginBottom:12}},
-          React.createElement('div',{style:{display:'flex',alignItems:'center',gap:12}},
-            React.createElement('div',{onClick:()=>picInputRef.current?.click(),style:{width:56,height:56,borderRadius:99,background:userPic?`url(${userPic}) center/cover`:'#5B5BFF',border:'2px solid #00F0FF'}}),
-            React.createElement('div',{},
-              React.createElement('div',{style:{color:'white',fontWeight:700}}, user?.name),
-              React.createElement('div',{style:{color:'#8696A0',fontSize:12}}, user?.phone||'Real user')
-            )
-          ),
-          React.createElement('button',{onClick:()=>picInputRef.current?.click(),style:{marginTop:12,padding:'8px 16px',borderRadius:20,background:'#2A3942',color:'white',border:'none',fontSize:12}},'Change Real Photo (Crop 300x300)')
-        ),
-        React.createElement('div',{style:{background:'#202C33',borderRadius:12,padding:16,marginBottom:12,border:'2px solid #5B5BFF'}},
-          React.createElement('div',{style:{display:'flex',alignItems:'center',gap:6,marginBottom:8}},
-            React.createElement('div',{style:{width:10,height:10,borderRadius:99,background:apiStatus==='ENV_OK'?'#22C55E':apiStatus==='ENV_MISSING'?'#EF4444':'#FFD60A'}}),
-            React.createElement('div',{style:{color:'white',fontWeight:700,fontSize:12}}, 'Quantum API: '+apiStatus)
-          ),
-          React.createElement('div',{style:{color:'#8696A0',fontSize:10,marginBottom:8}}, groqKey?'Using local key':'Using Vercel ENV GROQ_API_KEY'),
-          React.createElement('input',{type:'text',value:groqKey,onChange:e=>{const v=e.target.value; setGroqKey(v); try{localStorage.setItem('groq_api_key',v)}catch{}},placeholder:'gsk_... optional',style:{width:'100%',padding:'8px',borderRadius:8,border:'1px solid #5B5BFF',background:'white',color:'black',fontSize:11}}),
-          React.createElement('button',{onClick:async()=>{setApiStatus('Checking...'); try{const r=await fetch('/api/quantum',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'test',apiKey:groqKey})}); const d=await r.json(); setApiStatus(d.status||''); alert('Reply: '+(d.reply||'').slice(0,200)+'\nStatus:'+d.status);}catch(e){setApiStatus('FETCH_ERROR'); alert('Error: '+e.message);}},style:{marginTop:8,width:'100%',padding:'8px',borderRadius:8,background:'#5B5BFF',color:'white',border:'none',fontSize:11,fontWeight:700}},'Test Real AI'),
-          React.createElement('div',{style:{fontSize:9,color:'#8696A0',marginTop:8,lineHeight:'1.4'}}, 'If ENV_MISSING: Vercel Dashboard → your-chatspark → Settings → Environment Variables → Add GROQ_API_KEY=gsk_... → Deployments → Redeploy WITHOUT cache. Get key: console.groq.com')
-        ),
-        React.createElement('div',{style:{background:'#202C33',borderRadius:12,padding:12,marginBottom:12}},
-          React.createElement('div',{style:{color:'white',fontWeight:600,fontSize:13,marginBottom:8}},'Real Stats'),
-          React.createElement('div',{style:{color:'#8696A0',fontSize:12}}, 'Real friends: '+friends.length+' • Groups: '+groups.length+' • Channels: '+channels.length+' • Statuses: '+statuses.length+' • Calls: '+calls.length+' • Favorites: '+favs.length+' • Unread: '+totalUnread())
-        ),
-        React.createElement('div',{style:{background:'#202C33',borderRadius:12,padding:12,marginBottom:12}},
-          React.createElement('div',{style:{color:'white',fontWeight:600,fontSize:13,marginBottom:8}},'Real Invite Link (Like WhatsApp)'),
-          React.createElement('div',{style:{color:'#00A884',fontSize:11,wordBreak:'break-all',background:'#111B21',padding:8,borderRadius:8}}, getInviteLink(user?.name)),
-          React.createElement('div',{style:{display:'flex',gap:8,marginTop:8}},
-            React.createElement('button',{onClick:()=>{navigator.clipboard?.writeText(getInviteLink(user?.name)); alert('Copied!')},style:{flex:1,padding:'8px',borderRadius:8,background:'#00A884',color:'white',border:'none',fontSize:11}},'Copy'),
-            React.createElement('button',{onClick:()=>openInvite('',user?.name),style:{flex:1,padding:'8px',borderRadius:8,background:'#2A3942',color:'white',border:'none',fontSize:11}},'Share via WhatsApp')
+      e("div",{style:{flex:1,overflowY:"auto",padding:14,paddingBottom:140,maxHeight:"calc(100vh - 50px)"}},
+        e("div",{style:{background:"#202C33",borderRadius:12,padding:14,marginBottom:10}},
+          e("div",{style:{display:"flex",alignItems:"center",gap:10}},
+            e("div",{onClick:function(){picRef.current&&picRef.current.click()},style:{width:48,height:48,borderRadius:99,background:"#5B5BFF",overflow:"hidden",border:"2px solid #00F0FF"}}, userPic? e("img",{src:userPic,style:{width:"100%",height:"100%",objectFit:"cover"}}):null),
+            e("div",{}, e("div",{style:{color:"white",fontWeight:700}}, user&&user.name), e("div",{style:{color:"#8696A0",fontSize:11}}, user&&user.phone||"Real user"))
           )
         ),
-        React.createElement('button',{onClick:()=>{if(confirm('Clear REAL data? All chats, friends, groups, channels, statuses, calls will be deleted!')){localStorage.clear(); location.reload();}},style:{width:'100%',padding:'12px',borderRadius:10,background:'#FF3B30',color:'white',border:'none',fontWeight:700,marginTop:16}},'Clear Real Data'),
-        React.createElement('div',{style:{height:40}})
+        e("div",{style:{background:"#202C33",borderRadius:12,padding:12,marginBottom:10,border:"2px solid #5B5BFF"}},
+          e("div",{style:{color:"white",fontSize:11,fontWeight:700,marginBottom:6}}, "Quantum API: "+apiStatus),
+          e("input",{value:gkey,onChange:function(ev){var v=ev.target.value; setGkey(v); try{localStorage.setItem("groq_api_key",v)}catch{}},placeholder:"gsk_... optional",style:{width:"100%",padding:8,borderRadius:8,border:"1px solid #5B5BFF",background:"white",color:"black",fontSize:11}}),
+          e("button",{onClick:function(){fetch("/api/quantum",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:"test",apiKey:gkey})}).then(function(r){return r.json()}).then(function(d){setApiStatus(d.status||""); alert((d.reply||"").slice(0,200))}).catch(function(err){alert(err.message)})},style:{marginTop:6,width:"100%",padding:8,borderRadius:8,background:"#5B5BFF",color:"white",border:"none",fontSize:11}},"Test Real AI"),
+          e("div",{style:{fontSize:9,color:"#8696A0",marginTop:6}}, "If ENV_MISSING: Vercel Dashboard → Settings → Env → GROQ_API_KEY=gsk_... → Redeploy without cache. console.groq.com")
+        ),
+        e("div",{style:{background:"#202C33",borderRadius:12,padding:12,marginBottom:10}},
+          e("div",{style:{color:"white",fontSize:12,fontWeight:600}}, "Real Stats: "+friends.length+" friends, "+groups.length+" groups, "+channels.length+" channels, "+statuses.length+" status, "+calls.length+" calls, "+favs.length+" fav, "+unreadCount()+" unread"),
+          e("div",{style:{color:"#00A884",fontSize:10,wordBreak:"break-all",marginTop:6,background:"#111B21",padding:6,borderRadius:6}}, getLink(user&&user.name)),
+          e("button",{onClick:function(){try{navigator.clipboard.writeText(getLink(user&&user.name)); alert("Copied real link")}catch{}},style:{marginTop:6,padding:"6px 10px",borderRadius:16,background:"#00A884",color:"white",border:"none",fontSize:11}},"Copy Real Link")
+        ),
+        e("button",{onClick:function(){if(confirm("Clear REAL data?")){localStorage.clear(); location.reload()}},style:{width:"100%",padding:12,borderRadius:10,background:"#FF3B30",color:"white",border:"none",fontWeight:700,marginTop:12}},"Clear Real Data"),
+        e("div",{style:{height:40}})
       )
     ) : null,
-
-    // FAB Add button
-    !activeChat && view==='chats' ? React.createElement('button',{onClick:()=>setShowAdd(true),style:{position:'fixed',bottom:80,right:16,width:56,height:56,borderRadius:16,background:'#00A884',border:'none',color:'white',fontSize:24,display:'flex',alignItems:'center',justifyContent:'center',boxShadow:'0 4px 12px rgba(0,0,0,0.3)',zIndex:10}},'+') : null
+    !active ? e("button",{onClick:function(){setShowAdd(true)},style:{position:"fixed",bottom:80,right:16,width:52,height:52,borderRadius:16,background:"#00A884",border:"none",color:"white",fontSize:22,zIndex:10}},"+") : null
   );
 }
 
-const root=ReactDOM.createRoot(document.getElementById('root'));
-root.render(React.createElement(App));
+var root=ReactDOM.createRoot(document.getElementById("root"));
+root.render(e(App));
 </script>
 </body>
 </html>
